@@ -1,4 +1,4 @@
-package com.oneverse.newarchitecture.components;
+package zone.oneverse.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
