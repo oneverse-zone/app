@@ -1,3 +1,4 @@
-
-// ReferenceError: TypeError: undefined is not an object (near '...ator.userAgent : '').match(/ (MSIE 8|MSI...')
+// ReferenceError: Can't find variable: TextEncoder
+import 'text-encoding-polyfill';
 import './store';
+import './crypto';

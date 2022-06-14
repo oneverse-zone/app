@@ -40,6 +40,8 @@ export class Session {
       });
       this.id = this.didService.did?.id.toString();
       return mnemonic;
+    } catch (e: any) {
+      console.error(e.message, e.stack);
     } finally {
       this.loading = false;
     }
