@@ -1,5 +1,6 @@
-import {createNavigationContainerRef} from '@react-navigation/native';
-import {PartialState} from '@react-navigation/routers';
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+import { PartialState } from '@react-navigation/routers';
 
 export const navigationRef = createNavigationContainerRef<any>();
 
@@ -16,19 +17,19 @@ export function reset(state: PartialState<any> | any) {
   navigationRef.isReady() && navigationRef.reset(state);
 }
 
-export function resetTo(name: string) {
+export function resetTo(name: string, params?: any) {
   navigationRef.isReady() &&
-    navigationRef.reset({
+    navigationRef.resetRoot({
       index: 0,
-      routes: [{name}],
+      routes: [{ name, params }],
     });
 }
 
 export function replace(name: string, params?: any) {
   if (navigationRef.isReady()) {
-    const {index, routes}: any = navigationRef.getState();
-    routes[index] = {name, params};
-    navigationRef.reset({
+    const { index, routes }: any = navigationRef.getState();
+    routes[index] = { name, params };
+    navigationRef.resetRoot({
       index,
       routes,
     });

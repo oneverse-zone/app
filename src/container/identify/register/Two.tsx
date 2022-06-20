@@ -4,7 +4,7 @@ import {goBack, resetTo} from '../../core/navigation';
 import {sessionService} from '../../services/Session';
 import {Box, Button, Column, Heading, Text} from 'native-base';
 import {observer} from 'mobx-react';
-import {Route} from '../router';
+import {route} from '../router';
 
 @observer
 export class RegisterTwo extends Component<any, any> {
@@ -30,7 +30,7 @@ export class RegisterTwo extends Component<any, any> {
   }
 
   async handleFinish() {
-    resetTo(Route.Home);
+    resetTo(route.Home);
   }
 
   render() {

@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Profile} from './profile/Profile';
 import {AddIcon} from 'native-base/src/components/primitives/Icon/Icons/Add';
 import {navigate} from '../core/navigation';
-import {Route} from './router';
+import {route} from './router';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +23,7 @@ export function Home() {
           headerRight: () => (
             <IconButton
               icon={<AddIcon />}
-              onPress={() => navigate(Route.ProfilePersist)}
+              onPress={() => navigate(route.ProfilePersist)}
             />
           ),
         }}

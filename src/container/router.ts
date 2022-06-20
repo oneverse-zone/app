@@ -1,20 +1,28 @@
 import React from 'react';
-import {SplashScreen} from './SplashScreen';
-import {Home} from './Home';
-import {Login} from './Login';
-import {RegisterOne} from './register/One';
-import {RegisterTwo} from './register/Two';
-import {ProfilePersist} from './profile/Persist';
-import {Auth} from './Auth';
+import { Splash } from './Splash';
+import { Home } from './Home';
+import { ImportIdentify } from './identify/Import';
+import { ProfilePersist } from './profile/Persist';
+import { Auth } from './Auth';
+import { OnBoarding } from './OnBoarding';
+import { Start } from './Start';
+import { PinCode } from './PinCode';
 
-export const Route = {
-  SplashScreen: 'SplashScreen',
+export const route = {
+  Splash: 'Splash',
 
-  Home: 'Home',
+  PinCode: 'PinCode',
+  /**
+   * 启动引导屏
+   */
+  OnBoarding: 'OnBoarding',
+  Start: 'Start',
 
-  Login: 'Login',
+  ImportIdentify: 'ImportIdentify',
   RegisterOne: 'RegisterOne',
   RegisterTwo: 'RegisterTwo',
+
+  Home: 'Home',
 
   ProfilePersist: 'ProfilePersist',
   Auth: 'Auth',
@@ -25,31 +33,35 @@ export const routers: Array<{
   component: React.ComponentType;
 }> = [
   {
-    name: Route.SplashScreen,
-    component: SplashScreen,
+    name: route.Splash,
+    component: Splash,
   },
   {
-    name: Route.Home,
+    name: route.OnBoarding,
+    component: OnBoarding,
+  },
+  {
+    name: route.Start,
+    component: Start,
+  },
+  {
+    name: route.PinCode,
+    component: PinCode,
+  },
+  {
+    name: route.ImportIdentify,
+    component: ImportIdentify,
+  },
+  {
+    name: route.Home,
     component: Home,
   },
   {
-    name: Route.Login,
-    component: Login,
-  },
-  {
-    name: Route.RegisterOne,
-    component: RegisterOne,
-  },
-  {
-    name: Route.RegisterTwo,
-    component: RegisterTwo,
-  },
-  {
-    name: Route.ProfilePersist,
+    name: route.ProfilePersist,
     component: ProfilePersist,
   },
   {
-    name: Route.Auth,
+    name: route.Auth,
     component: Auth,
   },
 ];

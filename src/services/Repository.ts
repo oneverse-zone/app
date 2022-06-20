@@ -5,7 +5,14 @@ import { randomBytes } from '@stablelib/random';
 import * as u8a from 'uint8arrays';
 
 const key = {
+  /**
+   * 账户助记词
+   */
   accountMnemonic: 'ACCOUNT_MNEMONIC',
+  /**
+   * 账户助记词备份状态
+   */
+  accountMnemonicBackupStatus: 'ACCOUNT_MNEMONIC_BACKUP_STATUS',
 };
 
 /**
@@ -36,6 +43,20 @@ class Repository {
   async saveAccountMnemonic(mnemonic: string) {
     const data = await this.encrypt(mnemonic);
     await AsyncStorage.setItem(key.accountMnemonic, data);
+  }
+
+  /**
+   * 获取助记词备份状态
+   */
+  async findAccountMnemonicBackupStatus() {
+    return await AsyncStorage.getItem(key.accountMnemonicBackupStatus);
+  }
+
+  /**
+   * 更新助记词备份状态
+   */
+  async updateAccountMnemonicBackupStatus(status: string) {
+    await AsyncStorage.setItem(key.accountMnemonicBackupStatus, status);
   }
 
   /**

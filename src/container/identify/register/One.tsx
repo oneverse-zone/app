@@ -9,7 +9,7 @@ import {
 } from 'native-base';
 import {autoBind} from 'jsdk/autoBind';
 import {replace} from '../../core/navigation';
-import {Route} from '../router';
+import {route} from '../router';
 
 /**
  * 注册第一步
@@ -37,7 +37,7 @@ export class RegisterOne extends Component<any, any> {
     if (this.state.error) {
       return;
     }
-    replace(Route.RegisterTwo, {password: this.state.password});
+    replace(route.RegisterTwo, {password: this.state.password});
   }
 
   render() {
