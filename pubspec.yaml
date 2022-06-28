@@ -42,6 +42,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   # 调用JS代码
   js: ^0.6.4
+  go_router: ^4.1.0
 
 dev_dependencies:
   flutter_test:

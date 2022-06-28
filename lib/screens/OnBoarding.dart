@@ -75,6 +75,6 @@ class _OnBoardingState extends State<OnBoarding>
 
   /// 进入开始页面
   void goStart() {
-    Navigator.pushReplacementNamed(context, RoutePath.start);
+    Navigator.pushReplacementNamed(context, AppRouter.start);
   }
 }

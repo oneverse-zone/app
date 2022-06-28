@@ -1,5 +1,4 @@
 import 'package:mobx/mobx.dart';
-import 'package:oneverse/services/DIDService.dart';
 
 part 'Session.g.dart';
 
@@ -20,6 +19,6 @@ abstract class SessionBase with Store {
   /// 随机生成助记词
   @action
   registerAndLogin() {
-    DIDService.newInstance();
+    // DIDService.newInstance();
   }
 }
