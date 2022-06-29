@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oneverse/services/Repository.dart';
 import 'package:oneverse/services/Session.dart';
 
@@ -53,13 +54,15 @@ class _SplashState extends State<Splash> {
     bool authenticated = false;
     if (!session.locked && !authenticated) {
       // 用户已经解锁,但是用户未授权,跳转到Start页面
-      Navigator.pushReplacementNamed(context, AppRouter.start);
+      context.go(AppRouter.start);
     } else if (_password.isNotEmpty) {
       // 设备未解锁,但是用户设置了密码,跳转到锁屏页面
-      Navigator.pushReplacementNamed(context, AppRouter.lock);
+      // Navigator.pushReplacementNamed(context, AppRouter.lock);
+      context.go(AppRouter.lock);
     } else {
       // 设备未解锁，用户未设置锁屏密码,跳转到启动页面
-      Navigator.pushReplacementNamed(context, AppRouter.onBoarding);
+      // Navigator.pushReplacementNamed(context, AppRouter.onBoarding);
+      context.go(AppRouter.onBoarding);
     }
   }
 }

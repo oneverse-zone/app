@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'routers.dart';
 
@@ -63,11 +64,13 @@ class _OnBoardingState extends State<OnBoarding>
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: goStart,
-            style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
-            child: const Text('开始使用'),
-          ),
+          SafeArea(
+            child: ElevatedButton(
+              onPressed: goStart,
+              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+              child: const Text('开始使用'),
+            ),
+          )
         ],
       ),
     );
@@ -75,6 +78,7 @@ class _OnBoardingState extends State<OnBoarding>
 
   /// 进入开始页面
   void goStart() {
-    Navigator.pushReplacementNamed(context, AppRouter.start);
+    // Navigator.pushReplacementNamed(context, AppRouter.start);
+    context.go(AppRouter.start);
   }
 }

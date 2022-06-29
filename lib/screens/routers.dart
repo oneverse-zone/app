@@ -15,7 +15,7 @@ import 'Start.dart';
 // };
 
 class AppRouter {
-  static const String splash = '/splash';
+  static const String splash = '/';
   static const String onBoarding = '/on-boarding';
   static const String start = '/start';
   static const String home = '/home';
