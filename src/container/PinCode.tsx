@@ -55,8 +55,11 @@ export class PinCode extends Component<any, any> {
       <PINCode
         status={status}
         finishProcess={this.handleFinish}
-        titleChoose="输入您的PIN密码"
+        titleChoose="设置您的PIN密码"
         subtitleChoose="PIN密码用于保护您的信息安全"
+        titleEnter="输入您的PIN密码"
+        titleConfirm="2 - 确认您的PIN密码"
+        titleConfirmFailed="您两次输入的PIN密码不一致"
         stylePinCodeColorTitle="#000"
         stylePinCodeColorSubtitle="#000"
         colorPassword="#000"
