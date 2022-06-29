@@ -1,26 +1,43 @@
 import React, { Component } from 'react';
 import { Alert } from 'react-native';
 import { observer } from 'mobx-react';
+import { autoBind } from 'jsdk/autoBind';
+
 import { sessionService } from '../services/Session';
 import { Page } from '../components/Page';
 import { Button, Column } from 'native-base';
-import { resetTo } from '../core/navigation';
+import { navigate, resetTo } from '../core/navigation';
 import { route } from './router';
+import { hasUserSetPinCode } from '@haskkor/react-native-pincode';
 
 /**
  * 开始屏
  * 引导用户创建或者导入账号
  */
 @observer
+@autoBind
 export class Start extends Component<any, any> {
   static options = {
     headerShown: false,
   };
 
+  async check() {
+    const hasPinCode = await hasUserSetPinCode();
+    const { locked } = sessionService;
+    if (hasPinCode && !locked) {
+      return false;
+    }
+    navigate(route.PinCode);
+    return true;
+  }
+
   /**
    * 处理账号注册
    */
   async handleCreate() {
+    if (await this.check()) {
+      return;
+    }
     await sessionService.registerAndLogin();
     Alert.alert('欢迎来到OneVerse', '恭喜您成功创建一个Web3去中心化DID账户', [
       {
@@ -33,7 +50,10 @@ export class Start extends Component<any, any> {
   /**
    * 导入账号
    */
-  handleImport() {
+  async handleImport() {
+    if (await this.check()) {
+      return;
+    }
     resetTo(route.ImportIdentify);
   }
 
