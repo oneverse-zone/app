@@ -98,11 +98,11 @@ export class Session {
     this.loading = true;
     try {
       const mnemonic = randomMnemonic();
+      this.loading = false;
+      await this.login(mnemonic);
       await repository.saveAccountMnemonic(mnemonic);
       // 更新助记词备份状态
       await repository.updateAccountMnemonicBackupStatus('');
-      this.loading = false;
-      await this.login(mnemonic);
       return mnemonic;
     } finally {
       this.loading = false;
