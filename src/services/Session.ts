@@ -65,7 +65,6 @@ export class Session {
   /**
    * 解锁设备
    * @param pinCode pinCode
-
    */
   @action
   async unlock(pinCode: string) {
@@ -80,7 +79,6 @@ export class Session {
       const key = await scrypt(pwd, salt, N, r, p, 32);
       repository.initCipher(key);
       const mnemonic = await repository.findAccountMnemonic();
-      this.loading = false;
       mnemonic && (await this.login(mnemonic));
     } finally {
       this.loading = false;
@@ -98,7 +96,6 @@ export class Session {
     this.loading = true;
     try {
       const mnemonic = randomMnemonic();
-      this.loading = false;
       await this.login(mnemonic);
       await repository.saveAccountMnemonic(mnemonic);
       // 更新助记词备份状态
@@ -116,10 +113,6 @@ export class Session {
    */
   @action
   async login(mnemonic: string, password?: string) {
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
     try {
       this.didService = await DIDService.newInstance({
         ceramicApi,
@@ -128,11 +121,10 @@ export class Session {
       });
       this.id = this.didService.did.id.toString();
     } catch (e: any) {
+      console.warn('登录失败', e.message);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
       }
       throw e;
-    } finally {
-      this.loading = false;
     }
   }
 }
