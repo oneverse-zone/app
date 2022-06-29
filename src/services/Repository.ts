@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { XChaCha20Poly1305 } from '@stablelib/xchacha20poly1305';
 import { decodeCleartext, prepareCleartext } from 'dag-jose-utils';
 import { randomBytes } from '@stablelib/random';
