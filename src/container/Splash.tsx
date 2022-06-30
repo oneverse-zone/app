@@ -3,7 +3,7 @@ import { Center, Text } from 'native-base';
 import SS from 'react-native-splash-screen';
 import { resetTo } from '../core/navigation';
 import { route } from './router';
-import { deleteUserPinCode, hasUserSetPinCode } from '@haskkor/react-native-pincode';
+import { hasUserSetPinCode } from '@haskkor/react-native-pincode';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
 
