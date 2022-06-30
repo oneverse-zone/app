@@ -2,8 +2,9 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { toUtf8Bytes, UnicodeNormalizationForm } from '@ethersproject/strings';
 import { scrypt } from 'scrypt-js';
 
-import { DIDService } from '@oneverse/identify/lib/services/DIDService';
-import { randomMnemonic } from '@oneverse/identify/lib/utils/mnemonic';
+import { DIDService } from '@oneverse/identify';
+import { randomMnemonic } from '@oneverse/utils';
+
 import { ceramicApi } from '../constants/Url';
 import { repository } from './Repository';
 
