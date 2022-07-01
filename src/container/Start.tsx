@@ -61,9 +61,9 @@ export class Start extends Component<any, any> {
     const { loading } = sessionService;
     return (
       <Page flex={1} justifyContent="center" Root={Column} space={3.5} padding={3} loading={loading}>
-        <Button onPress={this.handleImport}>{'导入您的去中心化身份'}</Button>
-        <Button variant="ghost" onPress={this.handleCreate}>
-          {'创建一个去中心化身份'}
+        <Button onPress={this.handleCreate}>{'创建一个去中心化身份'}</Button>
+        <Button variant="ghost" onPress={this.handleImport}>
+          {'导入您的去中心化身份'}
         </Button>
       </Page>
     );
