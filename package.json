@@ -13,7 +13,7 @@
   "dependencies": {
     "@aomi/common-service": "^1.0.5-Alpha.26",
     "@haskkor/react-native-pincode": "^1.22.6",
-    "@oneverse/identify": "^1.5.0",
+    "@oneverse/identify": "^1.6.0",
     "@react-native-async-storage/async-storage": "^1.17.7",
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/material-top-tabs": "^6.2.1",
