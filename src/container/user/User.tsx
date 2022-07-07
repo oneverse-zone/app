@@ -4,6 +4,17 @@ import { userService } from '../../services/User';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import { Box, Column, Row, Text } from 'native-base';
+import { lang } from '../../locales';
+import { route } from '../router';
+import { ListItem } from '../../components/ListItem';
+import { navigate } from '../../core/navigation';
+
+const functions = [
+  {
+    title: lang('setting'),
+    onPress: () => navigate(route.Setting),
+  },
+];
 
 @observer
 @autoBind
@@ -38,6 +49,9 @@ export class User extends Component<any, any> {
             </Column>
           </Row>
         </Box>
+        {functions.map((item, index) => (
+          <ListItem {...item} key={index} />
+        ))}
       </Page>
     );
   }

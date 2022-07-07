@@ -6,13 +6,15 @@ import * as u8a from 'uint8arrays';
 
 const key = {
   /**
-   * 账户助记词
+   * 助记词
    */
-  accountMnemonic: 'ACCOUNT_MNEMONIC',
+  mnemonic: 'MNEMONIC',
   /**
    * 账户助记词备份状态
    */
-  accountMnemonicBackupStatus: 'ACCOUNT_MNEMONIC_BACKUP_STATUS',
+  mnemonicBackupStatus: 'MNEMONIC_BACKUP_STATUS',
+
+  language: 'language',
 };
 
 /**
@@ -28,35 +30,52 @@ class Repository {
     this.cipher = new XChaCha20Poly1305(key);
   }
 
+  findLanguage() {
+    return AsyncStorage.getItem(key.language);
+  }
+
+  async saveLanguage(language: string) {
+    await AsyncStorage.setItem(key.language, language);
+  }
+
   /**
    * 账户助记词
+   * @param decrypt 是否需要解密 默认false
    */
-  async findAccountMnemonic(): Promise<string | undefined> {
-    let mnemonic = await AsyncStorage.getItem(key.accountMnemonic);
-    return mnemonic ? await this.decrypt(mnemonic) : undefined;
+  async findMnemonic(decrypt?: boolean): Promise<{ mnemonic: string; password?: string } | string | null> {
+    let mnemonic = await AsyncStorage.getItem(key.mnemonic);
+    if (mnemonic && decrypt) {
+      return await this.decrypt(mnemonic);
+    }
+    return mnemonic;
   }
 
   /**
    * 保存助记词
-   * @param mnemonic 助记词
+   * @param mnemonic password
+   * @param password 助记词密码
    */
-  async saveAccountMnemonic(mnemonic: string) {
-    const data = await this.encrypt(mnemonic);
-    await AsyncStorage.setItem(key.accountMnemonic, data);
+  async saveMnemonic(mnemonic: string, password?: string) {
+    const data = await this.encrypt({ mnemonic, password });
+    await AsyncStorage.setItem(key.mnemonic, data);
   }
 
   /**
    * 获取助记词备份状态
    */
-  async findAccountMnemonicBackupStatus() {
-    return await AsyncStorage.getItem(key.accountMnemonicBackupStatus);
+  async findMnemonicBackupStatus() {
+    return await AsyncStorage.getItem(key.mnemonicBackupStatus);
   }
 
   /**
    * 更新助记词备份状态
    */
-  async updateAccountMnemonicBackupStatus(status: string) {
-    await AsyncStorage.setItem(key.accountMnemonicBackupStatus, status);
+  async updateMnemonicBackupStatus(status: string) {
+    await AsyncStorage.setItem(key.mnemonicBackupStatus, status);
+  }
+
+  async clearAll() {
+    await AsyncStorage.clear();
   }
 
   /**

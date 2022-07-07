@@ -1,6 +1,6 @@
-import React, {PropsWithChildren} from 'react';
-import {Box, Center, IBoxProps, Modal, Spinner, Text} from 'native-base';
-import {IVStackProps} from 'native-base/lib/typescript/components/primitives/Stack/VStack';
+import React, { PropsWithChildren } from 'react';
+import { Box, Center, IBoxProps, Modal, Spinner, Text } from 'native-base';
+import { IVStackProps } from 'native-base/lib/typescript/components/primitives/Stack/VStack';
 
 export type PageProps = {
   loading?: boolean;
@@ -17,7 +17,7 @@ export function Page({
   ...props
 }: PropsWithChildren<PageProps>) {
   return (
-    <Root {...props}>
+    <Root flex={1} backgroundColor="white" {...props}>
       {children}
       <Modal isOpen={loading} justifyContent="center" alignItems="center">
         <Modal.Content width="130" minH="120">

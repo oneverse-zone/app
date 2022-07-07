@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Page} from '../../components/Page';
-import {userService} from '../../services/User';
-import {observer} from 'mobx-react';
-import {autoBind} from 'jsdk/autoBind';
-import {Box, Column, Row, Text} from 'native-base';
+import React, { Component } from 'react';
+import { Page } from '../../../components/Page';
+import { userService } from '../../../services/User';
+import { observer } from 'mobx-react';
+import { autoBind } from 'jsdk/autoBind';
+import { Box, Column, Row, Text } from 'native-base';
 
 @observer
 @autoBind
@@ -14,7 +14,7 @@ export class Profile extends Component<any, any> {
   }
 
   render() {
-    const {basicProfile} = userService;
+    const { basicProfile } = userService;
     return (
       <Page>
         <Box pl="4" pr="5" py="2">

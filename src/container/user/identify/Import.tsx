@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { Button, Column, Input, TextArea } from 'native-base';
-import { sessionService } from '../../services/Session';
-import { Page } from '../../components/Page';
-import { navigate, resetTo } from '../../core/navigation';
-import { route } from '../router';
+import { sessionService } from '../../../services/Session';
+import { Page } from '../../../components/Page';
+import { navigate, resetTo } from '../../../core/navigation';
+import { route } from '../../router';
 
 /**
  * 导入身份

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Center, Text } from 'native-base';
 import SS from 'react-native-splash-screen';
+import * as Keychain from 'react-native-keychain';
+
 import { resetTo } from '../core/navigation';
 import { route } from './router';
-import { hasUserSetPinCode } from '@haskkor/react-native-pincode';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
 
@@ -12,19 +13,23 @@ export const Splash: React.FC<any> = observer(function Splash() {
     check();
   }, []);
 
-  const { locked, authenticated } = sessionService;
-
   /**
    * 启动检查
    */
   async function check() {
-    const hasPinCode = await hasUserSetPinCode();
+    const { locked, authenticated } = sessionService;
+
+    let credentials;
+    try {
+      credentials = await Keychain.getGenericPassword();
+    } catch (error) {
+      console.log("Keychain couldn't be accessed!", error);
+    }
     if (!locked && !authenticated) {
       console.log('用户已经解锁,但是用户未授权,跳转到Start页面');
       resetTo(route.Start);
-    } else if (hasPinCode) {
+    } else if (credentials) {
       console.log('设备未解锁,但是用户设置了pin,跳转到PinCode页面');
-      resetTo(route.PinCode);
     } else {
       console.log('设备未解锁，用户未设置pin,跳转到启动页面');
       resetTo(route.OnBoarding);

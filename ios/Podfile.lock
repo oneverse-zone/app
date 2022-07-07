@@ -284,7 +284,7 @@ PODS:
   - React-jsinspector (0.69.1)
   - React-logger (0.69.1):
     - glog
-  - react-native-pager-view (5.4.24):
+  - react-native-pager-view (5.4.25):
     - React-Core
   - react-native-randombytes (3.6.1):
     - React-Core
@@ -368,7 +368,7 @@ PODS:
     - React-Core
   - RNOS (1.2.6):
     - React
-  - RNScreens (3.14.0):
+  - RNScreens (3.14.1):
     - React-Core
     - React-RCTImage
   - RNSVG (12.3.0):
@@ -585,7 +585,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 758e70947c232828a66b5ddc42d02b4d010fa26e
   React-jsinspector: 55605caf04e02f9b0e05842b786f1c12dde08f4b
   React-logger: ca970551cb7eea2fd814d0d5f6fc1a471eb53b76
-  react-native-pager-view: 95d0418c3c74279840abec6926653d32447bafb6
+  react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
@@ -604,7 +604,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: d81ee5c3db1060afd49ea7045ad460eff82d2b7d
   RNKeychain: c442b8512802a20cab4db3e3a1cf53e4731615bc
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
-  RNScreens: 4830eb40e0793b38849965cd27f4f3a7d7bc65c1
+  RNScreens: aa9a97835afbbdc18a4757870b2b59b7d9fae16a
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608

@@ -1,22 +1,20 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import { setErrMsg } from '@aomi/common-service/utils/getErrMsg';
-import { Lang, Menu } from './types';
+import { Lang } from './types';
 import * as zhCN from './zh-cn';
-
-const StorageKey = 'language';
+import { repository } from '../services/Repository';
 
 export type Language = 'zh-CN';
 
-export type LanguageText<L extends keyof any, M extends keyof any> = {
+export type LanguageText<L extends keyof any> = {
   lang: Record<L, string>;
   // menu: Record<M, string>;
   resErrMsg: Record<string, any>;
 };
 
-export class I18n<L extends keyof any, M extends keyof any> {
+export class I18n<L extends keyof any> {
   defaultLanguage: Language;
   language: Language;
-  languages: Record<Language, LanguageText<L, M>>;
+  languages: Record<Language, LanguageText<L>>;
 
   constructor({
     defaultLanguage = 'zh-CN',
@@ -25,7 +23,7 @@ export class I18n<L extends keyof any, M extends keyof any> {
   }: {
     defaultLanguage?: Language;
     language?: Language;
-    languages: Record<Language, LanguageText<L, M>>;
+    languages: Record<Language, LanguageText<L>>;
   }) {
     this.defaultLanguage = defaultLanguage;
     this.language = language;
@@ -49,12 +47,12 @@ export class I18n<L extends keyof any, M extends keyof any> {
     return this.language || this.defaultLanguage;
   }
 
-  getLanguageText(): LanguageText<L, M> {
+  getLanguageText(): LanguageText<L> {
     return this.languages[this.language] || this.languages[this.defaultLanguage];
   }
 
   async init() {
-    let language = await AsyncStorage.getItem(StorageKey);
+    let language = await repository.findLanguage();
     this.language = (language as any) ?? 'zh-CN';
     setErrMsg(this.resErrMsg());
   }
@@ -65,21 +63,21 @@ export class I18n<L extends keyof any, M extends keyof any> {
    */
   async changeLanguage(language: Language) {
     console.log(`更换语言为: ${language}`);
-    const userLanguage = await AsyncStorage.getItem(StorageKey);
+    const userLanguage = await repository.findLanguage();
     if (language === userLanguage) {
       return;
     }
-    AsyncStorage.setItem(StorageKey, language);
+    repository.saveLanguage(language);
   }
 }
 
-export function createLangProxy<L extends keyof any>(i18n: I18n<L, any>): (key: L, defaultValue?: string) => string {
+export function createLangProxy<L extends keyof any>(i18n: I18n<L>): (key: L, defaultValue?: string) => string {
   return function (key: L, defaultValue?: string) {
     return i18n.lang(key, defaultValue);
   };
 }
 
-export const i18n = new I18n<Lang, Menu>({
+export const i18n = new I18n<Lang>({
   languages: {
     'zh-CN': zhCN,
   },

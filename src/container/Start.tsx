@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-native';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
+import { Column } from 'native-base';
 
 import { sessionService } from '../services/Session';
 import { Page } from '../components/Page';
-import { Button, Column } from 'native-base';
 import { navigate, resetTo } from '../core/navigation';
 import { route } from './router';
-import { hasUserSetPinCode } from '@haskkor/react-native-pincode';
+import { lang } from '../locales';
+import { PageTitle } from '../components/PageTitle';
+import { Button } from '../components/Button';
 
 /**
  * 开始屏
@@ -18,53 +19,37 @@ import { hasUserSetPinCode } from '@haskkor/react-native-pincode';
 @autoBind
 export class Start extends Component<any, any> {
   static options = {
-    headerShown: false,
+    title: lang('app.name'),
+    headerShadowVisible: false,
   };
-
-  async check() {
-    const hasPinCode = await hasUserSetPinCode();
-    const { locked } = sessionService;
-    if (hasPinCode && !locked) {
-      return false;
-    }
-    navigate(route.PinCode);
-    return true;
-  }
 
   /**
    * 处理账号注册
    */
   async handleCreate() {
-    if (await this.check()) {
-      return;
-    }
-    await sessionService.registerAndLogin();
-    Alert.alert('欢迎来到OneVerse', '恭喜您成功创建一个Web3去中心化DID账户', [
-      {
-        text: '进入OneVerse',
-        onPress: () => resetTo(route.Home),
-      },
-    ]);
+    navigate(route.RegisterOne);
   }
 
   /**
    * 导入账号
    */
   async handleImport() {
-    if (await this.check()) {
-      return;
-    }
     resetTo(route.ImportIdentify);
   }
 
   render() {
     const { loading } = sessionService;
     return (
-      <Page flex={1} justifyContent="center" Root={Column} space={3.5} padding={3} loading={loading}>
-        <Button onPress={this.handleCreate}>{'创建一个去中心化身份'}</Button>
-        <Button variant="ghost" onPress={this.handleImport}>
-          {'导入您的去中心化身份'}
-        </Button>
+      <Page flex={1} padding={3} loading={loading}>
+        <PageTitle title={lang('identify.setting')} description={lang('identify.setting.tip')} />
+        <Column space={3} justifyContent="flex-end" alignItems="center" flex={1} safeAreaBottom mb={20}>
+          <Button variant="outline" onPress={this.handleImport} width={230} borderColor="primary.500">
+            {'使用助记词导入'}
+          </Button>
+          <Button onPress={this.handleCreate} width={230}>
+            {'创建新的去中心化身份'}
+          </Button>
+        </Column>
       </Page>
     );
   }

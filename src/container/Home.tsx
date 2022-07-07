@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 
 export function HomeTab() {
   function create() {
-    walletService.create('ETC', '');
+    walletService.createHD();
   }
 
   return <Button onPress={create}>{'创建钱包'}</Button>;
@@ -42,7 +42,6 @@ const tabs: Record<
     title: lang('tab.crypto-asset'),
     component: CryptoAsset,
     icon: WalletIcon,
-    headerShown: false,
   },
   Message: {
     title: lang('tab.message'),

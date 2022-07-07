@@ -1,12 +1,15 @@
 import React from 'react';
 import { Splash } from './Splash';
 import { Home } from './Home';
-import { ImportIdentify } from './identify/Import';
-import { ProfilePersist } from './profile/Persist';
+import { RegisterOne } from './user/identify/register/One';
+import { ImportIdentify } from './user/identify/Import';
+import { ProfilePersist } from './user/profile/Persist';
 import { Auth } from './Auth';
 import { OnBoarding } from './OnBoarding';
 import { Start } from './Start';
-import { PinCode } from './PinCode';
+import { Setting } from './setting';
+import { RegisterTwo } from './user/identify/register/Two';
+import { AccountBackup } from './user/identify/Backup';
 
 export const route = {
   Splash: 'Splash',
@@ -21,11 +24,14 @@ export const route = {
   ImportIdentify: 'ImportIdentify',
   RegisterOne: 'RegisterOne',
   RegisterTwo: 'RegisterTwo',
+  AccountBackup: 'AccountBackup',
 
   Home: 'Home',
 
   ProfilePersist: 'ProfilePersist',
   Auth: 'Auth',
+
+  Setting: 'Setting',
 };
 
 export const routers: Array<{
@@ -44,9 +50,21 @@ export const routers: Array<{
     name: route.Start,
     component: Start,
   },
+  // {
+  //   name: route.PinCode,
+  //   component: PinCode,
+  // },
   {
-    name: route.PinCode,
-    component: PinCode,
+    name: route.RegisterOne,
+    component: RegisterOne,
+  },
+  {
+    name: route.RegisterTwo,
+    component: RegisterTwo,
+  },
+  {
+    name: route.AccountBackup,
+    component: AccountBackup,
   },
   {
     name: route.ImportIdentify,
@@ -63,5 +81,9 @@ export const routers: Array<{
   {
     name: route.Auth,
     component: Auth,
+  },
+  {
+    name: route.Setting,
+    component: Setting,
   },
 ];

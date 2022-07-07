@@ -1,16 +1,16 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { mnemonicToSeed } from '@ethersproject/hdnode';
 import Web3 from 'web3';
-import { randomMnemonic } from '@oneverse/utils';
-import { Chain } from '../constants/Blockchain';
+import { Wallet } from '@ethersproject/wallet';
+import { mnemonicToSeed, randomMnemonic } from '@oneverse/utils';
 import { ethereumApi } from '../constants/Url';
-
-// import Web3 from 'web3';
+import * as u8a from 'uint8arrays';
+import { hdTokens } from '../constants/Token';
+import { Blockchain } from '../entity/Blockchain';
 
 /**
  * 钱包服务
  */
-export class Wallet {
+export class WalletService {
   @observable
   loading = false;
 
@@ -31,27 +31,42 @@ export class Wallet {
   async query() {}
 
   /**
+   * 创建HD钱包
+   */
+  @action
+  async createHD() {
+    const mnemonic = randomMnemonic();
+    console.log(mnemonic);
+    const wallets = hdTokens.map(token => Wallet.fromMnemonic(mnemonic, `${token.derivePath}/0`));
+    wallets.forEach(item => {
+      console.log(`Address: ${item.address}`);
+      console.log(`PRK: ${item.privateKey}`);
+      console.log('==========');
+    });
+  }
+
+  /**
    * 钱包创建
    */
   @action
-  async create(chain: Chain, password: string) {
+  async create(chain: Blockchain, password: string) {
     const mnemonic = randomMnemonic();
-    const seedHexStr = mnemonicToSeed(mnemonic);
-    await this.preCreateETH(seedHexStr);
+    const seed = mnemonicToSeed(mnemonic);
+    await this.preCreateETH(seed);
     return mnemonic;
   }
 
   /**
    * 创建ETH账户
-   * @param seedHexStr 秘钥种子 hex
-   * @private
+   * @param seed 秘钥种子
+   * @private 内部调用
    */
-  private async preCreateETH(seedHexStr: string) {
+  private async preCreateETH(seed: Uint8Array) {
     const web3 = new Web3(ethereumApi);
-
+    const seedHexStr = u8a.toString(seed, 'base16');
     const account = web3.eth.accounts.privateKeyToAccount(seedHexStr);
     console.log(account);
   }
 }
 
-export const walletService = new Wallet();
+export const walletService = new WalletService();

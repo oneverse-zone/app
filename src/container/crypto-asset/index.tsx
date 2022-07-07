@@ -19,8 +19,8 @@ const tabs: Record<
     component: React.ComponentType<any>;
   }
 > = {
-  Wallet: {
-    title: lang('wallet'),
+  Token: {
+    title: lang('token'),
     component: Wallet,
   },
   NFT: {
@@ -34,17 +34,9 @@ const tabs: Record<
  */
 @observer
 export class CryptoAsset extends Component<any, any> {
-  renderTabBar(props: MaterialTopTabBarProps) {
-    return (
-      <Box safeAreaTop backgroundColor="#FFF">
-        <MaterialTopTabBar {...props} />
-      </Box>
-    );
-  }
-
   render() {
     return (
-      <Tab.Navigator initialRouteName="Index" tabBar={this.renderTabBar}>
+      <Tab.Navigator initialRouteName="Token">
         {Object.keys(tabs).map(key => {
           const { component, ...options } = tabs[key];
           return <Tab.Screen name={key} key={key} component={component} options={options} />;
