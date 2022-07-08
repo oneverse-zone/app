@@ -42,7 +42,7 @@ export class RegisterTwo extends Component<any, any> {
     const { password } = this.props.route?.params || {};
     const { mnemonicLength, password: mnemonicPassword } = this.state;
     await sessionService.registerAndLogin(password, parseInt(mnemonicLength), mnemonicPassword);
-    resetTo(route.AccountBackup);
+    resetTo(route.BackupOne);
   }
 
   valid() {

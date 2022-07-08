@@ -1,9 +1,9 @@
 import { Center, Heading, Text } from 'native-base';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export type PageTitleProps = {
-  title: string;
-  description: string;
+  title: ReactNode;
+  description?: ReactNode;
 };
 
 /**

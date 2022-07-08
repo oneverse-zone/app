@@ -9,7 +9,8 @@ import { OnBoarding } from './OnBoarding';
 import { Start } from './Start';
 import { Setting } from './setting';
 import { RegisterTwo } from './user/identify/register/Two';
-import { AccountBackup } from './user/identify/Backup';
+import { BackupOne } from './user/identify/backup/One';
+import { BackupTwo } from './user/identify/backup/Two';
 
 export const route = {
   Splash: 'Splash',
@@ -24,7 +25,8 @@ export const route = {
   ImportIdentify: 'ImportIdentify',
   RegisterOne: 'RegisterOne',
   RegisterTwo: 'RegisterTwo',
-  AccountBackup: 'AccountBackup',
+  BackupOne: 'BackupOne',
+  BackupTwo: 'BackupTwo',
 
   Home: 'Home',
 
@@ -63,8 +65,12 @@ export const routers: Array<{
     component: RegisterTwo,
   },
   {
-    name: route.AccountBackup,
-    component: AccountBackup,
+    name: route.BackupOne,
+    component: BackupOne,
+  },
+  {
+    name: route.BackupTwo,
+    component: BackupTwo,
   },
   {
     name: route.ImportIdentify,
