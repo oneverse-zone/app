@@ -69,20 +69,15 @@ export class Session {
 
   /**
    * 解锁设备
-   * @param pinCode pinCode
+   * @param password pinCode
    */
   @action
-  async unlock(pinCode: string) {
+  async unlock(password: string) {
     if (this.loading) return;
     this.loading = true;
     try {
       this.locked = false;
-      const pwd = toUtf8Bytes(pinCode, UnicodeNormalizationForm.NFKD);
-      const salt = toUtf8Bytes('pin-code', UnicodeNormalizationForm.NFKD);
-      // 初始化设备密钥
-      // 设备密钥 用于加密用户设备上的数据
-      const key = await scrypt(pwd, salt, N, r, p, 32);
-      repository.initCipher(key);
+      await this.initDevicePassword(password);
       const mnemonic: any = await repository.findMnemonic(true);
       mnemonic && (await this.login(mnemonic));
     } finally {
@@ -100,11 +95,10 @@ export class Session {
     }
     this.loading = true;
     try {
-      const result = await Keychain.setGenericPassword('oneverse', password);
-      console.log('generic', result);
+      await Keychain.setGenericPassword('oneverse', password);
       await this.initDevicePassword(password);
 
-      const mnemonic = randomMnemonic();
+      const mnemonic = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
       await this.login({ mnemonic, password: mnemonicPassword });
       await repository.saveMnemonic(mnemonic, mnemonicPassword);
       // 更新助记词备份状态
