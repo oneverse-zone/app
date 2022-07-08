@@ -6,5 +6,5 @@ import { Button as NButton, IButtonProps } from 'native-base';
  * @constructor
  */
 export function Button(props: IButtonProps) {
-  return <NButton borderRadius={50} size="lg" {...props} />;
+  return <NButton rounded="full" size="lg" {...props} />;
 }
