@@ -52,6 +52,11 @@
   resolved "https://registry.yarnpkg.com/@aomi/common-service/-/common-service-1.0.5-Alpha.26.tgz#0481d84d3a166556119c59d76ea14a1d6df39885"
   integrity sha512-0qfxPjQEYE28gfw6lbWNNS7qu3oBsHOcQli/xbNRgS4RS+VmC1AmT31H89OExIipA3jjXLE6eDYn+Zfll2/5yQ==
 
+"@aomi/utils@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@aomi/utils/-/utils-1.0.2.tgz#dd3ca5fb6913fbc5385e16b0116f557f60e8011f"
+  integrity sha512-IAnpIQibbvYCxi1IqSgLC8JurU+gsr9Nw3aiCiI1HXbafSTCH3iP4D6ZNtU0gTUADVPWziNi2wa7OO1KGjtM7w==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"
@@ -2191,6 +2196,11 @@
   integrity sha512-mDtWhCcpxzrZhA95f6zi0pnBsjBEZW1LKZWfxVXG0UfaWpPxDBCKowNk2xjRTytckZeVhjmPJPtBU+8QNQcR0A==
   dependencies:
     merge-options "^3.0.4"
+
+"@react-native-clipboard/clipboard@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.10.0.tgz#605e784ed5435059c9b5db52b2d112f9fd09c409"
+  integrity sha512-1L+I0vmeUJgMi8MnNsqI00391/RFLkmmxj9qAuOS2madpvce/oNqJb8Pwk2Fc/uxIJSxOckTpq+dQwyPU6s+7w==
 
 "@react-native-community/cli-clean@^8.0.0":
   version "8.0.0"

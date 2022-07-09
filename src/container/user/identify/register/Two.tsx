@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 
-import { Button, Column, FormControl, Radio, Row } from 'native-base';
+import { Column, FormControl, Radio, Row } from 'native-base';
 import { lang } from '../../../../locales';
 import { InputPassword } from '../../../../components/InputPassword';
 import { sessionService } from '../../../../services/Session';
@@ -10,6 +10,7 @@ import { goBack, resetTo } from '../../../../core/navigation';
 import { Page } from '../../../../components/Page';
 import { PageTitle } from '../../../../components/PageTitle';
 import { route } from '../../../router';
+import { Button } from '../../../../components/Button';
 
 @observer
 @autoBind
@@ -58,7 +59,7 @@ export class RegisterTwo extends Component<any, any> {
     const { mnemonicLength } = this.state;
 
     return (
-      <Page loading={loading} paddingX={9} Root={Column} space={5}>
+      <Page paddingX={9} Root={Column} space={5}>
         <PageTitle title={lang('mnemonic.setting')} description={lang('mnemonic.setting.tip')} />
 
         {/*助记词个数*/}
@@ -78,7 +79,11 @@ export class RegisterTwo extends Component<any, any> {
           <FormControl.HelperText>{lang('mnemonic.password.tip')}</FormControl.HelperText>
         </FormControl>
 
-        <Button isDisabled={!this.valid()} onPress={this.handleRegister}>
+        <Button
+          isDisabled={!this.valid()}
+          onPress={this.handleRegister}
+          isLoading={loading}
+          isLoadingText={lang('identify.create.tip')}>
           {lang('next-step')}
         </Button>
       </Page>

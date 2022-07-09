@@ -14,9 +14,9 @@ export type PageTitleProps = {
  */
 export function PageTitle({ title, description }: PageTitleProps) {
   return (
-    <Center marginY={7}>
+    <Center>
       <Heading>{title}</Heading>
-      <Text textAlign="center" mt={7}>
+      <Text textAlign="center" mt={7} paddingX={3}>
         {description}
       </Text>
     </Center>

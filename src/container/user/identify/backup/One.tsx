@@ -40,7 +40,7 @@ export class BackupOne extends Component<any, any> {
     return (
       <Page paddingX={4} Root={Column} space={5}>
         <PageTitle title={lang('protect-your-account-safe')} />
-        <Text>
+        <Text alignItems="center">
           {'不要冒失丢帐户、资产的风险。在您信任的地方保存您的'}
           <NButton variant="link" padding={0} marginBottom={-0.49} alignItems="center" onPress={this.openSwitch}>
             {lang('mnemonic')}

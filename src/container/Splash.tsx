@@ -7,6 +7,7 @@ import { resetTo } from '../core/navigation';
 import { route } from './router';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
+import { BackupFour } from './user/identify/backup/Four';
 
 export const Splash: React.FC<any> = observer(function Splash() {
   useEffect(() => {
@@ -30,7 +31,7 @@ export const Splash: React.FC<any> = observer(function Splash() {
       resetTo(route.Start);
     } else if (credentials) {
       console.log('设备未解锁,但是用户设置了pin,跳转到PinCode页面');
-      resetTo(route.BackupOne);
+      resetTo(route.Lock);
     } else {
       console.log('设备未解锁，用户未设置pin,跳转到启动页面');
       resetTo(route.OnBoarding);

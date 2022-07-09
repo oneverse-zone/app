@@ -48,7 +48,7 @@ export class RegisterOne extends Component<any, any> {
   render() {
     const { loading } = sessionService;
     return (
-      <Page paddingX={9} space={5} Root={Column} loading={loading}>
+      <Page paddingX={9} space={5} Root={Column}>
         <PageTitle title={lang('device.password.create')} description={lang('device.password.tip')} />
 
         <FormControl isRequired>
@@ -61,7 +61,7 @@ export class RegisterOne extends Component<any, any> {
           <FormControl.HelperText>{lang('device.password.require')}</FormControl.HelperText>
         </FormControl>
 
-        <Button isDisabled={!this.valid()} onPress={this.handleNext}>
+        <Button isDisabled={!this.valid()} onPress={this.handleNext} isLoading={loading}>
           {lang('next-step')}
         </Button>
       </Page>

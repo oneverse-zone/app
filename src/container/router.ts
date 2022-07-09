@@ -11,10 +11,17 @@ import { Setting } from './setting';
 import { RegisterTwo } from './user/identify/register/Two';
 import { BackupOne } from './user/identify/backup/One';
 import { BackupTwo } from './user/identify/backup/Two';
+import { BackupThree } from './user/identify/backup/Three';
+import { BackupFour } from './user/identify/backup/Four';
+import { LockScreen } from './Lock';
 
 export const route = {
   Splash: 'Splash',
 
+  /**
+   * 锁屏
+   */
+  Lock: 'Lock',
   PinCode: 'PinCode',
   /**
    * 启动引导屏
@@ -27,6 +34,8 @@ export const route = {
   RegisterTwo: 'RegisterTwo',
   BackupOne: 'BackupOne',
   BackupTwo: 'BackupTwo',
+  BackupThree: 'BackupThree',
+  BackupFour: 'BackupFour',
 
   Home: 'Home',
 
@@ -52,6 +61,10 @@ export const routers: Array<{
     name: route.Start,
     component: Start,
   },
+  {
+    name: route.Lock,
+    component: LockScreen,
+  },
   // {
   //   name: route.PinCode,
   //   component: PinCode,
@@ -71,6 +84,14 @@ export const routers: Array<{
   {
     name: route.BackupTwo,
     component: BackupTwo,
+  },
+  {
+    name: route.BackupThree,
+    component: BackupThree,
+  },
+  {
+    name: route.BackupFour,
+    component: BackupFour,
   },
   {
     name: route.ImportIdentify,

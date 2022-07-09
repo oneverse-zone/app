@@ -34,13 +34,12 @@ export class Start extends Component<any, any> {
    * 导入账号
    */
   async handleImport() {
-    resetTo(route.ImportIdentify);
+    navigate(route.ImportIdentify);
   }
 
   render() {
-    const { loading } = sessionService;
     return (
-      <Page flex={1} padding={3} loading={loading}>
+      <Page flex={1} padding={3}>
         <PageTitle title={lang('identify.setting')} description={lang('identify.setting.tip')} />
         <Column space={3} justifyContent="flex-end" alignItems="center" flex={1} safeAreaBottom mb={20}>
           <Button variant="outline" onPress={this.handleImport} width={230} borderColor="primary.500">

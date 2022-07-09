@@ -10,6 +10,8 @@ import { ceramicApi } from '../constants/Url';
 import { repository } from './Repository';
 import { resetTo } from '../core/navigation';
 import { route } from '../container/router';
+import { Toast } from 'native-base';
+import { lang } from '../locales';
 
 /**
  * N - The CPU/memory cost; increasing this increases the overall difficulty
@@ -95,14 +97,16 @@ export class Session {
     }
     this.loading = true;
     try {
-      await Keychain.setGenericPassword('oneverse', password);
-      await this.initDevicePassword(password);
-
       const mnemonic = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
       await this.login({ mnemonic, password: mnemonicPassword });
+      await Keychain.setGenericPassword('oneverse', password);
+      await this.initDevicePassword(password);
       await repository.saveMnemonic(mnemonic, mnemonicPassword);
       // 更新助记词备份状态
       await repository.updateMnemonicBackupStatus('');
+    } catch (e) {
+      console.error('身份注册失败', e);
+      throw e;
     } finally {
       this.loading = false;
     }
@@ -132,9 +136,21 @@ export class Session {
 
   @action
   async logout() {
-    await repository.clearAll();
-    this.locked = true;
-    resetTo(route.Start);
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      await repository.clearAll();
+      await Keychain.resetGenericPassword();
+      this.locked = true;
+      resetTo(route.Start);
+      Toast.show({
+        title: lang('identify.delete.success'),
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   /**
