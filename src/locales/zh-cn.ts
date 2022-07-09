@@ -17,6 +17,7 @@ export const lang: Record<Lang, string> = {
   password: '密码',
   'password.new': '新密码',
   'password.confirm': '确认密码',
+  'password.error': '密码不正确',
   mnemonic: '助记词',
   'mnemonic.copy': '复制助记词',
   'mnemonic.copy.tip': '复制成功.请注意保管您的助记词.点击下一步将会清理您的剪切板',

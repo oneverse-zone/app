@@ -15,6 +15,7 @@ export type Lang =
   | 'password'
   | 'password.new'
   | 'password.confirm'
+  | 'password.error'
   | 'mnemonic'
   | 'mnemonic.copy'
   | 'mnemonic.copy.tip'

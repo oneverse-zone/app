@@ -15,6 +15,7 @@ import { lang } from '../locales';
 import { User } from './user/User';
 import { CryptoAsset } from './crypto-asset';
 import { walletService } from '../services/Wallet';
+import { AppCenter } from './app-center';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +42,11 @@ const tabs: Record<
   CryptoAsset: {
     title: lang('tab.crypto-asset'),
     component: CryptoAsset,
+    icon: WalletIcon,
+  },
+  AppCenter: {
+    title: '',
+    component: AppCenter,
     icon: WalletIcon,
   },
   Message: {

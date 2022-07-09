@@ -71,15 +71,20 @@ export class Session {
 
   /**
    * 解锁设备
-   * @param password pinCode
+   * @param pwd pinCode
    */
   @action
-  async unlock(password: string) {
+  async unlock(pwd: string) {
     if (this.loading) return;
     this.loading = true;
     try {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials && credentials.password !== pwd) {
+        throw new Error('密码不正确');
+      }
+
       this.locked = false;
-      await this.initDevicePassword(password);
+      await this.initDevicePassword(pwd);
       const mnemonic: any = await repository.findMnemonic(true);
       mnemonic && (await this.login(mnemonic));
     } finally {

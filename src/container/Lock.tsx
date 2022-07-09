@@ -4,12 +4,25 @@ import { observer } from 'mobx-react';
 
 import { autoBind } from 'jsdk/autoBind';
 import { Page } from '../components/Page';
-import { Center, Text, Column, FormControl, Heading, KeyboardAvoidingView, Modal, Icon, Input } from 'native-base';
+import {
+  Center,
+  Text,
+  Column,
+  FormControl,
+  Heading,
+  KeyboardAvoidingView,
+  Modal,
+  Icon,
+  Input,
+  WarningOutlineIcon,
+} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { lang } from '../locales';
 import { InputPassword } from '../components/InputPassword';
 import { Button } from '../components/Button';
 import { sessionService } from '../services/Session';
+import { resetTo } from '../core/navigation';
+import { route } from './router';
 
 /**
  * 锁频页面
@@ -25,6 +38,9 @@ export class LockScreen extends Component<any, any> {
     tipOpen: false,
     delOpen: false,
     deleteText: '',
+    password: '',
+
+    loginErr: '',
   };
 
   tipOpenSwitch() {
@@ -39,6 +55,10 @@ export class LockScreen extends Component<any, any> {
     this.setState({ deleteText });
   }
 
+  handlePasswordChange(password: string) {
+    this.setState({ password });
+  }
+
   /**
    * 删除账户
    */
@@ -47,8 +67,18 @@ export class LockScreen extends Component<any, any> {
     await sessionService.logout();
   }
 
+  async handleUnlock() {
+    try {
+      await sessionService.unlock(this.state.password);
+      resetTo(route.Home);
+    } catch (e) {
+      console.log('解锁失败', e);
+      this.setState({ loginErr: lang('password.error') });
+    }
+  }
+
   render() {
-    const { tipOpen, delOpen, deleteText } = this.state;
+    const { tipOpen, delOpen, deleteText, password, loginErr } = this.state;
     const { loading } = sessionService;
 
     // 重置钱包两个弹框
@@ -111,21 +141,23 @@ export class LockScreen extends Component<any, any> {
 
     return (
       <Page
-        scroll={false}
         paddingX={7}
+        justifyContent="center"
+        Root={KeyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        footer={footer}
-        loading={loading}
-        loadingText="">
+        footer={footer}>
         <Column space="2xl">
           <Center>
             <Heading fontWeight="500">{lang('welcome-back')}</Heading>
           </Center>
-          <FormControl isRequired>
+          <FormControl isRequired isInvalid={!!loginErr}>
             <FormControl.Label>{lang('password')}</FormControl.Label>
-            <InputPassword />
+            <InputPassword onChangeText={this.handlePasswordChange} />
+            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>{loginErr}</FormControl.ErrorMessage>
           </FormControl>
-          <Button>{lang('login')}</Button>
+          <Button isDisabled={!password} onPress={this.handleUnlock} isLoading={loading}>
+            {lang('login')}
+          </Button>
           <Button variant="ghost" onPress={this.tipOpenSwitch}>
             {lang('identify.reset')}
           </Button>
