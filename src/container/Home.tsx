@@ -1,30 +1,21 @@
 import React from 'react';
-import { Button, IconButton } from 'native-base';
+import { Icon, IconButton, View } from 'native-base';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { AddIcon } from 'native-base/src/components/primitives/Icon/Icons/Add';
 import { navigate } from '../core/navigation';
 import { route } from './router';
-
-import HomeIcon from '../assets/svg/home.svg';
-import WalletIcon from '../assets/svg/wallet.svg';
-import MessageIcon from '../assets/svg/message.svg';
-import UserIcon from '../assets/svg/user.svg';
 import ContactsIcon from '../assets/svg/contacts.svg';
 import { lang } from '../locales';
 
 import { User } from './user/User';
 import { CryptoAsset } from './crypto-asset';
-import { walletService } from '../services/Wallet';
 import { AppCenter } from './app-center';
 
 const Tab = createBottomTabNavigator();
 
 export function HomeTab() {
-  function create() {
-    walletService.createHD();
-  }
-
-  return <Button onPress={create}>{'创建钱包'}</Button>;
+  return <View />;
 }
 
 /**
@@ -32,27 +23,27 @@ export function HomeTab() {
  */
 const tabs: Record<
   string,
-  BottomTabNavigationOptions & { component: React.ComponentType<any>; icon?: React.ComponentType<any> }
+  BottomTabNavigationOptions & { component: React.ComponentType<any>; icon?: React.ReactNode }
 > = {
   Index: {
     title: lang('tab.home'),
     component: HomeTab,
-    icon: HomeIcon,
+    icon: <MaterialIcons name="home" />,
   },
   CryptoAsset: {
     title: lang('tab.crypto-asset'),
     component: CryptoAsset,
-    icon: WalletIcon,
+    icon: <MaterialIcons name="account-balance-wallet" />,
   },
   AppCenter: {
-    title: '',
+    tabBarLabel: () => null,
     component: AppCenter,
-    icon: WalletIcon,
+    icon: <MaterialIcons name="public" />,
   },
   Message: {
     title: lang('tab.message'),
     component: HomeTab,
-    icon: MessageIcon,
+    icon: <MaterialIcons name="chat" />,
     headerRight: () => {
       return (
         <>
@@ -64,7 +55,7 @@ const tabs: Record<
   User: {
     title: lang('tab.user'),
     component: User,
-    icon: UserIcon,
+    icon: <MaterialIcons name="person" />,
     headerRight: () => <IconButton icon={<AddIcon />} onPress={() => navigate(route.ProfilePersist)} />,
   },
 };
@@ -73,7 +64,7 @@ export function Home() {
   return (
     <Tab.Navigator initialRouteName="Index">
       {Object.keys(tabs).map(key => {
-        const { component, icon: Icon, ...options } = tabs[key];
+        const { component, icon, ...options } = tabs[key];
 
         return (
           <Tab.Screen
@@ -83,7 +74,7 @@ export function Home() {
             options={{
               ...options,
               tabBarIcon: ({ size, color }) => {
-                return Icon && <Icon width={size} height={size} fill={color} />;
+                return <Icon size={size + (key === 'AppCenter' ? 12 : 0)} color={color} as={icon} />;
               },
             }}
           />
