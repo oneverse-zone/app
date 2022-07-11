@@ -27,6 +27,7 @@ export type Lang =
   | 'identify.setting'
   | 'identify.setting.tip'
   | 'identify.create.tip'
+  | 'identify.import'
   | 'identify.reset'
   | 'identify.delete'
   | 'identify.delete.success'

@@ -104,10 +104,7 @@ export class Session {
     this.loading = true;
     try {
       const mnemonic = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
-      await this.login({ mnemonic, password: mnemonicPassword });
-      await Keychain.setGenericPassword('oneverse', password);
-      await this.initDevicePassword(password);
-      await repository.saveMnemonic(mnemonic, mnemonicPassword);
+      await this.handleIdentifyInit(password, mnemonic, mnemonicPassword);
       // 更新助记词备份状态
       await repository.updateMnemonicBackupStatus('');
     } catch (e) {
@@ -119,12 +116,44 @@ export class Session {
   }
 
   /**
+   * 导入去中心化身份
+   */
+  @action
+  async importAndLogin(password: string, mnemonic: string, mnemonicPassword?: string) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      await this.handleIdentifyInit(password, mnemonic, mnemonicPassword);
+    } catch (e) {
+      console.error('身份导入失败', e);
+      throw e;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /**
+   * 处理账户处始化功能
+   * 并自动登录
+   * @private
+   */
+  private async handleIdentifyInit(password: string, mnemonic: string, mnemonicPassword?: string) {
+    await this.login({ mnemonic, password: mnemonicPassword });
+    // 登录成功 初始化钱包
+    await walletService.initHDWallet(mnemonic, mnemonicPassword);
+    await Keychain.setGenericPassword('oneverse', password);
+    await this.initDevicePassword(password);
+    await repository.saveMnemonic(mnemonic, mnemonicPassword);
+  }
+
+  /**
    * 登录
    * @param mnemonic 助记词
    * @param password 密码
    */
-  @action
-  async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
+  private async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
     try {
       this.didService = await DIDService.newInstance({
         ceramicApi,
@@ -132,9 +161,7 @@ export class Session {
         password,
       });
       this.id = this.didService.did.id.toString();
-
-      // 登录成功 初始化钱包
-      walletService.initHDWallet(mnemonic, password);
+      await walletService.initHDWallet(mnemonic, password);
     } catch (e: any) {
       console.warn('登录失败', e.message);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {

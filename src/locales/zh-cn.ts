@@ -31,6 +31,7 @@ export const lang: Record<Lang, string> = {
   'identify.setting': '去中心化身份设置',
   'identify.setting.tip': '导入现有身份或创建新身份',
   'identify.create.tip': '正在创建您的身份,这不需要多长时间',
+  'identify.import': '从助记词导入身份',
   'identify.reset': '重置身份',
   'identify.delete': '删除我的身份',
   'identify.delete.success': '身份删除成功',

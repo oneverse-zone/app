@@ -34,7 +34,9 @@ export class Start extends Component<any, any> {
    * 导入账号
    */
   async handleImport() {
-    navigate(route.ImportIdentify);
+    navigate(route.RegisterOne, {
+      nextRoute: route.ImportIdentify,
+    });
   }
 
   render() {

@@ -72,25 +72,31 @@ export class WalletService {
   @action
   async initHDWallet(mnemonic: string, password?: string) {
     if (this.wallet) {
-      console.info('钱包已经存在');
+      console.log('钱包已经存在');
       return;
     }
-    this.wallet = {
-      index: 0,
-      name: 'HD',
-      type: 'hd',
-      tokens: tokens.map(token => {
-        const derivePath = `m/44'/${token.coinId}/0'/0/0`;
-        const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
-        const walletToken: WalletToken = {
-          address: tmp.address,
-          balance: 0,
-          token,
-          derivePath,
-        };
-        return walletToken;
-      }),
-    };
+    console.log('创建身份钱包');
+    try {
+      this.wallet = {
+        index: 0,
+        name: 'HD',
+        type: 'hd',
+        tokens: tokens.map(token => {
+          const derivePath = `m/44'/${token.coinId}'/0'/0/0`;
+          const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
+          const walletToken: WalletToken = {
+            address: tmp.address,
+            balance: 0,
+            token,
+            derivePath,
+          };
+          return walletToken;
+        }),
+      };
+    } catch (e: any) {
+      console.log(`身份钱包创建失败: ${e.message}`, e);
+      throw e;
+    }
   }
 
   /**

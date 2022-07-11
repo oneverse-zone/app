@@ -37,7 +37,8 @@ export class RegisterOne extends Component<any, any> {
       return;
     }
     const { password } = this.state;
-    navigate(route.RegisterTwo, { password });
+    const { nextRoute = route.RegisterTwo } = this.props.route?.params || {};
+    navigate(nextRoute, { password });
   }
 
   valid() {
