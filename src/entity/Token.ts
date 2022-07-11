@@ -1,11 +1,8 @@
 /**
- * token
+ * Token
  */
 import { Blockchain } from './Blockchain';
 
-/**
- * Token
- */
 export type Token = {
   /**
    * 币id
@@ -18,6 +15,12 @@ export type Token = {
   name: string;
 
   /**
+   * 合约地址
+   * 如果是公链币，使用0x0000000...
+   */
+  contractAddress: string;
+
+  /**
    * 代币符号
    */
   symbol: string;
@@ -28,20 +31,22 @@ export type Token = {
   decimals: number;
 
   /**
-   * 所属区块链
+   * token logo 地址
    */
+  logo: any;
+
   blockchain: Blockchain;
 };
 
-/**
- * Hierarchical Deterministic Token
- */
-export type HDToken = Token & {
-  /**
-   * 派生路径
-   * 最后一位为账户索引不填写
-   * ETH: m/44'/60'/0'/0/address_index
-   * m / purpose' / coin_type' / account' / change / address_index
-   */
-  derivePath: string;
-};
+// /**
+//  * Hierarchical Deterministic Token
+//  */
+// export type HDToken = Token & {
+//   /**
+//    * 派生路径
+//    * 最后一位为账户索引不填写
+//    * ETH: m/44'/60'/0'/0/address_index
+//    * m / purpose' / coin_type' / account' / change / address_index
+//    */
+//   derivePath: string;
+// };

@@ -1,11 +1,12 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import Web3 from 'web3';
-import { Wallet } from '@ethersproject/wallet';
-import { mnemonicToSeed, randomMnemonic } from '@oneverse/utils';
-import { ethereumApi } from '../constants/Url';
-import * as u8a from 'uint8arrays';
-import { hdTokens } from '../constants/Token';
-import { Blockchain } from '../entity/Blockchain';
+import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
+import { HDNode } from '@ethersproject/hdnode';
+import { tokens } from '../constants/Token';
+import { Wallet, WalletToken } from '../entity/Wallet';
+import { Token } from '../entity/Token';
+import { makePersistable } from 'mobx-persist-store';
+import { Toast } from 'native-base';
+import { lang } from '../locales';
 
 /**
  * 钱包服务
@@ -15,14 +16,49 @@ export class WalletService {
   loading = false;
 
   /**
-   * 钱包列表
+   * 身份钱包
    */
-  list: Array<any> = [];
+  @observable
+  wallet: Wallet | null = null;
+
+  /**
+   * 单链钱包
+   */
+  @observable
+  list: Array<Wallet> = [];
+
+  /**
+   * 当前选择的钱包下标
+   */
+  selectedIndex: number = 0;
 
   constructor() {
     makeAutoObservable(this, undefined, {
       autoBind: true,
     });
+    makePersistable(this, {
+      name: 'WalletStore',
+      properties: ['wallet', 'list', 'selectedIndex'],
+    });
+  }
+
+  /**
+   * 返回所有钱包
+   */
+  get wallets(): Array<Wallet> {
+    const wallets = [];
+    if (this.wallet) {
+      wallets.push(this.wallet);
+    }
+    wallets.push(...this.list);
+    return wallets;
+  }
+
+  /**
+   * 当前选择的钱包
+   */
+  get selected(): Wallet | null {
+    return this.wallets[this.selectedIndex];
   }
 
   /**
@@ -31,41 +67,74 @@ export class WalletService {
   async query() {}
 
   /**
-   * 创建HD钱包
+   * 初始化HD钱包
    */
   @action
-  async createHD() {
-    const mnemonic = randomMnemonic();
-    console.log(mnemonic);
-    const wallets = hdTokens.map(token => Wallet.fromMnemonic(mnemonic, `${token.derivePath}/0`));
-    wallets.forEach(item => {
-      console.log(`Address: ${item.address}`);
-      console.log(`PRK: ${item.privateKey}`);
-      console.log('==========');
-    });
+  async initHDWallet(mnemonic: string, password?: string) {
+    if (this.wallet) {
+      console.info('钱包已经存在');
+      return;
+    }
+    this.wallet = {
+      index: 0,
+      name: 'HD',
+      type: 'hd',
+      tokens: tokens.map(token => {
+        const derivePath = `m/44'/${token.coinId}/0'/0/0`;
+        const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
+        const walletToken: WalletToken = {
+          address: tmp.address,
+          balance: 0,
+          token,
+          derivePath,
+        };
+        return walletToken;
+      }),
+    };
   }
 
   /**
    * 钱包创建
    */
   @action
-  async create(chain: Blockchain, password: string) {
-    const mnemonic = randomMnemonic();
-    const seed = mnemonicToSeed(mnemonic);
-    await this.preCreateETH(seed);
-    return mnemonic;
-  }
-
-  /**
-   * 创建ETH账户
-   * @param seed 秘钥种子
-   * @private 内部调用
-   */
-  private async preCreateETH(seed: Uint8Array) {
-    const web3 = new Web3(ethereumApi);
-    const seedHexStr = u8a.toString(seed, 'base16');
-    const account = web3.eth.accounts.privateKeyToAccount(seedHexStr);
-    console.log(account);
+  async create(mnemonic: string, token: Token, password?: string) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = false;
+    try {
+      // m/44'/60'/0'/0/address_index
+      const derivePath = `m/44'/${token.coinId}/0'/0/0`;
+      const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
+      const idx = this.list.findIndex(item => item.tokens.findIndex(t => t.address === tmp.address) > -1);
+      if (idx > -1) {
+        Toast.show({
+          title: lang('wallet.exist'),
+        });
+        return;
+      }
+      // 最后一次创建的同链钱包
+      const last = this.list.find(
+        item => item.tokens.findIndex(t => t.token.contractAddress === token.contractAddress) > -1,
+      );
+      let index = last ? last.index + 1 : 0;
+      const wallet: Wallet = {
+        index: index,
+        name: `${token.name}-${index + 1}`,
+        type: 'default',
+        tokens: [
+          {
+            address: tmp.address,
+            balance: 0,
+            token,
+            derivePath,
+          },
+        ],
+      };
+      this.list = [...this.list, wallet];
+    } finally {
+      this.loading = false;
+    }
   }
 }
 

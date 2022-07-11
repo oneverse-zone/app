@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { autoBind } from 'jsdk/autoBind';
 import { createMaterialTopTabNavigator, MaterialTopTabBar } from '@react-navigation/material-top-tabs';
 import {
   MaterialTopTabBarProps,
@@ -8,8 +9,9 @@ import {
 import { lang } from '../../locales';
 
 import { Wallet } from './Wallet';
-import { Box } from 'native-base';
+import { AddIcon, Box } from 'native-base';
 import { walletService } from '../../services/Wallet';
+import { Empty } from './Empty';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -33,8 +35,17 @@ const tabs: Record<
  * 加密资产
  */
 @observer
+@autoBind
 export class CryptoAsset extends Component<any, any> {
+  static options = {
+    headerRight: () => <AddIcon />,
+  };
+
   render() {
+    // const { list } = walletService;
+    // if (list.length === 0) {
+    //   return <Empty {...this.props} />;
+    // }
     return (
       <Tab.Navigator initialRouteName="Token">
         {Object.keys(tabs).map(key => {

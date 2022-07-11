@@ -1,25 +1,63 @@
-import { HDToken } from '../entity/Token';
-import { btcBlockchain, ethBlockchain } from './Blockchain';
+import { Token } from '../entity/Token';
 
-export const btcToken: HDToken = {
+import btcLogo from '../assets/svg/token-logo/bitcoin-btc.svg';
+import ethLogo from '../assets/svg/token-logo/ethereum-eth.svg';
+import maticLogo from '../assets/svg/token-logo/polygon-matic.svg';
+import { btcBlockchain, ethBlockchain, polygonBlockchain } from './Blockchain';
+
+/**
+ * 主链币合约地址
+ */
+const COIN_TOKEN_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+/**
+ * Bitcoin
+ */
+export const btcToken: Token = {
   coinId: 0,
   name: 'Bitcoin',
+  contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
   symbol: 'BTC',
   decimals: 8,
   blockchain: btcBlockchain,
-  derivePath: "m/44'/0'/0'/0",
+  logo: btcLogo,
+  // derivePath: "m/44'/0'/0'/0",
 };
 
-export const ethToken: HDToken = {
+/**
+ * Ethereum
+ */
+export const ethToken: Token = {
   coinId: 60,
   name: 'Ethereum',
+  contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
   symbol: 'ETH',
   decimals: 18,
   blockchain: ethBlockchain,
-  derivePath: "m/44'/60'/0'/0",
+  logo: ethLogo,
+  // derivePath: "m/44'/60'/0'/0",
+};
+
+export const maticToken: Token = {
+  coinId: 966,
+  name: 'MATIC',
+  contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
+  symbol: 'MATIC',
+  decimals: 18,
+  blockchain: polygonBlockchain,
+  logo: maticLogo,
 };
 
 /**
  * 系统支持的 HD token 列表
  */
-export const hdTokens: Array<HDToken> = [btcToken, ethToken];
+export const tokens: Array<Token> = [btcToken, ethToken, maticToken];
+
+/**
+ * 查找token
+ * @param coinId 币id
+ * @param contractAddress 合约地址
+ */
+export function findToken(coinId: number, contractAddress: string): Token | undefined {
+  return tokens.find(item => item.coinId === coinId && item.contractAddress === contractAddress);
+}

@@ -1,32 +1,31 @@
 import React, { ReactNode } from 'react';
-import { ChevronRightIcon, Column, ITextProps, Pressable, Spacer, Text } from 'native-base';
+import { ChevronRightIcon, Pressable, Row, Spacer } from 'native-base';
+import { Title, TitleProps } from './Title';
 
 export type ListItemProps = {
   icon?: ReactNode;
-  title?: ReactNode;
-  subtitle?: ReactNode;
+  footer?: ReactNode;
+
   showArrow?: boolean;
 
-  titleProps?: ITextProps;
-
   onPress?: () => void;
-};
+} & TitleProps;
 
 /**
  * 普通list条目渲染组件
  */
 export function ListItem(props: ListItemProps) {
-  const { icon, title, titleProps, subtitle, showArrow = true, onPress } = props;
+  const { icon, title, titleProps, subtitle, showArrow = true, onPress, footer } = props;
 
   return (
-    <Pressable backgroundColor="white" padding={3} flexDirection="row" alignItems="center" onPress={onPress}>
-      {icon}
-      <Column>
-        {title && <Text {...titleProps}>{title}</Text>}
-        {subtitle && <Text>{subtitle}</Text>}
-      </Column>
-      <Spacer />
-      {showArrow && <ChevronRightIcon fill="coolGray.400" />}
+    <Pressable onPress={onPress}>
+      <Row backgroundColor="white" padding={3} space={3} alignItems="center">
+        {icon}
+        <Title title={title} titleProps={titleProps} subtitle={subtitle} />
+        <Spacer />
+        {footer}
+        {showArrow && <ChevronRightIcon fill="#9ca3af" />}
+      </Row>
     </Pressable>
   );
 }

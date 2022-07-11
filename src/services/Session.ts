@@ -12,6 +12,7 @@ import { resetTo } from '../core/navigation';
 import { route } from '../container/router';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
+import { walletService } from './Wallet';
 
 /**
  * N - The CPU/memory cost; increasing this increases the overall difficulty
@@ -131,6 +132,9 @@ export class Session {
         password,
       });
       this.id = this.didService.did.id.toString();
+
+      // 登录成功 初始化钱包
+      walletService.initHDWallet(mnemonic, password);
     } catch (e: any) {
       console.warn('登录失败', e.message);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {

@@ -17,6 +17,8 @@ const key = {
   language: 'language',
 };
 
+const dataKeys = [key.mnemonic, key.mnemonicBackupStatus, key.language];
+
 /**
  * 数据仓库服务
  */
@@ -72,6 +74,11 @@ class Repository {
    */
   async updateMnemonicBackupStatus(status: string) {
     await AsyncStorage.setItem(key.mnemonicBackupStatus, status);
+  }
+
+  async clearCache() {
+    const keys = await AsyncStorage.getAllKeys();
+    await Promise.all(keys.filter(item => !dataKeys.includes(item)).map(key => AsyncStorage.removeItem(key)));
   }
 
   async clearAll() {
