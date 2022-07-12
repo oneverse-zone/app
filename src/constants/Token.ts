@@ -1,3 +1,6 @@
+/*
+ * Registered coin types for BIP-0044 https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+ */
 import { Token } from '../entity/Token';
 
 import btcLogo from '../assets/svg/token-logo/bitcoin-btc.svg';

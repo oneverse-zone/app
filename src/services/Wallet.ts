@@ -7,6 +7,8 @@ import { Token } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
+import { formatUnits } from '@ethersproject/units';
+import { blockchainNodeService } from './BlockchainNode';
 
 /**
  * 钱包服务
@@ -140,6 +142,19 @@ export class WalletService {
       this.list = [...this.list, wallet];
     } finally {
       this.loading = false;
+    }
+  }
+
+  async getBalance({ address }: WalletToken) {
+    try {
+      const provider = blockchainNodeService.getEthereumProvider();
+      const balanceWei = await provider.getBalance(address);
+      const balanceEthr = formatUnits(balanceWei);
+      console.log(`${address} Balance: ${balanceEthr}=${balanceWei}`);
+
+      return balanceEthr;
+    } catch (e: any) {
+      console.log(`余额查询失败: ${e.message}`);
     }
   }
 }
