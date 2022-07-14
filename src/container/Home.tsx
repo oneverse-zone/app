@@ -11,6 +11,7 @@ import { lang } from '../locales';
 import { User } from './user/User';
 import { CryptoAsset } from './crypto-asset';
 import { AppCenter } from './app-center';
+import { WalletSelectButton } from './crypto-asset/wallet/WalletSelectButton';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,6 +35,7 @@ const tabs: Record<
     title: lang('tab.crypto-asset'),
     component: CryptoAsset,
     icon: <MaterialIcons name="account-balance-wallet" />,
+    headerLeft: (props: any) => <WalletSelectButton {...props} />,
   },
   AppCenter: {
     tabBarLabel: () => null,

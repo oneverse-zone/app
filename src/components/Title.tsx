@@ -14,7 +14,7 @@ export function Title({ title, titleProps, subtitle }: TitleProps) {
   return (
     <Column>
       {title && (
-        <Text fontSize="lg" fontWeight="500" {...titleProps}>
+        <Text fontSize="lg" {...titleProps}>
           {title}
         </Text>
       )}

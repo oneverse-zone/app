@@ -7,4 +7,5 @@ export type Blockchain = {
   website: string;
   explorer: string;
   research: string;
+  logo: any;
 };

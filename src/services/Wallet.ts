@@ -2,7 +2,7 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { tokens } from '../constants/Token';
-import { Wallet, WalletToken } from '../entity/Wallet';
+import { Wallet, WalletToken, WalletType } from '../entity/Wallet';
 import { Token } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
 import { Toast } from 'native-base';
@@ -82,14 +82,14 @@ export class WalletService {
       this.wallet = {
         index: 0,
         name: 'HD',
-        type: 'hd',
+        type: WalletType.HD,
         tokens: tokens.map(token => {
           const derivePath = `m/44'/${token.coinId}'/0'/0/0`;
           const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
           const walletToken: WalletToken = {
+            ...token,
             address: tmp.address,
             balance: 0,
-            token,
             derivePath,
           };
           return walletToken;
@@ -122,19 +122,17 @@ export class WalletService {
         return;
       }
       // 最后一次创建的同链钱包
-      const last = this.list.find(
-        item => item.tokens.findIndex(t => t.token.contractAddress === token.contractAddress) > -1,
-      );
+      const last = this.list.find(item => item.tokens.findIndex(t => t.contractAddress === token.contractAddress) > -1);
       let index = last ? last.index + 1 : 0;
       const wallet: Wallet = {
         index: index,
         name: `${token.name}-${index + 1}`,
-        type: 'default',
+        type: WalletType.SINGLE_CHAIN,
         tokens: [
           {
+            ...token,
             address: tmp.address,
             balance: 0,
-            token,
             derivePath,
           },
         ],

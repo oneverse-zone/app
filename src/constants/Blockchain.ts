@@ -1,4 +1,7 @@
 import { Blockchain } from '../entity/Blockchain';
+import btcLogo from '../assets/svg/token-logo/bitcoin-btc.svg';
+import ethLogo from '../assets/svg/token-logo/ethereum-eth.svg';
+import maticLogo from '../assets/svg/token-logo/polygon-matic.svg';
 
 export const btcBlockchain: Blockchain = {
   name: 'Bitcoin',
@@ -7,6 +10,7 @@ export const btcBlockchain: Blockchain = {
   website: 'https://bitcoin.org',
   explorer: 'https://blockchain.info',
   research: 'https://research.binance.com/en/projects/bitcoin',
+  logo: btcLogo,
 };
 
 export const ethBlockchain: Blockchain = {
@@ -15,6 +19,7 @@ export const ethBlockchain: Blockchain = {
   website: 'https://ethereum.org/',
   explorer: 'https://etherscan.io/',
   research: 'https://research.binance.com/en/projects/ethereum',
+  logo: ethLogo,
 };
 
 export const polygonBlockchain: Blockchain = {
@@ -24,6 +29,5 @@ export const polygonBlockchain: Blockchain = {
   website: 'https://polygon.technology/',
   explorer: 'https://polygonscan.com/',
   research: 'https://docs.matic.network/',
+  logo: maticLogo,
 };
-
-export const blockchains = [btcBlockchain, ethBlockchain, polygonBlockchain];

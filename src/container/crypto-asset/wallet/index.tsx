@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { FlatList, View } from 'native-base';
-import { walletService } from '../../services/Wallet';
+import { walletService } from '../../../services/Wallet';
 import { autoBind } from 'jsdk/autoBind';
-import { WalletToken } from '../../entity/Wallet';
-import { TokenListItem } from './TokenListItem';
+import { WalletToken } from '../../../entity/Wallet';
+import { TokenListItem } from '../token/TokenListItem';
 
 /**
  * 钱包管理页面

@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { ChevronRightIcon, Pressable, Row, Spacer } from 'native-base';
 import { Title, TitleProps } from './Title';
+import { IHStackProps } from 'native-base/lib/typescript/components/primitives/Stack/HStack';
 
 export type ListItemProps = {
   icon?: ReactNode;
@@ -9,17 +10,18 @@ export type ListItemProps = {
   showArrow?: boolean;
 
   onPress?: () => void;
-} & TitleProps;
+} & TitleProps &
+  IHStackProps;
 
 /**
  * 普通list条目渲染组件
  */
 export function ListItem(props: ListItemProps) {
-  const { icon, title, titleProps, subtitle, showArrow = true, onPress, footer } = props;
+  const { icon, title, titleProps, subtitle, showArrow = true, onPress, footer, ...other } = props;
 
   return (
     <Pressable onPress={onPress}>
-      <Row backgroundColor="white" padding={3} space={3} alignItems="center">
+      <Row backgroundColor="white" padding={3} space={3} alignItems="center" {...other}>
         {icon}
         <Title title={title} titleProps={titleProps} subtitle={subtitle} />
         <Spacer />

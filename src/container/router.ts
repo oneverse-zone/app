@@ -14,6 +14,10 @@ import { BackupTwo } from './user/identify/backup/Two';
 import { BackupThree } from './user/identify/backup/Three';
 import { BackupFour } from './user/identify/backup/Four';
 import { LockScreen } from './Lock';
+import { BlockchainSelect } from './crypto-asset/blockchain/BlockchainSelect';
+import { WalletSelect } from './crypto-asset/wallet/WalletSelect';
+import { WalletCreate } from './crypto-asset/wallet/WalletCreate';
+import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 
 export const route = {
   Splash: 'Splash',
@@ -41,6 +45,11 @@ export const route = {
 
   ProfilePersist: 'ProfilePersist',
   Auth: 'Auth',
+
+  BlockchainSelect: 'BlockchainSelect',
+  WalletCreate: 'WalletCreate',
+  WalletRecover: 'WalletRecover',
+  WalletSelect: 'WalletSelect',
 
   Setting: 'Setting',
 };
@@ -100,6 +109,22 @@ export const routers: Array<{
   {
     name: route.Home,
     component: Home,
+  },
+  {
+    name: route.BlockchainSelect,
+    component: BlockchainSelect,
+  },
+  {
+    name: route.WalletCreate,
+    component: WalletCreate,
+  },
+  {
+    name: route.WalletRecover,
+    component: WalletRecover,
+  },
+  {
+    name: route.WalletSelect,
+    component: WalletSelect,
   },
   {
     name: route.ProfilePersist,

@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { createMaterialTopTabNavigator, MaterialTopTabBar } from '@react-navigation/material-top-tabs';
-import {
-  MaterialTopTabBarProps,
-  MaterialTopTabNavigationOptions,
-} from '@react-navigation/material-top-tabs/lib/typescript/src/types';
+import { AddIcon } from 'native-base';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
 
-import { Wallet } from './Wallet';
-import { AddIcon, Box } from 'native-base';
-import { walletService } from '../../services/Wallet';
-import { Empty } from './Empty';
+import { Wallet } from './wallet';
 
 const Tab = createMaterialTopTabNavigator();
 
