@@ -2,6 +2,8 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { formatUnits, parseEther } from '@ethersproject/units';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { randomString } from '@stablelib/random';
 import { Decimal } from 'decimal.js';
 import { tokens } from '../constants/Token';
 import { Wallet, WalletToken, WalletType } from '../entity/Wallet';
@@ -11,7 +13,6 @@ import { Toast } from 'native-base';
 import { lang } from '../locales';
 import { blockchainNodeService } from './BlockchainNode';
 import { repository } from './Repository';
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 
 /**
  * 钱包服务
@@ -177,7 +178,13 @@ export class WalletService {
     );
   }
 
-  async tx(fromToken: WalletToken, toAddress: string, value: string | number) {
+  /**
+   * 发送一个交易
+   * @param fromToken 发送token信息
+   * @param toAddress 接受token地址
+   * @param value 值
+   */
+  async sendTransaction(fromToken: WalletToken, toAddress: string, value: string | number) {
     const { mnemonic, password }: any = (await repository.findMnemonic(true)) || {};
     if (!mnemonic) {
       console.error('用户助记词不存在');
@@ -192,6 +199,7 @@ export class WalletService {
     const tx: TransactionRequest = {
       to: toAddress,
       value: parseEther(`${value}`),
+      nonce: randomString(32),
     };
     console.log(`TransactionRequest: ${tx}`);
     // const txHash = await wallet.signTransaction(tx);

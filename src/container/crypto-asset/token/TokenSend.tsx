@@ -19,10 +19,10 @@ export class TokenSend extends Component<any, any> {
     value: '',
   };
 
-  handleSend() {
+  async handleSend() {
     const token: WalletToken = this.props.route?.params;
     const { toAddress, value } = this.state;
-    walletService.tx(token, toAddress, value);
+    await walletService.sendTransaction(token, toAddress, value);
   }
 
   handleAddressChange(toAddress: string) {
