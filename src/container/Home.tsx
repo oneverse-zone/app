@@ -40,7 +40,7 @@ const tabs: Record<
   AppCenter: {
     tabBarLabel: () => null,
     component: AppCenter,
-    icon: <MaterialIcons name="public" />,
+    icon: <MaterialIcons name="blur-on" />,
   },
   Message: {
     title: lang('tab.message'),
@@ -49,7 +49,7 @@ const tabs: Record<
     headerRight: () => {
       return (
         <>
-          <IconButton icon={<ContactsIcon width={25} height={25} fill="#000" />} />
+          <IconButton icon={<MaterialIcons name="people-alt" size={25} />} />
         </>
       );
     },

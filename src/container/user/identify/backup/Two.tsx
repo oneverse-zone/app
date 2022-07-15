@@ -81,7 +81,7 @@ export class BackupTwo extends Component<any, any> {
                   {lang('backup.two.look-over-mnemonic.tip')}
                 </Text>
               </Column>
-              <Button variant="outline" transparent width={150} _text={{ color: 'white' }} onPress={this.openSwitch}>
+              <Button variant="outline" width={150} _text={{ color: 'white' }} onPress={this.openSwitch}>
                 {lang('look-over')}
               </Button>
             </Center>

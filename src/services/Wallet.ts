@@ -1,14 +1,17 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
+import { formatUnits, parseEther } from '@ethersproject/units';
+import { Decimal } from 'decimal.js';
 import { tokens } from '../constants/Token';
 import { Wallet, WalletToken, WalletType } from '../entity/Wallet';
 import { Token } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
-import { formatUnits } from '@ethersproject/units';
 import { blockchainNodeService } from './BlockchainNode';
+import { repository } from './Repository';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 
 /**
  * 钱包服务
@@ -41,6 +44,9 @@ export class WalletService {
     makePersistable(this, {
       name: 'WalletStore',
       properties: ['wallet', 'list', 'selectedIndex'],
+    }).finally(() => {
+      // 更新钱余额信息
+      this.updateSelectWallet();
     });
   }
 
@@ -64,9 +70,18 @@ export class WalletService {
   }
 
   /**
-   * 查询本地钱包列表
+   * 当前选择钱包的总余额
    */
-  async query() {}
+  get totalAmount(): number {
+    if (!this.selected) {
+      return 0;
+    }
+    return this.selected.tokens
+      .reduce((previousValue, currentValue) => {
+        return previousValue.add(new Decimal(currentValue.balance || 0));
+      }, new Decimal(0))
+      .toNumber();
+  }
 
   /**
    * 初始化HD钱包
@@ -86,6 +101,7 @@ export class WalletService {
         tokens: tokens.map(token => {
           const derivePath = `m/44'/${token.coinId}'/0'/0/0`;
           const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
+          console.log('tmp', tmp);
           const walletToken: WalletToken = {
             ...token,
             address: tmp.address,
@@ -143,6 +159,50 @@ export class WalletService {
     }
   }
 
+  /**
+   * 更新选择钱包的信息
+   */
+  async updateSelectWallet() {
+    if (!this.wallet) {
+      return;
+    }
+    console.log(`更新钱包余额 ${this.wallet.name}`);
+    this.wallet.tokens = await Promise.all(
+      this.wallet.tokens.map(token =>
+        (async () => {
+          token.balance = (await this.getBalance(token)) || 0;
+          return token;
+        })(),
+      ),
+    );
+  }
+
+  async tx(fromToken: WalletToken, toAddress: string, value: string | number) {
+    const { mnemonic, password }: any = (await repository.findMnemonic(true)) || {};
+    if (!mnemonic) {
+      console.error('用户助记词不存在');
+      return;
+    }
+
+    const provider = blockchainNodeService.getEthereumProvider();
+    const wallet = new BlockchainWallet(
+      HDNode.fromMnemonic(mnemonic, password).derivePath(fromToken.derivePath),
+      provider,
+    );
+    const tx: TransactionRequest = {
+      to: toAddress,
+      value: parseEther(`${value}`),
+    };
+    console.log(`TransactionRequest: ${tx}`);
+    // const txHash = await wallet.signTransaction(tx);
+    const txRes = await wallet.sendTransaction(tx);
+    console.log(txRes);
+  }
+
+  /**
+   * 获取余额
+   * @param address
+   */
   async getBalance({ address }: WalletToken) {
     try {
       const provider = blockchainNodeService.getEthereumProvider();

@@ -14,7 +14,7 @@ configurePersistable(
     storage: AsyncStorage,
     expireIn: 31_557_600_000,
     removeOnExpiration: true,
-    debugMode: __DEV__,
+    // debugMode: __DEV__,
   },
   { delay: __DEV__ ? 0 : 20000 },
 );

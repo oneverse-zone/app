@@ -12,7 +12,7 @@ export type WalletToken = {
   /**
    * 余额
    */
-  balance: number;
+  balance: number | string;
 
   /**
    * HD 钱包分隔符

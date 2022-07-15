@@ -64,7 +64,7 @@ export class LockScreen extends Component<any, any> {
    */
   async handleDelete() {
     this.delOpenSwitch();
-    await sessionService.logout();
+    await sessionService.clearDevice();
   }
 
   async handleUnlock() {

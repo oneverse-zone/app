@@ -13,7 +13,7 @@ export class Setting extends Component<any, any> {
     return (
       <Page>
         <ListItem title="清理缓存" onPress={repository.clearCache} />
-        <ListItem title={lang('logout')} onPress={sessionService.logout} />
+        <ListItem title={lang('logout')} onPress={sessionService.clearDevice} />
       </Page>
     );
   }

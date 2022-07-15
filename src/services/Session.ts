@@ -30,11 +30,6 @@ const p = 4;
 export class Session {
   didService: DIDService | undefined;
 
-  /**
-   * 账户助记词
-   */
-  mnemonic: string | undefined;
-
   @observable
   loading: boolean = false;
 
@@ -83,11 +78,13 @@ export class Session {
       if (credentials && credentials.password !== pwd) {
         throw new Error('密码不正确');
       }
-
       this.locked = false;
       await this.initDevicePassword(pwd);
       const mnemonic: any = await repository.findMnemonic(true);
-      mnemonic && (await this.login(mnemonic));
+      if (mnemonic) {
+        console.log('设备解锁成功,自动登录');
+        await this.login(mnemonic);
+      }
     } finally {
       this.loading = false;
     }
@@ -149,30 +146,8 @@ export class Session {
     await repository.saveMnemonic(mnemonic, mnemonicPassword);
   }
 
-  /**
-   * 登录
-   * @param mnemonic 助记词
-   * @param password 密码
-   */
-  private async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
-    try {
-      this.didService = await DIDService.newInstance({
-        ceramicApi,
-        mnemonic,
-        password,
-      });
-      this.id = this.didService.did.id.toString();
-      await walletService.initHDWallet(mnemonic, password);
-    } catch (e: any) {
-      console.warn('登录失败', e.message);
-      if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
-      }
-      throw e;
-    }
-  }
-
   @action
-  async logout() {
+  async clearDevice() {
     if (this.loading) {
       return;
     }
@@ -187,6 +162,27 @@ export class Session {
       });
     } finally {
       this.loading = false;
+    }
+  }
+
+  /**
+   * 登录
+   * @param mnemonic 助记词
+   * @param password 密码
+   */
+  private async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
+    try {
+      this.didService = await DIDService.newInstance({
+        ceramicApi,
+        mnemonic,
+        password,
+      });
+      this.id = this.didService.did.id.toString();
+    } catch (e: any) {
+      console.warn('登录失败', e.message);
+      if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
+      }
+      throw e;
     }
   }
 

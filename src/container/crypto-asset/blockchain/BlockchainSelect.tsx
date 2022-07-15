@@ -54,8 +54,12 @@ export class BlockchainSelect extends Component<any, any> {
     const { walletActionOpen } = this.state;
     return (
       <Box>
-        <Box></Box>
-        <WalletNewActionSheet isOpen={true} onSelect={this.handleActionSelect} onClose={this.actionSwitch} />
+        <BlockchainList onItemPress={this.handleBlockchainSelect} />
+        <WalletNewActionSheet
+          isOpen={walletActionOpen}
+          onSelect={this.handleActionSelect}
+          onClose={this.actionSwitch}
+        />
       </Box>
     );
   }
