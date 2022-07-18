@@ -20,6 +20,7 @@ import { WalletCreate } from './crypto-asset/wallet/WalletCreate';
 import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 import { TokenDetail } from './crypto-asset/token/TokenDetail';
 import { TokenSend } from './crypto-asset/token/TokenSend';
+import { TokenSelect } from './crypto-asset/token/TokenSelect';
 
 export const route = {
   Splash: 'Splash',
@@ -54,6 +55,8 @@ export const route = {
   WalletSelect: 'WalletSelect',
   TokenDetail: 'TokenDetail',
   TokenSend: 'TokenSend',
+  TokenReceive: 'TokenReceive',
+  TokenSelect: 'TokenSelect',
 
   Setting: 'Setting',
 };
@@ -137,6 +140,10 @@ export const routers: Array<{
   {
     name: route.TokenSend,
     component: TokenSend,
+  },
+  {
+    name: route.TokenSelect,
+    component: TokenSelect,
   },
   {
     name: route.ProfilePersist,
