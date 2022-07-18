@@ -21,7 +21,9 @@ export default function App() {
             },
           },
         }}>
-        <Stack.Navigator initialRouteName={route.Splash} defaultScreenOptions={{ statusBarStyle: 'dark' }}>
+        <Stack.Navigator
+          initialRouteName={route.Splash}
+          defaultScreenOptions={{ statusBarStyle: 'dark', headerBackTitleVisible: false }}>
           {routers.map(({ component, ...route }, index) => (
             <Stack.Screen {...route} key={index} component={component} options={(component as any).options} />
           ))}
