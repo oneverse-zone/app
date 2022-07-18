@@ -1,7 +1,7 @@
 /*
  * Registered coin types for BIP-0044 https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  */
-import { Token } from '../entity/Token';
+import { Token, TokenType } from '../entity/Token';
 
 import btcLogo from '../assets/svg/token-logo/bitcoin-btc.svg';
 import ethLogo from '../assets/svg/token-logo/ethereum-eth.svg';
@@ -19,6 +19,7 @@ const COIN_TOKEN_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const btcToken: Token = {
   coinId: 0,
   name: 'Bitcoin',
+  type: TokenType.COIN,
   contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
   symbol: 'BTC',
   decimals: 8,
@@ -33,6 +34,7 @@ export const btcToken: Token = {
 export const ethToken: Token = {
   coinId: 60,
   name: 'Ethereum',
+  type: TokenType.COIN,
   contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
   symbol: 'ETH',
   decimals: 18,
@@ -44,6 +46,7 @@ export const ethToken: Token = {
 export const maticToken: Token = {
   coinId: 966,
   name: 'MATIC',
+  type: TokenType.COIN,
   contractAddress: COIN_TOKEN_CONTRACT_ADDRESS,
   symbol: 'MATIC',
   decimals: 18,

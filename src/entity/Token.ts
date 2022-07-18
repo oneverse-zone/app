@@ -3,6 +3,11 @@
  */
 import { Blockchain } from './Blockchain';
 
+export enum TokenType {
+  COIN = 'COIN',
+  ERC20 = 'ERC20',
+}
+
 export type Token = {
   /**
    * 币id
@@ -13,6 +18,11 @@ export type Token = {
    * 名称
    */
   name: string;
+
+  /**
+   * token类型
+   */
+  type: TokenType;
 
   /**
    * 合约地址
