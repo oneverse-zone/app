@@ -29,7 +29,7 @@ export class TokenSelect extends Component<any, any> {
     console.log(token, nextRoute);
     replace(nextRoute, {
       ...nextRouteParams,
-      token,
+      ...token,
     });
   }
 

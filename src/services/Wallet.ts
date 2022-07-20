@@ -1,9 +1,10 @@
 import { action, makeAutoObservable, observable } from 'mobx';
+import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { formatUnits, parseEther } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { randomString } from '@stablelib/random';
 import { Decimal } from 'decimal.js';
 import { tokens } from '../constants/Token';
 import { Wallet, WalletToken, WalletType } from '../entity/Wallet';
@@ -13,6 +14,10 @@ import { Toast } from 'native-base';
 import { lang } from '../locales';
 import { blockchainNodeService } from './BlockchainNode';
 import { repository } from './Repository';
+import { TokenTransaction } from '../entity/Transaction';
+import { parseUnits } from '@ethersproject/units/src.ts';
+import { randomUint32 } from '@stablelib/random/random';
+import { tokenTransactionRepository } from '../repositories/TokenTransactionRepository';
 
 /**
  * 钱包服务
@@ -34,6 +39,26 @@ export class WalletService {
   list: Array<Wallet> = [];
 
   /**
+   * 单链钱包地址索引
+   * key 为coinId
+   * value 为 address index
+   * <pre>
+   *     singleChainWalletAddressIndex = {
+   *         0: 1,
+   *         60: 0
+   *     }
+   * </pre>
+   */
+  @observable
+  singleChainWalletAddressIndex: Record<number, number> = {};
+
+  /**
+   * 交易记录信息
+   */
+  @observable
+  transactions: Array<TokenTransaction> = [];
+
+  /**
    * 当前选择的钱包下标
    */
   selectedIndex: number = 0;
@@ -44,10 +69,10 @@ export class WalletService {
     });
     makePersistable(this, {
       name: 'WalletStore',
-      properties: ['wallet', 'list', 'selectedIndex'],
+      properties: ['wallet', 'list', 'selectedIndex', 'singleChainWalletAddressIndex'],
     }).finally(() => {
       // 更新钱余额信息
-      this.updateSelectWallet();
+      this.updateSelectWalletBalance();
     });
   }
 
@@ -129,7 +154,8 @@ export class WalletService {
     this.loading = false;
     try {
       // m/44'/60'/0'/0/address_index
-      const derivePath = `m/44'/${token.coinId}/0'/0/0`;
+      const addressIndex = (this.singleChainWalletAddressIndex[token.coinId] || -1) + 1;
+      const derivePath = `m/44'/${token.coinId}/0'/0/${addressIndex}`;
       const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
       const idx = this.list.findIndex(item => item.tokens.findIndex(t => t.address === tmp.address) > -1);
       if (idx > -1) {
@@ -154,6 +180,8 @@ export class WalletService {
           },
         ],
       };
+      // 更新索引
+      this.singleChainWalletAddressIndex[token.coinId] = addressIndex;
       this.list = [...this.list, wallet];
     } finally {
       this.loading = false;
@@ -163,7 +191,7 @@ export class WalletService {
   /**
    * 更新选择钱包的信息
    */
-  async updateSelectWallet() {
+  async updateSelectWalletBalance() {
     if (!this.wallet) {
       return;
     }
@@ -183,28 +211,81 @@ export class WalletService {
    * @param fromToken 发送token信息
    * @param toAddress 接受token地址
    * @param value 值
+   * @param gasPrice
+   * @param gasLimit
    */
-  async sendTransaction(fromToken: WalletToken, toAddress: string, value: string | number) {
+  async sendTransaction(
+    fromToken: WalletToken,
+    toAddress: string,
+    value: string | number,
+    gasPrice: string,
+    gasLimit: string,
+  ) {
+    if (this.loading) {
+      return;
+    }
     const { mnemonic, password }: any = (await repository.findMnemonic(true)) || {};
     if (!mnemonic) {
       console.error('用户助记词不存在');
       return;
     }
+    if (!this.selected) {
+      console.log('钱包未选择');
+      return;
+    }
 
-    const provider = blockchainNodeService.getEthereumProvider();
-    const wallet = new BlockchainWallet(
-      HDNode.fromMnemonic(mnemonic, password).derivePath(fromToken.derivePath),
-      provider,
-    );
-    const tx: TransactionRequest = {
-      to: toAddress,
-      value: parseEther(`${value}`),
-      nonce: randomString(32),
+    try {
+      const provider = blockchainNodeService.ethereumProvider;
+      const wallet = new BlockchainWallet(
+        HDNode.fromMnemonic(mnemonic, password).derivePath(fromToken.derivePath),
+        provider,
+      );
+      const tx: TransactionRequest = {
+        to: toAddress,
+        // 页面输入 Ether 需要转换成Wei
+        value: parseEther(`${value}`),
+        // 页面输入 GWei 需要转换成Wei
+        gasPrice: parseUnits(gasPrice, 'gwei'),
+        gasLimit: BigNumber.from(gasLimit),
+      };
+      console.log(`TransactionRequest: `, tx);
+      const txRes = await wallet.sendTransaction(tx);
+      console.log(`TransactionResponse: `, txRes);
+
+      const walletIndex = this.selected.index;
+
+      const transaction: TokenTransaction = {
+        walletIndex,
+        address: fromToken.address,
+        ...(txRes as any),
+      };
+      tokenTransactionRepository.insert(transaction);
+    } catch (e: any) {
+      console.log('转账失败', e);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /**
+   * 预估gas 信息
+   * @param fromToken
+   */
+  async estimateGasInfo(fromToken: WalletToken): Promise<{ gasPrice: string; gasLimit: string }> {
+    const provider = blockchainNodeService.ethereumProvider;
+    const signer = new VoidSigner(fromToken.address, provider);
+    const value = await signer.estimateGas({
+      from: fromToken.address,
+      to: fromToken.address,
+      nonce: randomUint32(),
+      value: '111',
+    });
+    const gasPrice = await signer.getGasPrice();
+
+    return {
+      gasPrice: formatUnits(gasPrice, 'gwei'),
+      gasLimit: value.toString(),
     };
-    console.log(`TransactionRequest: ${tx}`);
-    // const txHash = await wallet.signTransaction(tx);
-    const txRes = await wallet.sendTransaction(tx);
-    console.log(txRes);
   }
 
   /**
@@ -213,7 +294,7 @@ export class WalletService {
    */
   async getBalance({ address }: WalletToken) {
     try {
-      const provider = blockchainNodeService.getEthereumProvider();
+      const provider = blockchainNodeService.ethereumProvider;
       const balanceWei = await provider.getBalance(address);
       const balanceEthr = formatUnits(balanceWei);
       console.log(`${address} Balance: ${balanceEthr}=${balanceWei}`);

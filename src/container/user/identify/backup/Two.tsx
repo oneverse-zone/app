@@ -50,7 +50,7 @@ export class BackupTwo extends Component<any, any> {
 
   async handleCopy() {
     Clipboard.setString(this.state.mnemonicWords.join(' '));
-    Toast.show({ title: lang('mnemonic.copy.tip'), placement: 'top' });
+    Toast.show({ description: lang('mnemonic.copy.tip'), placement: 'top' });
   }
 
   handleNext() {

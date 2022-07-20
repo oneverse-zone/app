@@ -1,13 +1,17 @@
-import { Lang } from './types';
+import { LangKey } from './types';
+import { LangValue } from './index';
 
-export const lang: Record<Lang, string> = {
+export const lang: Record<LangKey, LangValue> = {
   'app.name': 'OneVerse',
   congratulations: '恭喜',
   advanced: '高级',
   'next-step': '下一步',
+  balance: '余额',
   add: '添加',
   finish: '完成',
   cancel: '取消',
+  copy: '复制',
+  'copy.success': '复制成功',
   setting: '设置',
   'look-over': '查看',
   login: '登录',
@@ -79,10 +83,20 @@ export const lang: Record<Lang, string> = {
   'token.send.amount': '转账金额',
   'token.receive': '收款',
   'token.receive.address': '接收地址',
+  'token.receive.tip': symbol => `注意: 此地址仅支持从${symbol}接收,请不要把它用于其他币种`,
   'token.swap': '兑换',
+  'token.select': 'Token 选择',
+  'token.address.copy': '复制地址',
   gas: '矿工费',
-  'gas.limit': 'Gas Limit',
-  'gas.price': 'Gas Price',
+  'gas.limit': '燃料限制',
+  'gas.limit.describe': '燃料限制是指您愿意花费的最大燃料量',
+  'gas.price': '燃料价格',
+  'gas.price.describe': '燃料价格规定了您愿意为每单位燃料支付的Token数量',
+  'gas.eth.unit.wei': 'Wei',
+  'gas.eth.unit.kwei': 'KWei',
+  'gas.eth.unit.mwei': 'MWei',
+  'gas.eth.unit.gwei': 'GWei',
+  'gas.eth.unit.ether': 'Ether',
   nft: 'NFTs',
   'tab.home': 'OneVerse',
   'tab.message': '消息',

@@ -10,6 +10,8 @@ import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 
 import { TokenScreen } from './token';
 import { NFTScreen } from './NFT';
+import { navigate } from '../../core/navigation';
+import { route } from '../router';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -39,6 +41,18 @@ export class CryptoAsset extends Component<any, any> {
     headerRight: () => <AddIcon />,
   };
 
+  handleSend() {
+    navigate(route.TokenSelect, {
+      nextRoute: route.TokenSend,
+    });
+  }
+
+  handleReceive() {
+    navigate(route.TokenSelect, {
+      nextRoute: route.TokenReceive,
+    });
+  }
+
   render() {
     // const { list } = walletService;
     // if (list.length === 0) {
@@ -47,21 +61,31 @@ export class CryptoAsset extends Component<any, any> {
     const { totalAmount } = walletService;
     return (
       <Box flex={1}>
-        <Box borderRadius="lg" margin={3} padding={3} backgroundColor="primary.500" minH={120}>
-          <Text>{totalAmount}</Text>
+        <Box
+          borderRadius="lg"
+          margin={3}
+          padding={3}
+          backgroundColor="primary.500"
+          minH={120}
+          justifyContent="space-between">
+          <Text fontWeight="500" fontSize="2xl" color="white">
+            {totalAmount}
+          </Text>
           <Row>
             <Button
               size="sm"
               variant="ghost"
               _text={{ color: 'white' }}
-              leftIcon={<SendIcon color="white" width={16} height={16} fill="white" />}>
+              leftIcon={<SendIcon color="white" width={16} height={16} fill="white" />}
+              onPress={this.handleSend}>
               {lang('token.send')}
             </Button>
             <Button
               size="sm"
               variant="ghost"
               _text={{ color: 'white' }}
-              leftIcon={<SendIcon color="white" width={16} height={16} fill="white" />}>
+              leftIcon={<SendIcon color="white" width={16} height={16} fill="white" />}
+              onPress={this.handleReceive}>
               {lang('token.receive')}
             </Button>
           </Row>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Avatar, Button, Center, Divider, Heading, Row, Text, View } from 'native-base';
+import { Avatar, Box, Button, Center, Divider, Heading, Row, Text, View } from 'native-base';
 import { goBack, navigate } from '../../../core/navigation';
 import { WalletToken } from '../../../entity/Wallet';
 import { findToken } from '../../../constants/Token';
@@ -16,6 +16,10 @@ import { route } from '../../router';
 @observer
 @autoBind
 export class TokenDetail extends Component<any, any> {
+  static options = {
+    headerBackTitleVisible: false,
+  };
+
   constructor(props: any) {
     super(props);
     const token: WalletToken = props.route?.params;
@@ -33,6 +37,11 @@ export class TokenDetail extends Component<any, any> {
   handleSend() {
     const token: WalletToken = this.props.route?.params;
     navigate(route.TokenSend, token);
+  }
+
+  handleReceive() {
+    const token: WalletToken = this.props.route?.params;
+    navigate(route.TokenReceive, token);
   }
 
   render() {
@@ -55,8 +64,10 @@ export class TokenDetail extends Component<any, any> {
           <Button flex={1} onPress={this.handleSend}>
             {lang('token.send')}
           </Button>
-          <Divider mx={1.5} orientation="vertical" />
-          <Button flex={1}>{lang('token.receive')}</Button>
+          <Box width={3} />
+          <Button flex={1} onPress={this.handleReceive}>
+            {lang('token.receive')}
+          </Button>
         </FixedBottomView>
       </View>
     );

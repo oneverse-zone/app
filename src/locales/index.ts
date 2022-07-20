@@ -1,12 +1,14 @@
 import { setErrMsg } from '@aomi/common-service/utils/getErrMsg';
-import { Lang } from './types';
 import * as zhCN from './zh-cn';
 import { repository } from '../services/Repository';
+import { LangKey } from './types';
 
 export type Language = 'zh-CN';
 
+export type LangValue = string | ((...args: any[]) => string);
+
 export type LanguageText<L extends keyof any> = {
-  lang: Record<L, string>;
+  lang: Record<L, LangValue>;
   // menu: Record<M, string>;
   resErrMsg: Record<string, any>;
 };
@@ -31,8 +33,13 @@ export class I18n<L extends keyof any> {
     this.init();
   }
 
-  lang(key: L, defaultValue = '-'): string {
-    return ((this.languages[this.language] || this.languages[this.defaultLanguage]).lang || {})[key] || defaultValue;
+  lang(key: L, defaultValue = '-'): LangValue {
+    const languageText = (this.languages[this.language] || this.languages[this.defaultLanguage]).lang || {};
+    const result = languageText[key];
+    if (typeof result === 'function') {
+      return result;
+    }
+    return result || defaultValue;
   }
 
   // menu(key: M, defaultValue = '-'): string {
@@ -71,16 +78,16 @@ export class I18n<L extends keyof any> {
   }
 }
 
-export function createLangProxy<L extends keyof any>(i18n: I18n<L>): (key: L, defaultValue?: string) => string {
-  return function (key: L, defaultValue?: string) {
+export function createLangProxy<L extends keyof any>(i18n: I18n<L>): (key: L, defaultValue?: string) => LangValue {
+  return function (key: L, defaultValue?: string): LangValue {
     return i18n.lang(key, defaultValue);
   };
 }
 
-export const i18n = new I18n<Lang>({
+export const i18n = new I18n<LangKey>({
   languages: {
     'zh-CN': zhCN,
   },
 });
 
-export const lang = createLangProxy<Lang>(i18n);
+export const lang = createLangProxy<LangKey>(i18n);

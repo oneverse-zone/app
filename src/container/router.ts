@@ -21,6 +21,7 @@ import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 import { TokenDetail } from './crypto-asset/token/TokenDetail';
 import { TokenSend } from './crypto-asset/token/TokenSend';
 import { TokenSelect } from './crypto-asset/token/TokenSelect';
+import { TokenReceive } from './crypto-asset/token/TokenReceive';
 
 export const route = {
   Splash: 'Splash',
@@ -140,6 +141,10 @@ export const routers: Array<{
   {
     name: route.TokenSend,
     component: TokenSend,
+  },
+  {
+    name: route.TokenReceive,
+    component: TokenReceive,
   },
   {
     name: route.TokenSelect,
