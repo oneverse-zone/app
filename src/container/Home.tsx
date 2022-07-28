@@ -1,23 +1,20 @@
 import React from 'react';
-import { Icon, IconButton, View } from 'native-base';
+import { Icon, IconButton } from 'native-base';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { AddIcon } from 'native-base/src/components/primitives/Icon/Icons/Add';
 import { navigate } from '../core/navigation';
 import { route } from './router';
-import ContactsIcon from '../assets/svg/contacts.svg';
 import { lang } from '../locales';
 
 import { User } from './user/User';
 import { CryptoAsset } from './crypto-asset';
 import { AppCenter } from './app-center';
 import { WalletSelectButton } from './crypto-asset/wallet/WalletSelectButton';
+import { OneVerse } from './oneverse';
+import { Message } from './message';
 
 const Tab = createBottomTabNavigator();
-
-export function HomeTab() {
-  return <View />;
-}
 
 /**
  * 首页tab配置
@@ -28,8 +25,9 @@ const tabs: Record<
 > = {
   Index: {
     title: lang('tab.home'),
-    component: HomeTab,
+    component: OneVerse,
     icon: <MaterialIcons name="home" />,
+    headerShown: false,
   },
   CryptoAsset: {
     title: lang('tab.crypto-asset'),
@@ -44,7 +42,7 @@ const tabs: Record<
   },
   Message: {
     title: lang('tab.message'),
-    component: HomeTab,
+    component: Message,
     icon: <MaterialIcons name="chat" />,
     headerRight: () => {
       return (

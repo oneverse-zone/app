@@ -78,7 +78,7 @@ export class I18n<L extends keyof any> {
   }
 }
 
-export function createLangProxy<L extends keyof any>(i18n: I18n<L>): (key: L, defaultValue?: string) => LangValue {
+export function createLangProxy<L extends keyof any>(i18n: I18n<L>): (key: L, defaultValue?: string) => any {
   return function (key: L, defaultValue?: string): LangValue {
     return i18n.lang(key, defaultValue);
   };

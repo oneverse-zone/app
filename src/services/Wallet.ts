@@ -18,6 +18,7 @@ import { TokenTransaction } from '../entity/Transaction';
 import { parseUnits } from '@ethersproject/units/src.ts';
 import { randomUint32 } from '@stablelib/random/random';
 import { tokenTransactionRepository } from '../repositories/TokenTransactionRepository';
+import { tokenTransactionService } from './TokenTransaction';
 
 /**
  * 钱包服务
@@ -127,7 +128,6 @@ export class WalletService {
         tokens: tokens.map(token => {
           const derivePath = `m/44'/${token.coinId}'/0'/0/0`;
           const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
-          console.log('tmp', tmp);
           const walletToken: WalletToken = {
             ...token,
             address: tmp.address,
@@ -259,7 +259,7 @@ export class WalletService {
         address: fromToken.address,
         ...(txRes as any),
       };
-      tokenTransactionRepository.insert(transaction);
+      tokenTransactionService.save(transaction);
     } catch (e: any) {
       console.log('转账失败', e);
     } finally {

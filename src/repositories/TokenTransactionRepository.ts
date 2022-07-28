@@ -14,6 +14,14 @@ export class TokenTransactionRepository {
   insert(doc: TokenTransaction | TokenTransaction[]): TokenTransaction | TokenTransaction[] | undefined {
     return this.collection.insert(doc);
   }
+
+  count(args: LokiQuery<TokenTransaction & LokiObj>) {
+    return this.collection.count(args);
+  }
+
+  find(query: LokiQuery<TokenTransaction & LokiObj>) {
+    return this.collection.find(query);
+  }
 }
 
 export const tokenTransactionRepository = new TokenTransactionRepository();

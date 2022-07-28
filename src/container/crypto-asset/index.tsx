@@ -13,6 +13,19 @@ import { NFTScreen } from './NFT';
 import { navigate } from '../../core/navigation';
 import { route } from '../router';
 
+const commonOptions: MaterialTopTabNavigationOptions = {
+  tabBarStyle: {
+    alignContent: 'center',
+  },
+  tabBarItemStyle: {
+    // width: 'auto',
+    height: 50,
+  },
+  tabBarLabelStyle: {
+    fontWeight: '500',
+  },
+};
+
 const Tab = createMaterialTopTabNavigator();
 
 const tabs: Record<
@@ -91,7 +104,7 @@ export class CryptoAsset extends Component<any, any> {
           </Row>
         </Box>
         <Box flex={1}>
-          <Tab.Navigator initialRouteName="Token">
+          <Tab.Navigator initialRouteName="Token" screenOptions={commonOptions}>
             {Object.keys(tabs).map(key => {
               const { component, ...options } = tabs[key];
               return <Tab.Screen name={key} key={key} component={component} options={options} />;

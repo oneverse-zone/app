@@ -1,13 +1,57 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Avatar, Box, Button, Center, Divider, Heading, Row, Text, View } from 'native-base';
+import { Avatar, Box, Button, Column, Icon, Row, Text, Toast } from 'native-base';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
+
 import { goBack, navigate } from '../../../core/navigation';
 import { WalletToken } from '../../../entity/Wallet';
 import { findToken } from '../../../constants/Token';
 import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';
+import { TokenTransactionScreen } from './TokenTransaction';
+
+const commonTab: MaterialTopTabNavigationOptions = {
+  tabBarStyle: {
+    alignContent: 'center',
+  },
+  tabBarItemStyle: {
+    width: 'auto',
+  },
+};
+
+const Tab = createMaterialTopTabNavigator();
+
+const tabs: Record<
+  string,
+  MaterialTopTabNavigationOptions & {
+    component: React.ComponentType<any>;
+    params: any;
+  }
+> = {
+  All: {
+    ...commonTab,
+    tabBarLabel: lang('all'),
+    component: TokenTransactionScreen,
+    params: {},
+  },
+  In: {
+    ...commonTab,
+    tabBarLabel: lang('token.in'),
+    component: TokenTransactionScreen,
+    params: { type: 'in' },
+  },
+  Out: {
+    ...commonTab,
+    tabBarLabel: lang('token.out'),
+    component: TokenTransactionScreen,
+    params: { type: 'out' },
+  },
+};
 
 /**
  * token 详情页
@@ -44,8 +88,19 @@ export class TokenDetail extends Component<any, any> {
     navigate(route.TokenReceive, token);
   }
 
+  handleCopy() {
+    const token: WalletToken = this.props.route?.params;
+    Clipboard.setString(token?.address);
+    Toast.show({
+      placement: 'top',
+      description: lang('copy.success'),
+    });
+  }
+
   render() {
-    const { coinId, contractAddress, balance }: WalletToken = this.props.route?.params;
+    const token: WalletToken = this.props.route?.params;
+    const { name, coinId, contractAddress, balance, address, symbol } = token;
+
     const Logo = findToken(coinId, contractAddress)?.logo;
     const icon = Logo && (
       <Avatar size="sm" bg="white">
@@ -53,13 +108,42 @@ export class TokenDetail extends Component<any, any> {
       </Avatar>
     );
     return (
-      <View flex={1}>
-        <Center margin={3} padding={3} backgroundColor="white" borderRadius="lg">
-          {icon}
-          <Text fontWeight="500" fontSize="3xl">
+      <Box flex={1}>
+        <Box bgColor="white" padding={3}>
+          <Row space="3" alignItems="center">
+            {icon}
+            <Column>
+              <Text fontWeight="400">{name}</Text>
+              <Text width={150} ellipsizeMode="middle" numberOfLines={1} onPress={this.handleCopy} lineHeight={24}>
+                {address}
+                <Icon size="xs" as={<MaterialIcons name="content-copy" />} />
+              </Text>
+            </Column>
+          </Row>
+          <Text fontWeight="500" fontSize="2xl" my={1}>
             {balance}
+            <Text fontSize="md"> {symbol}</Text>
           </Text>
-        </Center>
+        </Box>
+        <Box mt={3} flex={1}>
+          <Tab.Navigator initialRouteName="All">
+            {Object.keys(tabs).map(key => {
+              const { component, params, ...options } = tabs[key];
+              return (
+                <Tab.Screen
+                  name={key}
+                  key={key}
+                  component={component}
+                  initialParams={{
+                    ...params,
+                    token,
+                  }}
+                  options={options}
+                />
+              );
+            })}
+          </Tab.Navigator>
+        </Box>
         <FixedBottomView flexDirection="row">
           <Button flex={1} onPress={this.handleSend}>
             {lang('token.send')}
@@ -69,7 +153,7 @@ export class TokenDetail extends Component<any, any> {
             {lang('token.receive')}
           </Button>
         </FixedBottomView>
-      </View>
+      </Box>
     );
   }
 }
