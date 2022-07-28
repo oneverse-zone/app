@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Button } from '../../../components/Button';
-import { walletService } from '../../../services/Wallet';
-import { lang } from '../../../locales';
-import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { Button } from '../../../../components/Button';
+import { walletService } from '../../../../services/Wallet';
+import { lang } from '../../../../locales';
+import { navigate } from '../../../../core/navigation';
+import { route } from '../../../router';
 
 /**
  * 钱包选择Button
