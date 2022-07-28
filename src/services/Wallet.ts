@@ -31,7 +31,7 @@ export class WalletService {
    * 身份钱包
    */
   @observable
-  wallet: Wallet | null = null;
+  wallet: Wallet | undefined = undefined;
 
   /**
    * 单链钱包
@@ -108,6 +108,11 @@ export class WalletService {
         return previousValue.add(new Decimal(currentValue.balance || 0));
       }, new Decimal(0))
       .toNumber();
+  }
+
+  @action
+  selectWallet(index: number) {
+    this.list[index] && (this.selectedIndex = index);
   }
 
   /**
