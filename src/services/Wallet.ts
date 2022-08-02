@@ -17,8 +17,8 @@ import { TokenTransaction } from '../entity/Transaction';
 import { parseUnits } from '@ethersproject/units/src.ts';
 import { randomUint32 } from '@stablelib/random/random';
 import { tokenTransactionService } from './TokenTransaction';
-import { blockchainService } from './Blockchain';
 import { tokenService } from './Token';
+import { makeResettable } from '../mobx/mobx-reset';
 
 /**
  * 钱包服务
@@ -70,6 +70,7 @@ export class WalletService {
   selectedIndex: number = 0;
 
   constructor() {
+    makeResettable(this);
     makeAutoObservable(this, undefined, {
       autoBind: true,
     });
@@ -148,6 +149,7 @@ export class WalletService {
           return walletToken;
         }),
       };
+      this.updateSelectWalletBalance();
     } catch (e: any) {
       console.log(`身份钱包创建失败: ${e.message}`, e);
       throw e;
