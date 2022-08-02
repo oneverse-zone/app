@@ -13,6 +13,7 @@ import { NFTScreen } from './NFT';
 import { navigate } from '../../core/navigation';
 import { route } from '../router';
 import { WalletSelectButton } from './wallet/components/WalletSelectButton';
+import { Empty } from './Empty';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -69,11 +70,10 @@ export class CryptoAsset extends Component<any, any> {
   }
 
   render() {
-    // const { list } = walletService;
-    // if (list.length === 0) {
-    //   return <Empty {...this.props} />;
-    // }
-    const { totalAmount } = walletService;
+    const { totalAmount, wallets } = walletService;
+    if (wallets.length === 0) {
+      return <Empty {...this.props} />;
+    }
     return (
       <Box flex={1}>
         <Box

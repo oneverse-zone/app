@@ -125,13 +125,14 @@ export class WalletService {
    * 初始化HD钱包
    */
   @action
-  async initHDWallet(mnemonic: string, password?: string) {
-    if (this.wallet) {
-      console.log('钱包已经存在');
+  async initHDWallet() {
+    if (this.loading) {
       return;
     }
+    this.loading = true;
     console.log('创建身份钱包');
     try {
+      const { mnemonic, password }: any = await repository.findMnemonic(true);
       this.wallet = {
         index: 0,
         name: 'HD',
@@ -153,6 +154,8 @@ export class WalletService {
     } catch (e: any) {
       console.log(`身份钱包创建失败: ${e.message}`, e);
       throw e;
+    } finally {
+      this.loading = false;
     }
   }
 
