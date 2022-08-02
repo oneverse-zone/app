@@ -4,6 +4,7 @@ import { Token, TokenType } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
 import { blockchainService } from './Blockchain';
 import { Blockchain } from '../entity/Blockchain';
+import { makeResettable } from '../mobx/mobx-reset';
 
 const tokens: Array<Token> = [btcToken, ethToken, maticToken];
 
@@ -22,6 +23,7 @@ export class TokenService {
   customTokens: Array<Token> = [];
 
   constructor() {
+    makeResettable(this);
     makeAutoObservable(this, undefined, {
       autoBind: true,
     });

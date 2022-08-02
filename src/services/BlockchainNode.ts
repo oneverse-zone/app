@@ -1,5 +1,6 @@
 import { getDefaultProvider } from '@ethersproject/providers';
 import { ethereumApi } from '../constants/Url';
+import { makeResettable } from '../mobx/mobx-reset';
 
 /**
  * 节点服务
@@ -8,6 +9,7 @@ export class BlockchainNode {
   fastEthereumProvider;
 
   constructor() {
+    makeResettable(this);
     this.fastEthereumProvider = getDefaultProvider(ethereumApi);
   }
 

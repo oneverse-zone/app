@@ -1,8 +1,9 @@
-import {action, makeAutoObservable, observable} from 'mobx';
-import {sessionService} from './Session';
-import type {BasicProfile} from '@datamodels/identity-profile-basic';
-import {BasicProfileService} from '@oneverse/identify/lib/services/BasicProfileService';
-import {goBack} from '../core/navigation';
+import { action, makeAutoObservable, observable } from 'mobx';
+import { sessionService } from './Session';
+import type { BasicProfile } from '@datamodels/identity-profile-basic';
+import { BasicProfileService } from '@oneverse/identify/lib/services/BasicProfileService';
+import { goBack } from '../core/navigation';
+import { makeResettable } from '../mobx/mobx-reset';
 
 export class User {
   service: BasicProfileService | undefined;
@@ -14,6 +15,7 @@ export class User {
   basicProfile: BasicProfile | undefined = undefined;
 
   constructor() {
+    makeResettable(this);
     makeAutoObservable(this, undefined, {
       autoBind: true,
     });

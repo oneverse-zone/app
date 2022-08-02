@@ -3,6 +3,7 @@ import { TokenTransaction } from '../entity/Transaction';
 import { tokenTransactionRepository } from '../repositories/TokenTransactionRepository';
 import { WalletToken } from '../entity/Wallet';
 import { DEFAULT_PAGE, Page } from '@aomi/common-service/Page';
+import { makeResettable } from '../mobx/mobx-reset';
 
 /**
  * token 交易服务
@@ -12,6 +13,7 @@ export class TokenTransactionService {
   page: Page<TokenTransaction> = DEFAULT_PAGE;
 
   constructor() {
+    makeResettable(this);
     makeAutoObservable(this, undefined, {
       autoBind: true,
     });

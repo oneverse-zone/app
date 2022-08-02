@@ -2,6 +2,7 @@ import { makeAutoObservable, observable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { btcBlockchain, ethBlockchain, polygonBlockchain } from '../constants/Blockchain';
 import { Blockchain } from '../entity/Blockchain';
+import { makeResettable } from '../mobx/mobx-reset';
 
 export const blockchains = [btcBlockchain, ethBlockchain, polygonBlockchain];
 
@@ -27,6 +28,7 @@ export class BlockchainService {
   customBlockchains: Array<Blockchain> = [];
 
   constructor() {
+    makeResettable(this);
     makeAutoObservable(this, undefined, { autoBind: true });
     makePersistable(this, {
       name: 'BlockchainStore',
