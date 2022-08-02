@@ -11,7 +11,7 @@ export type TokenListItemProps = {} & WalletToken & ListItemProps;
  * token 列表条目
  */
 export function TokenListItem(props: TokenListItemProps) {
-  const { coinId, contractAddress, symbol, blockchain, balance, ...other } = props;
+  const { walletName, coinId, contractAddress, symbol, blockchain, balance, ...other } = props;
   const Logo = tokenService.findToken(coinId, contractAddress)?.logo;
   const icon = Logo && (
     <Avatar size="sm" bg="white">
@@ -21,6 +21,6 @@ export function TokenListItem(props: TokenListItemProps) {
 
   const footer = <Title title={`${balance}`} />;
   return (
-    <ListItem icon={icon} title={symbol} subtitle={blockchain.name} footer={footer} showArrow={false} {...other} />
+    <ListItem icon={icon} title={walletName} subtitle={blockchain.name} footer={footer} showArrow={false} {...other} />
   );
 }
