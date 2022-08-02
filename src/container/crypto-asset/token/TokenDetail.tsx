@@ -99,9 +99,9 @@ export class TokenDetail extends Component<any, any> {
 
   render() {
     const token: WalletToken = this.props.route?.params;
-    const { name, coinId, balance, address, symbol } = token;
+    const { walletName, name, coinId, balance, contractAddress, address, symbol } = token;
 
-    const Logo = tokenService.findToken(coinId, address)?.logo;
+    const Logo = tokenService.findToken(coinId, contractAddress)?.logo;
     const icon = Logo && (
       <Avatar size="sm" bg="white">
         <Logo />
@@ -113,7 +113,7 @@ export class TokenDetail extends Component<any, any> {
           <Row space="3" alignItems="center">
             {icon}
             <Column>
-              <Text fontWeight="400">{name}</Text>
+              <Text fontWeight="400">{walletName}</Text>
               <Text width={150} ellipsizeMode="middle" numberOfLines={1} onPress={this.handleCopy} lineHeight={24}>
                 {address}
                 <Icon size="xs" as={<MaterialIcons name="content-copy" />} />
