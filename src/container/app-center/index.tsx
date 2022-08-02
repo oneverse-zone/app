@@ -4,6 +4,7 @@ import { View } from 'native-base';
 
 @autoBind
 export class AppCenter extends Component<any, any> {
+  static options = {};
   render() {
     return <View></View>;
   }

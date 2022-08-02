@@ -6,6 +6,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { Discovery } from './Discovery';
 import { Follow } from './Follow';
+import { lang } from '../../locales';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,24 +27,11 @@ const tabs: Record<
   }
 > = {
   Discovery: {
+    title: lang('discovery'),
     component: Discovery,
   },
   Follow: {
-    component: Follow,
-  },
-  Nft: {
-    component: Follow,
-  },
-  Verse: {
-    component: Follow,
-  },
-  Nf5: {
-    component: Follow,
-  },
-  Nf4: {
-    component: Follow,
-  },
-  Nfa: {
+    title: lang('follow'),
     component: Follow,
   },
 };
@@ -54,7 +42,9 @@ const tabs: Record<
 @observer
 @autoBind
 export class OneVerse extends Component<any, any> {
-  static options = {};
+  static options = {
+    headerShown: false,
+  };
 
   render() {
     return (

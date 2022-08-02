@@ -9,11 +9,11 @@ import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-
 
 import { goBack, navigate } from '../../../core/navigation';
 import { WalletToken } from '../../../entity/Wallet';
-import { findToken } from '../../../constants/Token';
 import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';
 import { TokenTransactionScreen } from './TokenTransaction';
+import { tokenService } from '../../../services/Token';
 
 const commonTab: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -99,9 +99,9 @@ export class TokenDetail extends Component<any, any> {
 
   render() {
     const token: WalletToken = this.props.route?.params;
-    const { name, coinId, contractAddress, balance, address, symbol } = token;
+    const { name, coinId, balance, address, symbol } = token;
 
-    const Logo = findToken(coinId, contractAddress)?.logo;
+    const Logo = tokenService.findToken(coinId, address)?.logo;
     const icon = Logo && (
       <Avatar size="sm" bg="white">
         <Logo />

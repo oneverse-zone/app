@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { Box, IconButton, CloseIcon, Actionsheet, Modal } from 'native-base';
-import { BlockchainList } from './BlockchainList';
+import { BlockchainList } from './components/BlockchainList';
 import { lang } from '../../../locales';
-import { Action, WalletNewActionSheet } from '../wallet/WalletNewActionSheet';
+import { Action, WalletNewActionSheet } from '../wallet/components/WalletNewActionSheet';
 import { Blockchain } from '../../../entity/Blockchain';
 import { route } from '../../router';
 import { goBack, replace } from '../../../core/navigation';
+import { blockchainService } from '../../../services/Blockchain';
 
 /**
  * 区块链选择页面
@@ -14,7 +15,7 @@ import { goBack, replace } from '../../../core/navigation';
 @autoBind
 export class BlockchainSelect extends Component<any, any> {
   static options = {
-    title: lang('blockchain.custom'),
+    title: lang('blockchain.select'),
     headerLeft: () => <IconButton colorScheme="dark" borderRadius="full" icon={<CloseIcon />} onPress={goBack} />,
   };
 
@@ -40,6 +41,9 @@ export class BlockchainSelect extends Component<any, any> {
       case 'recover':
         nextRoute = route.WalletRecover;
         break;
+      case 'hd':
+        nextRoute = route.WalletHDCreate;
+        break;
     }
     replace(nextRoute, {
       blockchain: this.state.selected,
@@ -51,7 +55,7 @@ export class BlockchainSelect extends Component<any, any> {
   }
 
   render() {
-    const { walletActionOpen } = this.state;
+    const { walletActionOpen, selected } = this.state;
     return (
       <Box>
         <BlockchainList onItemPress={this.handleBlockchainSelect} />
@@ -59,6 +63,7 @@ export class BlockchainSelect extends Component<any, any> {
           isOpen={walletActionOpen}
           onSelect={this.handleActionSelect}
           onClose={this.actionSwitch}
+          showHDAction={!!selected?.id && blockchainService.supportHD(selected.id)}
         />
       </Box>
     );

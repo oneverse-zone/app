@@ -11,7 +11,7 @@ import { btcBlockchain, ethBlockchain, polygonBlockchain } from './Blockchain';
 /**
  * 主链币合约地址
  */
-const COIN_TOKEN_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const COIN_TOKEN_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
  * Bitcoin
@@ -53,17 +53,3 @@ export const maticToken: Token = {
   blockchain: polygonBlockchain,
   logo: maticLogo,
 };
-
-/**
- * 系统支持的 HD token 列表
- */
-export const tokens: Array<Token> = [btcToken, ethToken, maticToken];
-
-/**
- * 查找token
- * @param coinId 币id
- * @param contractAddress 合约地址
- */
-export function findToken(coinId: number, contractAddress: string): Token | undefined {
-  return tokens.find(item => item.coinId === coinId && item.contractAddress === contractAddress);
-}

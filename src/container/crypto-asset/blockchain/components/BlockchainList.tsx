@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { SectionList } from 'react-native';
-import { lang } from '../../../locales';
-import { blockchainService } from '../../../services/Blockchain';
-import { Blockchain as BlockchainEntity } from '../../../entity/Blockchain';
-import { ListItem } from '../../../components/ListItem';
+import { lang } from '../../../../locales';
+import { blockchainService } from '../../../../services/Blockchain';
+import { Blockchain as BlockchainEntity } from '../../../../entity/Blockchain';
+import { ListItem } from '../../../../components/ListItem';
 import { Avatar, Text } from 'native-base';
 
 export type BlockchainListProps = {
@@ -41,11 +41,11 @@ export class BlockchainList extends Component<BlockchainListProps, any> {
   }
 
   render() {
-    const { blockchains, customBlockchains } = blockchainService;
+    const { publicBlockchains, customBlockchains } = blockchainService;
     const data = [
       {
         title: lang('wallet.single-chain'),
-        data: blockchains.slice(),
+        data: publicBlockchains.slice(),
       },
       {
         title: lang('blockchain.custom'),

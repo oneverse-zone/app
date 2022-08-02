@@ -22,6 +22,7 @@ import { TokenDetail } from './crypto-asset/token/TokenDetail';
 import { TokenSend } from './crypto-asset/token/TokenSend';
 import { TokenSelect } from './crypto-asset/token/TokenSelect';
 import { TokenReceive } from './crypto-asset/token/TokenReceive';
+import { WalletHDCreate } from './crypto-asset/wallet/WalletHDCreate';
 
 export const route = {
   Splash: 'Splash',
@@ -52,6 +53,7 @@ export const route = {
 
   BlockchainSelect: 'BlockchainSelect',
   WalletCreate: 'WalletCreate',
+  WalletHDCreate: 'WalletHDCreate',
   WalletRecover: 'WalletRecover',
   WalletSelect: 'WalletSelect',
   TokenDetail: 'TokenDetail',
@@ -121,6 +123,10 @@ export const routers: Array<{
   {
     name: route.BlockchainSelect,
     component: BlockchainSelect,
+  },
+  {
+    name: route.WalletHDCreate,
+    component: WalletHDCreate,
   },
   {
     name: route.WalletCreate,

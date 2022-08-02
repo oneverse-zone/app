@@ -1,17 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { SectionList } from 'react-native';
-import { autoBind } from 'jsdk/autoBind';
-import { observer } from 'mobx-react';
 import { AddIcon, Avatar, Box, Button, Text } from 'native-base';
-import { walletService } from '../../../../services/Wallet';
 import { lang } from '../../../../locales';
 import { ListItem } from '../../../../components/ListItem';
 import { Wallet, WalletType } from '../../../../entity/Wallet';
 import { FixedBottomView } from '../../../../components/FixedBottomView';
-import { findToken } from '../../../../constants/Token';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { replace } from '../../../../core/navigation';
 import { route } from '../../../router';
+import { tokenService } from '../../../../services/Token';
 
 function renderSectionHeader({ section: { title } }: any) {
   return <Text padding={3}>{title}</Text>;
@@ -23,7 +20,7 @@ function renderItem(onItemPress?: WalletListProps['onItemPress']) {
     if (item.type === WalletType.HD) {
       iconElement = <MaterialIcons name="account-balance-wallet" size={24} />;
     } else if (item.type === WalletType.SINGLE_CHAIN) {
-      const Logo = findToken(item.tokens[0].coinId, item.tokens[0].contractAddress)?.logo;
+      const Logo = tokenService.findToken(item.tokens[0].coinId, item.tokens[0].contractAddress)?.logo;
       iconElement = Logo ? <Logo /> : item.name;
     }
     const icon = (

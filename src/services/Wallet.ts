@@ -6,7 +6,6 @@ import { formatUnits, parseEther } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Decimal } from 'decimal.js';
-import { tokens } from '../constants/Token';
 import { Wallet, WalletToken, WalletType } from '../entity/Wallet';
 import { Token } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
@@ -17,8 +16,9 @@ import { repository } from './Repository';
 import { TokenTransaction } from '../entity/Transaction';
 import { parseUnits } from '@ethersproject/units/src.ts';
 import { randomUint32 } from '@stablelib/random/random';
-import { tokenTransactionRepository } from '../repositories/TokenTransactionRepository';
 import { tokenTransactionService } from './TokenTransaction';
+import { blockchainService } from './Blockchain';
+import { tokenService } from './Token';
 
 /**
  * 钱包服务
@@ -52,6 +52,11 @@ export class WalletService {
    */
   @observable
   singleChainWalletAddressIndex: Record<number, number> = {};
+  /**
+   * 身份钱包地址索引
+   */
+  @observable
+  hdWalletAddressIndex: Record<number, number> = {};
 
   /**
    * 交易记录信息
@@ -70,7 +75,7 @@ export class WalletService {
     });
     makePersistable(this, {
       name: 'WalletStore',
-      properties: ['wallet', 'list', 'selectedIndex', 'singleChainWalletAddressIndex'],
+      properties: ['wallet', 'list', 'selectedIndex', 'singleChainWalletAddressIndex', 'hdWalletAddressIndex'],
     }).finally(() => {
       // 更新钱余额信息
       this.updateSelectWalletBalance();
@@ -130,11 +135,12 @@ export class WalletService {
         index: 0,
         name: 'HD',
         type: WalletType.HD,
-        tokens: tokens.map(token => {
+        tokens: tokenService.hdTokens.map(token => {
           const derivePath = `m/44'/${token.coinId}'/0'/0/0`;
           const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
           const walletToken: WalletToken = {
             ...token,
+            walletName: `HD-${token.symbol}-0`,
             address: tmp.address,
             balance: 0,
             derivePath,
@@ -149,10 +155,48 @@ export class WalletService {
   }
 
   /**
+   * 派生HD钱包
+   * @param token
+   * @param name
+   */
+  @action
+  async createHD(token: Token, name: string) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const mnemonicData: any = await repository.findMnemonic(true);
+      if (!mnemonicData || typeof mnemonicData === 'string') {
+        console.log(`助记词不存在`);
+        return;
+      }
+      const { mnemonic, password } = mnemonicData;
+
+      const addressIndex = (this.hdWalletAddressIndex[token.coinId] || 0) + 1;
+
+      const derivePath = `m/44'/${token.coinId}'/0'/0/${addressIndex}`;
+      const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
+      const walletToken: WalletToken = {
+        ...token,
+        walletName: name,
+        address: tmp.address,
+        balance: 0,
+        derivePath,
+      };
+      this.hdWalletAddressIndex[token.coinId] = addressIndex;
+      this.wallet?.tokens.push(walletToken);
+      this.updateSelectWalletBalance();
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /**
    * 钱包创建
    */
   @action
-  async create(mnemonic: string, token: Token, password?: string) {
+  async create(token: Token, name: string, mnemonic: string, password?: string) {
     if (this.loading) {
       return;
     }
@@ -162,7 +206,7 @@ export class WalletService {
       const addressIndex = (this.singleChainWalletAddressIndex[token.coinId] || -1) + 1;
       const derivePath = `m/44'/${token.coinId}/0'/0/${addressIndex}`;
       const tmp = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
-      const idx = this.list.findIndex(item => item.tokens.findIndex(t => t.address === tmp.address) > -1);
+      const idx = this.list.findIndex(item => item.tokens.findIndex(t => t.contractAddress === tmp.address) > -1);
       if (idx > -1) {
         Toast.show({
           title: lang('wallet.exist'),
@@ -174,11 +218,12 @@ export class WalletService {
       let index = last ? last.index + 1 : 0;
       const wallet: Wallet = {
         index: index,
-        name: `${token.name}-${index + 1}`,
+        name: `${token.symbol}-${index + 1}`,
         type: WalletType.SINGLE_CHAIN,
         tokens: [
           {
             ...token,
+            walletName: name,
             address: tmp.address,
             balance: 0,
             derivePath,
@@ -188,6 +233,7 @@ export class WalletService {
       // 更新索引
       this.singleChainWalletAddressIndex[token.coinId] = addressIndex;
       this.list = [...this.list, wallet];
+      this.updateSelectWalletBalance();
     } finally {
       this.loading = false;
     }
@@ -261,7 +307,7 @@ export class WalletService {
 
       const transaction: TokenTransaction = {
         walletIndex,
-        address: fromToken.address,
+        address: fromToken.contractAddress,
         ...(txRes as any),
       };
       tokenTransactionService.save(transaction);
@@ -278,12 +324,11 @@ export class WalletService {
    */
   async estimateGasInfo(fromToken: WalletToken): Promise<{ gasPrice: string; gasLimit: string }> {
     const provider = blockchainNodeService.ethereumProvider;
-    const signer = new VoidSigner(fromToken.address, provider);
+    const signer = new VoidSigner(fromToken.contractAddress, provider);
     const value = await signer.estimateGas({
-      from: fromToken.address,
-      to: fromToken.address,
+      from: fromToken.contractAddress,
+      to: fromToken.contractAddress,
       nonce: randomUint32(),
-      value: '111',
     });
     const gasPrice = await signer.getGasPrice();
 

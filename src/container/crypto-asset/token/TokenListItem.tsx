@@ -1,9 +1,9 @@
 import React from 'react';
 import { Avatar } from 'native-base';
-import { findToken } from '../../../constants/Token';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
 import { WalletToken } from '../../../entity/Wallet';
+import { tokenService } from '../../../services/Token';
 
 export type TokenListItemProps = {} & WalletToken & ListItemProps;
 
@@ -12,7 +12,7 @@ export type TokenListItemProps = {} & WalletToken & ListItemProps;
  */
 export function TokenListItem(props: TokenListItemProps) {
   const { coinId, contractAddress, symbol, blockchain, balance, ...other } = props;
-  const Logo = findToken(coinId, contractAddress)?.logo;
+  const Logo = tokenService.findToken(coinId, contractAddress)?.logo;
   const icon = Logo && (
     <Avatar size="sm" bg="white">
       <Logo />

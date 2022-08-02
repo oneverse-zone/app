@@ -10,10 +10,15 @@ export const blockchains = [btcBlockchain, ethBlockchain, polygonBlockchain];
  */
 export class BlockchainService {
   /**
-   * 系统链列表
+   * 公链
    */
   @observable
-  blockchains: Array<Blockchain> = blockchains;
+  publicBlockchains: Array<Blockchain> = blockchains;
+
+  /**
+   * 支持HD钱包的链
+   */
+  supportHDBlockchains: Array<Blockchain> = [ethBlockchain];
 
   /**
    * 用户自行添加的链
@@ -27,6 +32,17 @@ export class BlockchainService {
       name: 'BlockchainStore',
       properties: ['customBlockchains'],
     });
+  }
+
+  get allBlockchains() {
+    return [...this.publicBlockchains, ...this.customBlockchains];
+  }
+
+  /**
+   *
+   */
+  supportHD(id: string): boolean {
+    return this.supportHDBlockchains.findIndex(item => item.id === id) > -1;
   }
 }
 

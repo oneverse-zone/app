@@ -3,11 +3,12 @@ import { Page } from '../../components/Page';
 import { userService } from '../../services/User';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { Box, Column, Row, Text } from 'native-base';
+import { Box, Column, IconButton, Row, Text } from 'native-base';
 import { lang } from '../../locales';
 import { route } from '../router';
 import { ListItem } from '../../components/ListItem';
 import { navigate } from '../../core/navigation';
+import { AddIcon } from 'native-base/src/components/primitives/Icon/Icons/Add';
 
 const functions = [
   {
@@ -19,6 +20,10 @@ const functions = [
 @observer
 @autoBind
 export class User extends Component<any, any> {
+  static options = {
+    headerRight: () => <IconButton icon={<AddIcon />} onPress={() => navigate(route.ProfilePersist)} />,
+  };
+
   constructor(props: any) {
     super(props);
     userService.queryProfile();

@@ -27,14 +27,14 @@ export class TokenTransactionService {
     if (type) {
       switch (type) {
         case 'in':
-          args.to = token.address;
+          args.to = token.contractAddress;
           break;
         case 'out':
-          args.from = token.address;
+          args.from = token.contractAddress;
           break;
       }
     } else {
-      args.address = token.address;
+      args.address = token.contractAddress;
     }
     const totalElements = tokenTransactionRepository.count(args);
     const content = tokenTransactionRepository.find(args);

@@ -12,6 +12,7 @@ import { TokenScreen } from './token';
 import { NFTScreen } from './NFT';
 import { navigate } from '../../core/navigation';
 import { route } from '../router';
+import { WalletSelectButton } from './wallet/components/WalletSelectButton';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -52,6 +53,7 @@ const tabs: Record<
 export class CryptoAsset extends Component<any, any> {
   static options = {
     headerRight: () => <AddIcon />,
+    headerLeft: (props: any) => <WalletSelectButton {...props} />,
   };
 
   handleSend() {

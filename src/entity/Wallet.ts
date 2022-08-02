@@ -5,7 +5,11 @@ import { Token } from './Token';
  */
 export type WalletToken = {
   /**
-   * 资产类型
+   * 钱包名称
+   */
+  walletName: string;
+  /**
+   * 资产
    */
   address: string;
 
