@@ -141,8 +141,6 @@ export class Session {
   private async handleIdentifyInit(password: string, mnemonic: string, mnemonicPassword?: string) {
     await this.login({ mnemonic, password: mnemonicPassword });
     console.log(`DID 身份登录成功`);
-    // 登录成功 初始化钱包
-    await walletService.initHDWallet(mnemonic, mnemonicPassword);
     await Keychain.setGenericPassword('oneverse', password);
     await this.initDevicePassword(password);
     await repository.saveMnemonic(mnemonic, mnemonicPassword);
