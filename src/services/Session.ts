@@ -13,6 +13,7 @@ import { route } from '../container/router';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
 import { walletService } from './Wallet';
+import { resetState } from '../mobx/mobx-reset';
 
 /**
  * N - The CPU/memory cost; increasing this increases the overall difficulty
@@ -157,6 +158,7 @@ export class Session {
       await Keychain.resetGenericPassword();
       this.locked = true;
       resetTo(route.Start);
+      resetState();
       Toast.show({
         title: lang('identify.delete.success'),
       });
