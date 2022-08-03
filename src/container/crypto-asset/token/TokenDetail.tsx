@@ -13,7 +13,7 @@ import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';
 import { TokenTransactionScreen } from './TokenTransaction';
-import { tokenService } from '../../../services/Token';
+import { tokenService } from '../../../services/blockchain/Token';
 
 const commonTab: MaterialTopTabNavigationOptions = {
   tabBarStyle: {

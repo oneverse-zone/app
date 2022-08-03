@@ -1,6 +1,6 @@
 import { getDefaultProvider } from '@ethersproject/providers';
-import { ethereumApi } from '../constants/Url';
-import { makeResettable } from '../mobx/mobx-reset';
+import { ethereumApi } from '../../constants/Url';
+import { makeResettable } from '../../mobx/mobx-reset';
 
 /**
  * 节点服务

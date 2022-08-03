@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
-import { Box, IconButton, CloseIcon, Actionsheet, Modal } from 'native-base';
+import { Box, CloseIcon, IconButton } from 'native-base';
 import { BlockchainList } from './components/BlockchainList';
 import { lang } from '../../../locales';
 import { Action, WalletNewActionSheet } from '../wallet/components/WalletNewActionSheet';
 import { Blockchain } from '../../../entity/Blockchain';
 import { route } from '../../router';
 import { goBack, replace } from '../../../core/navigation';
-import { blockchainService } from '../../../services/Blockchain';
+import { blockchainService } from '../../../services/blockchain';
 
 /**
  * 区块链选择页面
@@ -57,7 +57,7 @@ export class BlockchainSelect extends Component<any, any> {
   render() {
     const { walletActionOpen, selected } = this.state;
     return (
-      <Box>
+      <Box flex={1}>
         <BlockchainList onItemPress={this.handleBlockchainSelect} />
         <WalletNewActionSheet
           isOpen={walletActionOpen}

@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { btcToken, ethToken, maticToken } from '../constants/Token';
-import { Token, TokenType } from '../entity/Token';
+import { btcToken, ethToken, maticToken } from '../../constants/Token';
+import { Token, TokenType } from '../../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
-import { blockchainService } from './Blockchain';
-import { Blockchain } from '../entity/Blockchain';
-import { makeResettable } from '../mobx/mobx-reset';
+import { blockchainService } from './index';
+import { Blockchain } from '../../entity/Blockchain';
+import { makeResettable } from '../../mobx/mobx-reset';
 
 const tokens: Array<Token> = [btcToken, ethToken, maticToken];
 

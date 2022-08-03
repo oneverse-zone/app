@@ -3,7 +3,7 @@ import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { SectionList } from 'react-native';
 import { lang } from '../../../../locales';
-import { blockchainService } from '../../../../services/Blockchain';
+import { blockchainService } from '../../../../services/blockchain';
 import { Blockchain as BlockchainEntity } from '../../../../entity/Blockchain';
 import { ListItem } from '../../../../components/ListItem';
 import { Avatar, Text } from 'native-base';

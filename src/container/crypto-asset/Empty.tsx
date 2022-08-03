@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
-import { Actionsheet, Box, Column, Heading, Text } from 'native-base';
+import { Actionsheet, Box, Column, Text } from 'native-base';
 import { Button } from '../../components/Button';
 import { lang } from '../../locales';
 import { Page } from '../../components/Page';
@@ -26,14 +26,16 @@ export class Empty extends Component<any, any> {
     open: false,
   };
 
-  constructor(props: any) {
-    super(props);
-    props.navigation.setOptions({ headerShown: false });
+  componentDidMount() {
+    this.props.navigation.setOptions({ headerShown: false });
+  }
+
+  componentWillUnmount() {
+    this.props.navigation.setOptions({ headerShown: true });
   }
 
   async handleInitHd() {
     await walletService.initHDWallet();
-    this.props.navigation.setOptions({ headerShown: true });
   }
 
   openSwitch() {

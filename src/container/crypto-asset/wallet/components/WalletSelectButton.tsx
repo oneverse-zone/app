@@ -1,28 +1,23 @@
-import React, { Component } from 'react';
-import { autoBind } from 'jsdk/autoBind';
-import { observer } from 'mobx-react';
-import { Button } from '../../../../components/Button';
-import { walletService } from '../../../../services/Wallet';
-import { lang } from '../../../../locales';
+import React from 'react';
+import { IconButton, useTheme } from 'native-base';
 import { navigate } from '../../../../core/navigation';
 import { route } from '../../../router';
+import WalletIcon from '../../../../assets/svg/wallet.svg';
+
+function handlePress() {
+  navigate(route.WalletSelect);
+}
 
 /**
  * 钱包选择Button
  */
-@observer
-@autoBind
-export class WalletSelectButton extends Component<any, any> {
-  handlePress() {
-    navigate(route.WalletSelect);
-  }
-
-  render() {
-    const { selected } = walletService;
-    return (
-      <Button size="xs" minW={50} bgColor="gray.200" _text={{ color: 'darkText' }} onPress={this.handlePress}>
-        {selected ? selected.name : lang('wallet.select')}
-      </Button>
-    );
-  }
+export function WalletSelectButton() {
+  const { colors } = useTheme();
+  return (
+    <IconButton
+      borderRadius="full"
+      icon={<WalletIcon color="white" width={24} height={24} fill={colors.primary['500']} />}
+      onPress={handlePress}
+    />
+  );
 }

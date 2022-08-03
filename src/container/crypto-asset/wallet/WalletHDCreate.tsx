@@ -6,7 +6,7 @@ import { Column, FormControl, KeyboardAvoidingView } from 'native-base';
 import { lang } from '../../../locales';
 import { walletService } from '../../../services/Wallet';
 import { goBack } from '../../../core/navigation';
-import { tokenService } from '../../../services/Token';
+import { tokenService } from '../../../services/blockchain/Token';
 import { Button } from '../../../components/Button';
 import { Input } from '../../../components/Input';
 

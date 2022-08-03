@@ -11,13 +11,13 @@ import { Token } from '../entity/Token';
 import { makePersistable } from 'mobx-persist-store';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
-import { blockchainNodeService } from './BlockchainNode';
+import { blockchainNodeService } from './blockchain/node';
 import { repository } from './Repository';
 import { TokenTransaction } from '../entity/Transaction';
 import { parseUnits } from '@ethersproject/units/src.ts';
 import { randomUint32 } from '@stablelib/random/random';
-import { tokenTransactionService } from './TokenTransaction';
-import { tokenService } from './Token';
+import { tokenTransactionService } from './blockchain/TokenTransaction';
+import { tokenService } from './blockchain/Token';
 import { makeResettable } from '../mobx/mobx-reset';
 
 /**

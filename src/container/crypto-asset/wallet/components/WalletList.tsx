@@ -8,7 +8,7 @@ import { FixedBottomView } from '../../../../components/FixedBottomView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { replace } from '../../../../core/navigation';
 import { route } from '../../../router';
-import { tokenService } from '../../../../services/Token';
+import { tokenService } from '../../../../services/blockchain/Token';
 
 function renderSectionHeader({ section: { title } }: any) {
   return <Text padding={3}>{title}</Text>;

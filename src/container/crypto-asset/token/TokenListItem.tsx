@@ -3,7 +3,7 @@ import { Avatar } from 'native-base';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
 import { WalletToken } from '../../../entity/Wallet';
-import { tokenService } from '../../../services/Token';
+import { tokenService } from '../../../services/blockchain/Token';
 
 export type TokenListItemProps = {} & WalletToken & ListItemProps;
 

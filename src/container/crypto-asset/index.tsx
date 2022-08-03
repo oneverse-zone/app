@@ -14,6 +14,7 @@ import { navigate } from '../../core/navigation';
 import { route } from '../router';
 import { WalletSelectButton } from './wallet/components/WalletSelectButton';
 import { Empty } from './Empty';
+import { WalletAddButton } from './wallet/components/WalletAddButton';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -53,8 +54,8 @@ const tabs: Record<
 @autoBind
 export class CryptoAsset extends Component<any, any> {
   static options = {
-    headerRight: () => <AddIcon />,
-    headerLeft: (props: any) => <WalletSelectButton {...props} />,
+    headerLeft: WalletSelectButton,
+    headerRight: WalletAddButton,
   };
 
   handleSend() {
