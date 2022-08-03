@@ -32,10 +32,7 @@ export class TokenReceive extends Component<any, any> {
     console.log(context);
     props.navigation.setOptions({
       title: `${token.symbol} ${lang('token.receive')}`,
-      headerStyle: {
-        borderBottomWidth: 0,
-        elevation: 0,
-      },
+      headerTransparent: true,
     });
   }
 
@@ -60,7 +57,7 @@ export class TokenReceive extends Component<any, any> {
     const tipLang = lang('token.receive.tip');
 
     return (
-      <Page safeAreaBottom backgroundColor="primary.500" padding={5}>
+      <Page safeAreaBottom scroll={{ backgroundColor: 'primary.500' }} padding={5} paddingTop={120}>
         <Alert borderColor="warning" colorScheme="warning">
           <Row flexShrink={1} space={2} alignItems="center">
             <Alert.Icon mt="1" />
@@ -69,9 +66,9 @@ export class TokenReceive extends Component<any, any> {
         </Alert>
         <Column borderRadius="lg" space={8} marginTop={50} padding={3} backgroundColor="white" alignItems="center">
           {logo}
-          <QRCode value={token?.contractAddress} size={150} />
-          <Text width={150 + 100} textAlign="center">
-            {token?.contractAddress}
+          <QRCode value={token?.address} size={200} />
+          <Text width={180 + 100} textAlign="center">
+            {token?.address}
           </Text>
           <Button variant="link" leftIcon={<Icon as={MaterialIcons} name="content-copy" />} onPress={this.handleCopy}>
             {lang('token.address.copy')}
