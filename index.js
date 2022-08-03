@@ -1,5 +1,6 @@
 import './shim';
 import './src/polyfill';
+import './src/services/blockchain/provider';
 
 import { AppRegistry } from 'react-native';
 import { configure } from 'mobx';
