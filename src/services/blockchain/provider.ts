@@ -1,4 +1,4 @@
 /**
  * 注册provider
  */
-import './ethereum';
+import './ethereum-provider';
