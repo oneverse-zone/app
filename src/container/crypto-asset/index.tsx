@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { AddIcon, Box, Button, Row, Text } from 'native-base';
+import { Box, Button, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
-import { walletService } from '../../services/wallet-manager';
 import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 
 import { TokenScreen } from './token';
@@ -15,6 +14,7 @@ import { route } from '../router';
 import { WalletSelectButton } from './wallet/components/WalletSelectButton';
 import { Empty } from './Empty';
 import { WalletAddButton } from './wallet/components/WalletAddButton';
+import { walletManagerService } from '../../services/wallet-manager';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -71,7 +71,7 @@ export class CryptoAsset extends Component<any, any> {
   }
 
   render() {
-    const { totalAmount, wallets } = walletService;
+    const { wallets } = walletManagerService;
     if (wallets.length === 0) {
       return <Empty {...this.props} />;
     }
@@ -85,7 +85,7 @@ export class CryptoAsset extends Component<any, any> {
           minH={120}
           justifyContent="space-between">
           <Text fontWeight="500" fontSize="2xl" color="white">
-            {totalAmount}
+            {0}
           </Text>
           <Row>
             <Button

@@ -69,6 +69,14 @@ class Repository {
     await AsyncStorage.setItem(key.mnemonicBackupStatus, status);
   }
 
+  get(key: string) {
+    return AsyncStorage.getItem(key);
+  }
+
+  set(key: string, value: string) {
+    return AsyncStorage.setItem(key, value);
+  }
+
   async clearCache() {
     const keys = await AsyncStorage.getAllKeys();
     await Promise.all(keys.filter(item => !dataKeys.includes(item)).map(key => AsyncStorage.removeItem(key)));

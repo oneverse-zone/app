@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import { Actionsheet, Box, Column, Text } from 'native-base';
 import { Button } from '../../components/Button';
 import { lang } from '../../locales';
 import { Page } from '../../components/Page';
 import { PageTitle } from '../../components/PageTitle';
-import { observer } from 'mobx-react';
-import { walletService } from '../../services/wallet-manager';
+import { walletManagerService } from '../../services/wallet-manager';
 
 const items = [
   {
@@ -35,7 +35,7 @@ export class Empty extends Component<any, any> {
   }
 
   async handleInitHd() {
-    await walletService.initHDWallet();
+    await walletManagerService.initDIDHDWallet('');
   }
 
   openSwitch() {
@@ -45,7 +45,7 @@ export class Empty extends Component<any, any> {
   handleItemPress(item: any) {}
 
   render() {
-    const { loading } = walletService;
+    const { loading } = walletManagerService;
     const { open } = this.state;
     const footer = (
       <Actionsheet isOpen={open} onClose={this.openSwitch}>

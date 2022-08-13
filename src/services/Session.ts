@@ -172,6 +172,7 @@ export class Session {
    */
   private async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
     try {
+      console.log(mnemonic, password);
       this.didService = await DIDService.newInstance({
         ceramicApi,
         mnemonic,
