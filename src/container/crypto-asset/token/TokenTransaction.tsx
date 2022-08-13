@@ -3,7 +3,7 @@ import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { Box, FlatList } from 'native-base';
 import { goBack } from '../../../core/navigation';
-import { walletService } from '../../../services/Wallet';
+import { walletService } from '../../../services/wallet-manager';
 import { tokenTransactionService } from '../../../services/blockchain/TokenTransaction';
 import { ListRenderItem, ListRenderItemInfo } from 'react-native';
 import { ListItem } from '../../../components/ListItem';

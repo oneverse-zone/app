@@ -12,7 +12,6 @@ import { resetTo } from '../core/navigation';
 import { route } from '../container/router';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
-import { walletService } from './Wallet';
 import { makeResettable, resetState } from '../mobx/mobx-reset';
 
 /**

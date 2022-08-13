@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { Page } from '../../../components/Page';
-import { walletService } from '../../../services/Wallet';
+import { walletService } from '../../../services/wallet-manager';
 import { TokenList } from './TokenList';
 import { navigate, replace } from '../../../core/navigation';
-import { WalletToken } from '../../../entity/Wallet';
+import { WalletToken } from '../../../entity/blockchain/wallet';
 import { lang } from '../../../locales';
 
 /**

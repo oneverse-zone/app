@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { SectionList } from 'react-native';
 import { lang } from '../../../../locales';
 import { blockchainService } from '../../../../services/blockchain';
-import { Blockchain as BlockchainEntity } from '../../../../entity/Blockchain';
+import { Blockchain as BlockchainEntity } from '../../../../entity/blockchain/blockchain';
 import { ListItem } from '../../../../components/ListItem';
 import { Avatar, Text } from 'native-base';
 

@@ -8,7 +8,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 
 import { goBack, navigate } from '../../../core/navigation';
-import { WalletToken } from '../../../entity/Wallet';
+import { WalletToken } from '../../../entity/blockchain/wallet';
 import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';

@@ -3,8 +3,8 @@ import { View } from 'native-base';
 import { WalletList } from './components/WalletList';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { walletService } from '../../../services/Wallet';
-import { Wallet } from '../../../entity/Wallet';
+import { walletService } from '../../../services/wallet-manager';
+import { Wallet } from '../../../entity/blockchain/wallet';
 import { goBack, replace } from '../../../core/navigation';
 import { lang } from '../../../locales';
 

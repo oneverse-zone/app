@@ -1,25 +1,87 @@
-import { WalletToken } from '../../entity/Wallet';
+import { Coin } from '../../entity/blockchain/coin';
+import { WalletAccount } from '../../entity/blockchain/wallet-account';
+
+export type CreateHDWalletAccountOptions = {
+  secretKey?: never;
+
+  // 参数开始
+  accountIndex: number;
+  changeIndex: number;
+  addressIndex: number;
+  /**
+   * 助记词
+   */
+  mnemonic: string;
+  /**
+   * 助记词密码
+   */
+  password?: string;
+};
+
+export type CreateSingleChainWalletAccountOptions = {
+  accountIndex?: never;
+  changeIndex?: never;
+  addressIndex?: never;
+  mnemonic?: never;
+  password?: never;
+
+  /**
+   * 钱包秘钥
+   */
+  secretKey: string;
+};
+
+/**
+ * 创建HD钱包选项
+ */
+export type CreateWalletAccountOptions = {
+  name: string;
+  coin: Coin;
+} & (CreateHDWalletAccountOptions | CreateSingleChainWalletAccountOptions);
 
 /**
  * 基础服务接口
  */
-export interface IBase {}
+export interface BaseProvider {
+  isEthereum(): boolean;
+
+  isBitcoin(): boolean;
+
+  isPolygon(): boolean;
+}
 
 /**
  * Wallet 服务接口
  */
 export interface WalletProvider {
   /**
-   * 是否支持该token
-   * @param token
+   * 是否支持该coin
+   * @param coin
    */
-  support(token: WalletToken): boolean | Promise<boolean>;
+  support(coin: Coin): boolean | Promise<boolean>;
+
+  /**
+   * 创建钱包token
+   */
+  createAccount(args: CreateWalletAccountOptions): WalletAccount;
 
   /**
    * 获取Token余额
-   * @param token token信息
+   * @param account 账户信息
    */
-  getBalance(token: WalletToken): Promise<string>;
+  getBalance(account: WalletAccount): Promise<string>;
+
+  /**
+   * 预估GAS
+   * @param account 账户信息
+   * @param transaction 交易信息
+   */
+  estimateGas(account: WalletAccount, transaction: any): Promise<string>;
+
+  /**
+   * 获取gas price
+   */
+  getGasPrice(account: WalletAccount): Promise<string>;
 
   // getTransactionCount(blockTag?: BlockTag): Promise<number>;
   //

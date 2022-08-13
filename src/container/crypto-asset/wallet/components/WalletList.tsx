@@ -3,7 +3,7 @@ import { SectionList } from 'react-native';
 import { AddIcon, Avatar, Box, Button, Text } from 'native-base';
 import { lang } from '../../../../locales';
 import { ListItem } from '../../../../components/ListItem';
-import { Wallet, WalletType } from '../../../../entity/Wallet';
+import { Wallet, WalletType } from '../../../../entity/blockchain/wallet';
 import { FixedBottomView } from '../../../../components/FixedBottomView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { replace } from '../../../../core/navigation';

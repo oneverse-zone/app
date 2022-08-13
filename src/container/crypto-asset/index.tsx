@@ -5,7 +5,7 @@ import { AddIcon, Box, Button, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
-import { walletService } from '../../services/Wallet';
+import { walletService } from '../../services/wallet-manager';
 import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 
 import { TokenScreen } from './token';

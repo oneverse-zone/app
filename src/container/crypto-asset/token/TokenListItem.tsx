@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar } from 'native-base';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
-import { WalletToken } from '../../../entity/Wallet';
+import { WalletToken } from '../../../entity/blockchain/wallet';
 import { tokenService } from '../../../services/blockchain/Token';
 
 export type TokenListItemProps = {} & WalletToken & ListItemProps;

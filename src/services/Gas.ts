@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { Token } from '../entity/Token';
+import { Token } from '../entity/blockchain/token';
 
 export class GasService {
   constructor() {

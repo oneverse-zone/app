@@ -6,7 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { Page } from '../../../components/Page';
-import { WalletToken } from '../../../entity/Wallet';
+import { WalletToken } from '../../../entity/blockchain/wallet';
 import { lang } from '../../../locales';
 import { goBack } from '../../../core/navigation';
 import Clipboard from '@react-native-clipboard/clipboard';

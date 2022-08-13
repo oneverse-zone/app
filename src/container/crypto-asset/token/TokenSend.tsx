@@ -5,8 +5,8 @@ import { Column, FormControl, Input, Row, Slider, TextArea } from 'native-base';
 import { lang } from '../../../locales';
 import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
-import { walletService } from '../../../services/Wallet';
-import { WalletToken } from '../../../entity/Wallet';
+import { walletService } from '../../../services/wallet-manager';
+import { WalletToken } from '../../../entity/blockchain/wallet';
 import { goBack } from '../../../core/navigation';
 
 /**

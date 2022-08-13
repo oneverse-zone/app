@@ -6,7 +6,7 @@ import { lang } from '../../locales';
 import { Page } from '../../components/Page';
 import { PageTitle } from '../../components/PageTitle';
 import { observer } from 'mobx-react';
-import { walletService } from '../../services/Wallet';
+import { walletService } from '../../services/wallet-manager';
 
 const items = [
   {

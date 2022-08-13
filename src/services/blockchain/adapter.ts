@@ -1,5 +1,7 @@
-import { WalletProvider } from './types';
-import { WalletToken } from '../../entity/Wallet';
+import { CreateWalletAccountOptions, WalletProvider } from './types';
+import { Token } from '../../entity/blockchain/token';
+import { Coin } from '../../entity/blockchain/coin';
+import { WalletAccount } from '../../entity/blockchain/wallet-account';
 
 /**
  * 区块链适配器
@@ -7,12 +9,28 @@ import { WalletToken } from '../../entity/Wallet';
 export class WalletAdapter implements WalletProvider {
   private providers: Array<WalletProvider> = [];
 
-  support(token: WalletToken): boolean | Promise<boolean> {
+  support(token: Token): boolean | Promise<boolean> {
     return true;
   }
 
-  getBalance(token: WalletToken): Promise<string> {
-    return this.getProvider(token).getBalance(token);
+  /**
+   * 代理钱包创建
+   * @param args
+   */
+  createAccount(args: CreateWalletAccountOptions): WalletAccount {
+    return this.getProvider(args.coin).createAccount(args);
+  }
+
+  getBalance(account: WalletAccount): Promise<string> {
+    return this.getProvider(account.coin).getBalance(account);
+  }
+
+  estimateGas(account: WalletAccount, transaction: any): Promise<string> {
+    return this.getProvider(account.coin).estimateGas(account, transaction);
+  }
+
+  getGasPrice(account: WalletAccount): Promise<string> {
+    return this.getProvider(account.coin).getGasPrice(account);
   }
 
   /**
@@ -27,13 +45,13 @@ export class WalletAdapter implements WalletProvider {
    * 获取提供者
    * @private
    */
-  private getProvider(token: WalletToken): WalletProvider {
-    const provider = this.providers.find(item => item.support(token));
+  private getProvider(coin: Coin): WalletProvider {
+    const provider = this.providers.find(item => item.support(coin));
     if (provider) {
       return provider;
     }
 
-    throw new Error('不支持的Token');
+    throw new Error('不支持的Coin');
   }
 }
 

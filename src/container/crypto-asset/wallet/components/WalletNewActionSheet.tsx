@@ -1,8 +1,8 @@
 import React from 'react';
 import { Actionsheet, Box, Divider, IActionsheetProps, ITextProps, Text } from 'native-base';
 import { lang } from '../../../../locales';
-import { Wallet } from '../../../../entity/Wallet';
-import { Blockchain } from '../../../../entity/Blockchain';
+import { Wallet } from '../../../../entity/blockchain/wallet';
+import { Blockchain } from '../../../../entity/blockchain/blockchain';
 import { Title } from '../../../../components/Title';
 
 export type Action = 'create' | 'recover' | 'hd';

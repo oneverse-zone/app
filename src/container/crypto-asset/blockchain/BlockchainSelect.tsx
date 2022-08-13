@@ -4,7 +4,7 @@ import { Box, CloseIcon, IconButton } from 'native-base';
 import { BlockchainList } from './components/BlockchainList';
 import { lang } from '../../../locales';
 import { Action, WalletNewActionSheet } from '../wallet/components/WalletNewActionSheet';
-import { Blockchain } from '../../../entity/Blockchain';
+import { Blockchain } from '../../../entity/blockchain/blockchain';
 import { route } from '../../router';
 import { goBack, replace } from '../../../core/navigation';
 import { blockchainService } from '../../../services/blockchain';
