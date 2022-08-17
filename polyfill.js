@@ -5,10 +5,9 @@ import '@ethersproject/shims';
 // ReferenceError: Can't find variable: TextEncoder
 import 'text-encoding-polyfill';
 
-// react native url
-// import { URL } from 'whatwg-url';
+// react native url polyfill
+import 'react-native-url-polyfill/auto';
 
-// global.URL = URL;
 
 // ReferenceError: TypeError: undefined is not an object (near '...ator.userAgent : '').match(/ (MSIE 8|MSI...')
 global.navigator.userAgent = '';
