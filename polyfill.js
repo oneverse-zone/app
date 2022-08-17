@@ -8,7 +8,6 @@ import 'text-encoding-polyfill';
 // react native url polyfill
 import 'react-native-url-polyfill/auto';
 
-
 // ReferenceError: TypeError: undefined is not an object (near '...ator.userAgent : '').match(/ (MSIE 8|MSI...')
 global.navigator.userAgent = '';
 // 修复 multiformats/hashes/sha2 包的 undefined is not an object (evaluating 'crypto.subtle.digest') 错误
