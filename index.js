@@ -1,5 +1,4 @@
-import './shim';
-import './src/polyfill';
+import './polyfill';
 import './src/services/blockchain/provider';
 
 import { AppRegistry } from 'react-native';

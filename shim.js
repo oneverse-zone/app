@@ -24,18 +24,3 @@ if (typeof localStorage !== 'undefined') {
 // If using the crypto shim, uncomment the following line to ensure
 // crypto is loaded first, so it can populate global.crypto
 require('crypto');
-
-import { hash as sha256 } from '@stablelib/sha256';
-
-// 修复 multiformats/hashes/sha2 包的 undefined is not an object (evaluating 'crypto.subtle.digest') 错误
-crypto.subtle = {
-  digest(algorithm, data) {
-    switch (algorithm) {
-      case 'SHA-256':
-        return sha256(data);
-      default:
-        console.log(`为支持的算法: ${algorithm}`);
-        throw new Error(`不支持的算法: ${algorithm}`);
-    }
-  },
-};

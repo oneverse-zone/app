@@ -165,12 +165,6 @@ export class Session {
    * @param password 密码
    */
   private async initDID({ mnemonic, password }: { mnemonic: string; password?: string }) {
-    const API_PATH = '/api/v0/';
-    const CERAMIC_HOST = 'http://localhost:7007';
-    const url = new URL(API_PATH, CERAMIC_HOST);
-    console.log(String(url));
-    const api = new URL('./multiqueries', url);
-    console.log(String(api));
     try {
       this.didService = await DIDService.newInstance({
         ceramicApi,
