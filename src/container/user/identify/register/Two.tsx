@@ -42,8 +42,8 @@ export class RegisterTwo extends Component<any, any> {
   async handleRegister() {
     const { password } = this.props.route?.params || {};
     const { mnemonicLength, password: mnemonicPassword } = this.state;
-    await sessionService.registerAndLogin(password, parseInt(mnemonicLength), mnemonicPassword);
-    resetTo(route.BackupOne);
+    const mnemonic = await sessionService.registerAndLogin(password, parseInt(mnemonicLength), mnemonicPassword);
+    mnemonic && resetTo(route.BackupOne, { mnemonic });
   }
 
   valid() {

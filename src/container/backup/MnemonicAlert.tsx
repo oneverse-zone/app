@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertDialog, Text } from 'native-base';
-import { lang } from '../../../../locales';
+import { lang } from '../../locales';
 
 export type MnemonicAlertProps = {
   open: boolean;

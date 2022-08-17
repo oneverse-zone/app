@@ -7,7 +7,7 @@ import { resetTo } from '../core/navigation';
 import { route } from './router';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
-import { BackupFour } from './user/identify/backup/Four';
+import { BackupFour } from './backup/Four';
 import { passwordService } from '../services/password';
 
 export const Splash: React.FC<any> = observer(function Splash() {

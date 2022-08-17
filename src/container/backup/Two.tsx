@@ -3,15 +3,14 @@ import { autoBind } from 'jsdk/autoBind';
 import { Box, Center, Column, Heading, Icon, Row, Text, Toast } from 'native-base';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-import { Page } from '../../../../components/Page';
-import { lang } from '../../../../locales';
-import { PageTitle } from '../../../../components/PageTitle';
-import { Button } from '../../../../components/Button';
+import { Page } from '../../components/Page';
+import { lang } from '../../locales';
+import { PageTitle } from '../../components/PageTitle';
+import { Button } from '../../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { repository } from '../../../../services/Repository';
-import { FixedBottomView } from '../../../../components/FixedBottomView';
-import { navigate } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { FixedBottomView } from '../../components/FixedBottomView';
+import { goBack, navigate } from '../../core/navigation';
+import { route } from '../router';
 import { Word } from './Word';
 
 /**
@@ -32,16 +31,13 @@ export class BackupTwo extends Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    this.getMnemonic();
-  }
-
-  async getMnemonic() {
-    const data: any = await repository.findMnemonic(true);
-    if (data?.mnemonic) {
-      this.setState({
-        mnemonicWords: data?.mnemonic.split(' '),
-      });
+    const { mnemonic } = props.route.params || {};
+    if (!mnemonic) {
+      goBack();
+      return;
     }
+
+    this.state.mnemonicWords = mnemonic.split(' ');
   }
 
   openSwitch() {
@@ -61,7 +57,7 @@ export class BackupTwo extends Component<any, any> {
   render() {
     const { open, mnemonicWords } = this.state;
     return (
-      <Page paddingX={7} space={3}>
+      <Page paddingX={8} space={3}>
         <PageTitle title={lang('backup.two.title')} description={lang('backup.two.describe')} />
         <Box borderRadius="lg" minH={260}>
           {open ? (

@@ -26,18 +26,19 @@ class PasswordService {
     const key = await SecurityService.toKey(password);
 
     const data = await SecurityService.encryptWithKey(key, text);
+    console.log(`密文: ${data}`);
     await repository.set(passwordStorageKey, data);
   }
 
   async verify(password: string) {
-    const data = repository.get(passwordStorageKey);
+    const data = await repository.get(passwordStorageKey);
     if (!data) {
       return false;
     }
     try {
       const key = await SecurityService.toKey(password);
-      const data = await SecurityService.decryptWithKey(key, text);
-      return data === text;
+      const plaintext = await SecurityService.decryptWithKey(key, data);
+      return plaintext === text;
     } catch (e) {
       return false;
     }

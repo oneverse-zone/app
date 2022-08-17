@@ -85,7 +85,11 @@ export class Session {
    * 注册去中心化身份并自动登录
    */
   @action
-  async registerAndLogin(password: string, mnemonicLength: number, mnemonicPassword?: string) {
+  async registerAndLogin(
+    password: string,
+    mnemonicLength: number,
+    mnemonicPassword?: string,
+  ): Promise<string | undefined> {
     if (this.loading) {
       return;
     }
@@ -94,6 +98,7 @@ export class Session {
       const mnemonicStr = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
       const mnemonic = { mnemonic: mnemonicStr, password: mnemonicPassword };
       await this.handleRegisterAndLogin(password, mnemonic);
+      return mnemonicStr;
     } catch (e) {
       console.error('身份注册失败', e);
       throw e;

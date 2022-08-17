@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
-import { Page } from '../../../../components/Page';
-import { lang } from '../../../../locales';
-import { PageTitle } from '../../../../components/PageTitle';
-import { randomMnemonic } from '@oneverse/utils';
-import { repository } from '../../../../services/Repository';
+import { Page } from '../../components/Page';
+import { lang } from '../../locales';
+import { PageTitle } from '../../components/PageTitle';
+import { repository } from '../../services/Repository';
 import { ArrayUtil } from '@aomi/utils/ArrayUtil';
 import { Box, Row } from 'native-base';
 import { Word } from './Word';
-import { FixedBottomView } from '../../../../components/FixedBottomView';
-import { Button } from '../../../../components/Button';
-import { resetTo } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { FixedBottomView } from '../../components/FixedBottomView';
+import { Button } from '../../components/Button';
+import { resetTo } from '../../core/navigation';
+import { route } from '../router';
 
 type State = {
   mnemonic: string;
@@ -48,7 +47,7 @@ export class BackupThree extends Component<any, State> {
   }
 
   async getMnemonic() {
-    const data: any = await repository.findMnemonic(true);
+    const data: any = await repository.findMnemonic();
     if (data?.mnemonic) {
       this.setState({
         mnemonic: data?.mnemonic,
@@ -97,7 +96,7 @@ export class BackupThree extends Component<any, State> {
   render() {
     const { mnemonic, mnemonicWords, selectMnemonicWords } = this.state;
     return (
-      <Page paddingX={7}>
+      <Page paddingX={8}>
         <PageTitle title={lang('backup.three.title')} description={lang('backup.three.describe')}></PageTitle>
         <Row flexWrap="wrap" padding={3} backgroundColor="coolGray.200" borderRadius="lg">
           {selectMnemonicWords.length === 0 && <Box height={50} />}

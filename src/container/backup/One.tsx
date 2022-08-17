@@ -1,12 +1,12 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
-import { AlertDialog, Spacer, Button as NButton, Column, Text } from 'native-base';
-import { Page } from '../../../../components/Page';
-import { PageTitle } from '../../../../components/PageTitle';
-import { lang } from '../../../../locales';
-import { Button } from '../../../../components/Button';
-import { navigate, resetTo } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { Button as NButton, Column, Spacer, Text } from 'native-base';
+import { Page } from '../../components/Page';
+import { PageTitle } from '../../components/PageTitle';
+import { lang } from '../../locales';
+import { Button } from '../../components/Button';
+import { navigate, resetTo } from '../../core/navigation';
+import { route } from '../router';
 import { MnemonicAlert } from './MnemonicAlert';
 
 /**
@@ -32,13 +32,13 @@ export class BackupOne extends Component<any, any> {
   }
 
   handleStart() {
-    navigate(route.BackupTwo);
+    navigate(route.BackupTwo, this.props.route.params);
   }
 
   render() {
     const { open } = this.state;
     return (
-      <Page paddingX={4} Root={Column} space={5}>
+      <Page paddingX={4} Root={Column} space={5} safeAreaBottom>
         <PageTitle title={lang('protect-your-account-safe')} />
         <Text alignItems="center">
           {'不要冒失丢帐户、资产的风险。在您信任的地方保存您的'}
@@ -55,7 +55,7 @@ export class BackupOne extends Component<any, any> {
             {'(不建议)'}
           </Text>
         </Button>
-        <Button onPress={this.handleStart}>{'开始'}</Button>
+        <Button onPress={this.handleStart}>{'立即备份'}</Button>
         <Text textAlign="center" color="gray.500" fontSize="xs">
           {'强烈建议'}
         </Text>

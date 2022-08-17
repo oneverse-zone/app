@@ -1,11 +1,11 @@
 import React from 'react';
 import { Center, Column, Icon, Text } from 'native-base';
-import { Page } from '../../../../components/Page';
-import { PageTitle } from '../../../../components/PageTitle';
-import { lang } from '../../../../locales';
-import { Button } from '../../../../components/Button';
-import { resetTo } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { Page } from '../../components/Page';
+import { PageTitle } from '../../components/PageTitle';
+import { lang } from '../../locales';
+import { Button } from '../../components/Button';
+import { resetTo } from '../../core/navigation';
+import { route } from '../router';
 
 export function BackupFour() {
   function handleFinish() {
