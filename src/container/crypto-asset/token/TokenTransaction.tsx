@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Box, FlatList } from 'native-base';
-import { goBack } from '../../../core/navigation';
-import { walletService } from '../../../services/wallet-manager';
-import { tokenTransactionService } from '../../../services/blockchain/TokenTransaction';
-import { ListRenderItem, ListRenderItemInfo } from 'react-native';
+import { FlatList } from 'native-base';
+import { ListRenderItemInfo } from 'react-native';
 import { ListItem } from '../../../components/ListItem';
 import { TokenTransaction } from '../../../entity/Transaction';
 import { Title } from '../../../components/Title';
@@ -27,10 +24,10 @@ export class TokenTransactionScreen extends Component<any, any> {
       console.log(this.props);
       return;
     }
-    await tokenTransactionService.query({
-      type,
-      token,
-    });
+    // await tokenTransactionService.query({
+    //   type,
+    //   token,
+    // });
   }
 
   renderItem({ item }: ListRenderItemInfo<TokenTransaction>) {
@@ -39,10 +36,10 @@ export class TokenTransactionScreen extends Component<any, any> {
   }
 
   render() {
-    const { page } = tokenTransactionService;
+    // const { page } = tokenTransactionService;
     return (
       <>
-        <FlatList data={page.content as any} renderItem={this.renderItem} />
+        <FlatList data={[]} renderItem={this.renderItem} />
       </>
     );
   }

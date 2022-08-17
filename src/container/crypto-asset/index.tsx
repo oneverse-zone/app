@@ -14,7 +14,7 @@ import { route } from '../router';
 import { WalletSelectButton } from './wallet/components/WalletSelectButton';
 import { Empty } from './Empty';
 import { WalletAddButton } from './wallet/components/WalletAddButton';
-import { walletManagerService } from '../../services/wallet-manager';
+import { walletManagerService } from '../../services/blockchain/wallet-manager';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {

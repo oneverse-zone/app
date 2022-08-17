@@ -64,9 +64,4 @@ export type Wallet = {
    * 加密后的助记词或者私钥
    */
   secretKey: string;
-
-  /**
-   * 钱包内的帐户信息
-   */
-  accounts: Array<WalletAccount>;
 } & (HDWallet | SignChainWallet);

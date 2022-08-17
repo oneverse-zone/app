@@ -1,9 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { XChaCha20Poly1305 } from '@stablelib/xchacha20poly1305';
-import { decodeCleartext, prepareCleartext } from 'dag-jose-utils';
-import { randomBytes } from '@stablelib/random';
-import * as u8a from 'uint8arrays';
-import { Mnemonic } from '../entity/blockchain/wallet';
 
 const key = {
   /**
@@ -24,15 +19,6 @@ const dataKeys = [key.mnemonic, key.mnemonicBackupStatus, key.language];
  * 数据仓库服务
  */
 class Repository {
-  cipher?: XChaCha20Poly1305 | undefined;
-
-  /**
-   * 初始化cipher
-   */
-  initCipher(key: Uint8Array) {
-    this.cipher = new XChaCha20Poly1305(key);
-  }
-
   findLanguage() {
     return AsyncStorage.getItem(key.language);
   }

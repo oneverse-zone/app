@@ -1,8 +1,6 @@
 /**
  * 钱包账户信息
  */
-import { Token } from './token';
-import { Coin } from './coin';
 
 /**
  * 身份账户信息
@@ -70,22 +68,24 @@ export type WalletAccount = {
   address: string;
 
   /**
-   * 余额
-   */
-  balance: number | string;
-
-  /**
    * token 备注
    */
   remark?: string;
 
   /**
-   * 主链币信息
-   */
-  coin: Coin;
-
-  /**
    * 账户中的tokens
    */
-  tokens: Array<Token>;
+  tokens: Array<WalletToken>;
 } & (HDWalletAccount | SingleChainWalletAccount);
+
+/**
+ * 主链币
+ */
+export type WalletCoin = {
+  balance: number | string;
+};
+
+/**
+ * 账户中的tokens
+ */
+export type WalletToken = {} & WalletCoin;

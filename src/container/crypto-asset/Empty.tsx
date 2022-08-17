@@ -6,7 +6,7 @@ import { Button } from '../../components/Button';
 import { lang } from '../../locales';
 import { Page } from '../../components/Page';
 import { PageTitle } from '../../components/PageTitle';
-import { walletManagerService } from '../../services/wallet-manager';
+import { walletManagerService } from '../../services/blockchain/wallet-manager';
 
 const items = [
   {
@@ -35,7 +35,7 @@ export class Empty extends Component<any, any> {
   }
 
   async handleInitHd() {
-    await walletManagerService.initDIDHDWallet('');
+    await walletManagerService.initDIDHDWallet('Wallet HD');
   }
 
   openSwitch() {

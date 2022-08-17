@@ -19,7 +19,7 @@ import { WalletSelect } from './crypto-asset/wallet/WalletSelect';
 import { WalletCreate } from './crypto-asset/wallet/WalletCreate';
 import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 import { TokenDetail } from './crypto-asset/token/TokenDetail';
-import { TokenSend } from './crypto-asset/token/TokenSend';
+import { TokenTransfer } from './crypto-asset/token/token-transfer';
 import { TokenSelect } from './crypto-asset/token/TokenSelect';
 import { TokenReceive } from './crypto-asset/token/TokenReceive';
 import { WalletHDCreate } from './crypto-asset/wallet/WalletHDCreate';
@@ -146,7 +146,7 @@ export const routers: Array<{
   },
   {
     name: route.TokenSend,
-    component: TokenSend,
+    component: TokenTransfer,
   },
   {
     name: route.TokenReceive,

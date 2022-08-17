@@ -13,19 +13,8 @@ import { route } from '../container/router';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
 import { makeResettable, resetState } from '../mobx/mobx-reset';
-
-/**
- * N - The CPU/memory cost; increasing this increases the overall difficulty
- */
-const N = 8192;
-/**
- * r - The block size; increasing this increases the dependency on memory latency and bandwidth
- */
-const r = 8;
-/**
- * p - The parallelization cost; increasing this increases the dependency on multi-processing
- */
-const p = 4;
+import { passwordService } from './password';
+import { securityService } from './security';
 
 export class Session {
   didService: DIDService | undefined;
@@ -75,16 +64,17 @@ export class Session {
     if (this.loading) return;
     this.loading = true;
     try {
-      const credentials = await Keychain.getGenericPassword();
-      if (credentials && credentials.password !== pwd) {
+      const ok = await passwordService.verify(pwd);
+      if (!ok) {
         throw new Error('密码不正确');
       }
-      this.locked = false;
-      await this.initDevicePassword(pwd);
-      const mnemonic: any = await repository.findMnemonic(true);
+      await securityService.initCipher(pwd);
+      let mnemonic: any = await repository.findMnemonic();
+      mnemonic = await securityService.decrypt(mnemonic);
       if (mnemonic) {
-        console.log('设备解锁成功,自动登录');
-        await this.login(mnemonic);
+        console.log('设备解锁成功,初始化身份信息');
+        await this.initDID(mnemonic);
+        this.locked = false;
       }
     } finally {
       this.loading = false;
@@ -101,10 +91,9 @@ export class Session {
     }
     this.loading = true;
     try {
-      const mnemonic = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
-      await this.handleIdentifyInit(password, mnemonic, mnemonicPassword);
-      // 更新助记词备份状态
-      await repository.updateMnemonicBackupStatus('');
+      const mnemonicStr = randomMnemonic(mnemonicLength === 24 ? 32 : 16);
+      const mnemonic = { mnemonic: mnemonicStr, password: mnemonicPassword };
+      await this.handleRegisterAndLogin(password, mnemonic);
     } catch (e) {
       console.error('身份注册失败', e);
       throw e;
@@ -123,26 +112,13 @@ export class Session {
     }
     this.loading = true;
     try {
-      await this.handleIdentifyInit(password, mnemonic, mnemonicPassword);
+      await this.handleRegisterAndLogin(password, { mnemonic, password: mnemonicPassword });
     } catch (e) {
       console.error('身份导入失败', e);
       throw e;
     } finally {
       this.loading = false;
     }
-  }
-
-  /**
-   * 处理账户处始化功能
-   * 并自动登录
-   * @private
-   */
-  private async handleIdentifyInit(password: string, mnemonic: string, mnemonicPassword?: string) {
-    await this.login({ mnemonic, password: mnemonicPassword });
-    console.log(`DID 身份登录成功`);
-    await Keychain.setGenericPassword('oneverse', password);
-    await this.initDevicePassword(password);
-    await repository.saveMnemonic(mnemonic, mnemonicPassword);
   }
 
   @action
@@ -165,40 +141,50 @@ export class Session {
     }
   }
 
+  private async handleRegisterAndLogin(password: string, mnemonic: { mnemonic: string; password?: string }) {
+    console.log(`开始初始化DID身份`);
+    await this.initDID(mnemonic);
+
+    await Promise.all([
+      // 设备密码初始化
+      passwordService.setPassword(password),
+      // 更新助记词备份状态
+      repository.updateMnemonicBackupStatus(''),
+      // 初始化秘钥模块
+      securityService.initCipher(password),
+    ]);
+    // 加密助记词
+    const mnemonicStr = await securityService.encrypt(mnemonic);
+    // 保存助记词
+    await repository.saveMnemonic(mnemonicStr);
+  }
+
   /**
    * 登录
    * @param mnemonic 助记词
    * @param password 密码
    */
-  private async login({ mnemonic, password }: { mnemonic: string; password?: string }) {
+  private async initDID({ mnemonic, password }: { mnemonic: string; password?: string }) {
+    const API_PATH = '/api/v0/';
+    const CERAMIC_HOST = 'http://localhost:7007';
+    const url = new URL(API_PATH, CERAMIC_HOST);
+    console.log(String(url));
+    const api = new URL('./multiqueries', url);
+    console.log(String(api));
     try {
-      console.log(mnemonic, password);
       this.didService = await DIDService.newInstance({
         ceramicApi,
         mnemonic,
         password,
       });
       this.id = this.didService.did.id.toString();
+      console.log(`DID身份初始化成功: ${this.id}`);
     } catch (e: any) {
-      console.warn('登录失败', e.message);
+      console.warn('DID身份初始化失败', e.message);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
       }
       throw e;
     }
-  }
-
-  /**
-   * 初始化设备密码
-   * @param password 设备密码
-   * @private 内部调用
-   */
-  private async initDevicePassword(password: string) {
-    const pwd = toUtf8Bytes(password, UnicodeNormalizationForm.NFKD);
-    const salt = toUtf8Bytes('device-password', UnicodeNormalizationForm.NFKD);
-    // 初始化设备密钥
-    // 设备密钥 用于加密用户设备上的数据
-    const key = await scrypt(pwd, salt, N, r, p, 32);
-    repository.initCipher(key);
   }
 }
 

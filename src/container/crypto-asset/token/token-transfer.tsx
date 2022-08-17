@@ -5,21 +5,28 @@ import { Column, FormControl, Input, Row, Slider, TextArea } from 'native-base';
 import { lang } from '../../../locales';
 import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
-import { walletService } from '../../../services/wallet-manager';
-import { WalletToken } from '../../../entity/blockchain/wallet';
 import { goBack } from '../../../core/navigation';
+import { WalletAccount, WalletToken } from '../../../entity/blockchain/wallet-account';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
+import { walletAccountService } from '../../../services/blockchain/wallet-account';
+import { walletAdapter } from '../../../services/blockchain/adapter';
+import { txService } from '../../../services/blockchain/tx';
 
 /**
- * token 转出
+ * 账户转账
  */
 @observer
 @autoBind
-export class TokenSend extends Component<any, any> {
+export class TokenTransfer extends Component<any, any> {
   static options = {
     title: lang('token.send'),
     headerBackTitleVisible: false,
   };
+
   state = {
+    accountIndex: -1,
+    tokenIndex: -1,
+
     toAddress: '',
     value: '',
     gasPrice: '0',
@@ -30,33 +37,48 @@ export class TokenSend extends Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    const token: WalletToken = props.route?.params;
-    if (!token) {
+    const { accountIndex, tokenIndex } = props.route?.params;
+    if (accountIndex === undefined || tokenIndex === undefined) {
       goBack();
       return;
     }
-    this.state.balance = `${token.balance}`;
-    this.updateBalance();
+    this.state.accountIndex = accountIndex;
+    this.state.tokenIndex = tokenIndex;
     this.updateGas();
   }
 
-  async updateBalance() {
-    const token: WalletToken = this.props.route?.params;
-    const balance = await walletService.getBalance(token);
-    this.setState({ balance });
+  getAccount() {
+    const accounts = walletAccountService.walletAccounts;
+    const account = accounts[this.state.accountIndex];
+    if (account) {
+      return account;
+    }
+    goBack();
+  }
+
+  getToken(): WalletToken | undefined {
+    const account = this.getAccount();
+    if (!account) {
+      return;
+    }
+    const token = account.tokens[this.state.tokenIndex];
+    if (token) {
+      return token;
+    }
+    goBack();
   }
 
   async updateGas() {
-    const token: WalletToken = this.props.route?.params;
-    const data = await walletService.estimateGasInfo(token);
-    console.log(data);
-    this.setState(data);
+    // const token: WalletToken = this.getToken();
+    // const data = await walletAdapter.e;
+    // console.log(data);
+    // this.setState(data);
   }
 
   async handleSend() {
     const token: WalletToken = this.props.route?.params;
     const { toAddress, value, gasPrice, gasLimit } = this.state;
-    await walletService.sendTransaction(token, toAddress, value, gasPrice, gasLimit);
+    // await walletService.sendTransaction(token, toAddress, value, gasPrice, gasLimit);
   }
 
   handleAddressChange(toAddress: string) {
@@ -81,7 +103,7 @@ export class TokenSend extends Component<any, any> {
 
   render() {
     const { balance, gasPrice, gasLimit } = this.state;
-    const { loading } = walletService;
+    const { loading } = txService;
     return (
       <Page>
         <Column space={5} padding={3}>

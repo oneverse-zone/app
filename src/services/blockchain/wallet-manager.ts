@@ -1,16 +1,17 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { Toast } from 'native-base';
-import { Mnemonic, Wallet, WalletType } from '../entity/blockchain/wallet';
-import { Coin } from '../entity/blockchain/coin';
-import { WalletAccount } from '../entity/blockchain/wallet-account';
+import { Mnemonic, Wallet, WalletType } from '../../entity/blockchain/wallet';
+import { Coin } from '../../entity/blockchain/coin';
+import { WalletAccount } from '../../entity/blockchain/wallet-account';
 import { makePersistable } from 'mobx-persist-store';
-import { makeResettable } from '../mobx/mobx-reset';
-import { lang } from '../locales';
-import { repository } from './Repository';
-import { walletAdapter } from './blockchain/adapter';
-import { coinService } from './blockchain/coin';
+import { makeResettable } from '../../mobx/mobx-reset';
+import { lang } from '../../locales';
+import { repository } from '../Repository';
+import { walletAdapter } from './adapter';
+import { coinService } from './coin';
 import { randomMnemonic } from '@oneverse/utils';
-import { securityService } from './security';
+import { securityService } from '../security';
+import { walletAccountService } from './wallet-account';
 
 /**
  * 钱包管理
@@ -49,10 +50,7 @@ export class WalletManagerService {
     makePersistable(this, {
       name: 'WalletStore',
       properties: ['wallet', 'list', 'selectedIndex', 'walletIndex'],
-    }).finally(() => {
-      // 更新钱余额信息
-      // this.updateSelectWalletBalance();
-    });
+    }).finally(() => {});
   }
 
   /**
@@ -101,9 +99,7 @@ export class WalletManagerService {
         return;
       }
       const mnemonic: Mnemonic = await securityService.decrypt<Mnemonic>(mnemonicCiphertext);
-      const wallet = await this.handleCreateWallet(name, coinService.systemCoins, mnemonic);
-      wallet.index = 0;
-      this.walletIndex -= 1;
+      this.wallet = await this.handleCreateWallet(name, coinService.systemCoins, mnemonic);
     } catch (e: any) {
       console.log(`身份钱包创建失败: ${e.message}`, e);
       throw e;
@@ -178,93 +174,42 @@ export class WalletManagerService {
   }
 
   /**
-   * 派生HD钱包
-   * @param walletIndex
-   * @param coin
-   * @param addressIndex 地址索引
-   */
-  @action
-  async createAccount(walletIndex: number, coin: Coin, addressIndex: number) {
-    if (this.loading) {
-      return;
-    }
-    const wallet = this.wallets[walletIndex];
-    if (wallet.type === WalletType.SINGLE_CHAIN) {
-      console.log(`助记词钱包不支持派生子钱包`);
-      return;
-    }
-
-    this.loading = true;
-    try {
-      const walletAccount = walletAdapter.createAccount({
-        name: `Account ${addressIndex}`,
-        coin,
-        accountIndex: 0,
-        changeIndex: 0,
-        addressIndex: 0,
-
-        mnemonic: '',
-        password: '',
-      });
-      const exists = wallet.accounts.findIndex(item => (item.address = walletAccount.address)) > -1;
-      if (exists) {
-        throw new Error('账户已经存在');
-      }
-      wallet.accounts.push(walletAccount);
-      this.wallets[walletIndex] = wallet;
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  /**
    * HD钱包创建
    * @param name 钱包名称
    * @param coins 初始化币种信息
    * @param secretKey 助记词信息 或者 私钥
+   * @param didWallet 是否是使用去中心化身份创建钱包
    */
-  private async handleCreateWallet(name: string, coins: Array<Coin>, secretKey: Mnemonic | string): Promise<Wallet> {
+  private async handleCreateWallet(
+    name: string,
+    coins: Array<Coin>,
+    secretKey: Mnemonic | string,
+    didWallet?: boolean,
+  ): Promise<Wallet> {
     const secretKeyCiphertext = await securityService.encrypt(secretKey);
 
-    let walletOption,
-      options = {};
+    let walletOption;
     // 创建私钥钱包
     if (typeof secretKey === 'string') {
       walletOption = {
         type: WalletType.SINGLE_CHAIN,
       };
-      options = {
-        secretKey,
-      };
     } else {
       walletOption = {
         type: WalletType.HD,
       };
-      options = {
-        mnemonic: secretKey.mnemonic,
-        password: secretKey.password,
-      };
     }
 
-    const walletAccounts: Array<WalletAccount> = coins.map(coin => {
-      return walletAdapter.createAccount({
-        name: `Account 0`,
-        coin,
-        accountIndex: 0,
-        changeIndex: 0,
-        addressIndex: 0,
-
-        ...(options as any),
-      });
-    });
     const wallet: Wallet = {
-      index: this.walletIndex,
+      index: didWallet ? 0 : this.walletIndex,
       name,
-      accounts: walletAccounts,
       secretKey: secretKeyCiphertext,
       ...(walletOption as any),
     };
-    this.walletIndex += 1;
+    if (!didWallet) {
+      this.walletIndex += 1;
+    }
+    await walletAccountService.createAccount(wallet, coins, 0);
     console.log(`创建HD钱包成功: ${wallet.index} ${wallet.name}`);
     return wallet;
   }

@@ -1,7 +1,7 @@
 import { repository } from './Repository';
-import { securityService } from './security';
+import { SecurityService } from './security';
 
-const passwordStorageKey = '';
+const passwordStorageKey = 'JBICS45PXMCIcNbTDvhQVr9Pb0yJwSKi';
 
 const text = `I love OneVerse`;
 
@@ -9,18 +9,38 @@ const text = `I love OneVerse`;
  * 密码服务
  */
 class PasswordService {
+  async hasPassword(): Promise<boolean> {
+    return !!(await repository.get(passwordStorageKey));
+  }
+
   /**
    * 设置密码
    * @param password
    */
-  async setPassword(password: string) {
+  async setPassword(password: string): Promise<void> {
     const v = await repository.get(passwordStorageKey);
     if (v) {
       console.info(`密码已经存在`);
       return;
     }
-    const data = await securityService.encrypt(text);
+    const key = await SecurityService.toKey(password);
+
+    const data = await SecurityService.encryptWithKey(key, text);
     await repository.set(passwordStorageKey, data);
+  }
+
+  async verify(password: string) {
+    const data = repository.get(passwordStorageKey);
+    if (!data) {
+      return false;
+    }
+    try {
+      const key = await SecurityService.toKey(password);
+      const data = await SecurityService.decryptWithKey(key, text);
+      return data === text;
+    } catch (e) {
+      return false;
+    }
   }
 }
 

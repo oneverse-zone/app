@@ -4,7 +4,7 @@ import { autoBind } from 'jsdk/autoBind';
 import { Page } from '../../../components/Page';
 import { Column, FormControl, KeyboardAvoidingView } from 'native-base';
 import { lang } from '../../../locales';
-import { walletService } from '../../../services/wallet-manager';
+import { walletService } from '../../../services/blockchain/wallet-manager';
 import { goBack } from '../../../core/navigation';
 import { tokenService } from '../../../services/blockchain/Token';
 import { Button } from '../../../components/Button';

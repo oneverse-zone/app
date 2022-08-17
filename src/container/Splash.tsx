@@ -8,6 +8,7 @@ import { route } from './router';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
 import { BackupFour } from './user/identify/backup/Four';
+import { passwordService } from '../services/password';
 
 export const Splash: React.FC<any> = observer(function Splash() {
   useEffect(() => {
@@ -20,16 +21,11 @@ export const Splash: React.FC<any> = observer(function Splash() {
   async function check() {
     const { locked, authenticated } = sessionService;
 
-    let credentials;
-    try {
-      credentials = await Keychain.getGenericPassword();
-    } catch (error) {
-      console.log("Keychain couldn't be accessed!", error);
-    }
+    let hasPassword = await passwordService.hasPassword();
     if (!locked && !authenticated) {
       console.log('用户已经解锁,但是用户未授权,跳转到Start页面');
       resetTo(route.Start);
-    } else if (credentials) {
+    } else if (hasPassword) {
       console.log('设备未解锁,但是用户设置了pin,跳转到PinCode页面');
       resetTo(route.Lock);
     } else {

@@ -8,6 +8,7 @@ import { route } from '../../router';
 import { PageTitle } from '../../../components/PageTitle';
 import { lang } from '../../../locales';
 import { Button } from '../../../components/Button';
+import { InputPassword } from '../../../components/InputPassword';
 
 /**
  * 导入身份
@@ -24,12 +25,13 @@ export const ImportIdentify = observer(function ImportIdentify(props: any) {
   const [mnemonic, setMnemonic] = useState(
     'genre bargain kind identify wife scan bachelor search dinner tide write patrol',
   );
+  const [pwd, setPwd] = useState('');
 
   const { loading } = sessionService;
 
   async function handleImport() {
     const { password } = props.route?.params || {};
-    await sessionService.importAndLogin(password, mnemonic, '');
+    await sessionService.importAndLogin(password, mnemonic, pwd);
     resetTo(route.Home);
   }
 
@@ -45,6 +47,10 @@ export const ImportIdentify = observer(function ImportIdentify(props: any) {
           autoCapitalize="none"
           value={mnemonic}
         />
+      </FormControl>
+      <FormControl>
+        <FormControl.Label>{lang('mnemonic.password')}</FormControl.Label>
+        <InputPassword onChangeText={v => setPwd(v)} />
       </FormControl>
 
       <Button isDisabled={!mnemonic} isLoading={loading} onPress={handleImport}>
