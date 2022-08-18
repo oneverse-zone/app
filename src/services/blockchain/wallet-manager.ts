@@ -98,7 +98,11 @@ export class WalletManagerService {
         console.log('无效的助记词');
         return;
       }
-      const mnemonic: Mnemonic = await securityService.decrypt<Mnemonic>(mnemonicCiphertext);
+      const mnemonic = await securityService.decrypt<Mnemonic>(mnemonicCiphertext);
+      if (null == mnemonic) {
+        console.log(`身份助记词解密失败`);
+        return;
+      }
       this.wallet = await this.handleCreateWallet(name, coinService.systemCoins, mnemonic);
     } catch (e: any) {
       console.log(`身份钱包创建失败: ${e.message}`, e);

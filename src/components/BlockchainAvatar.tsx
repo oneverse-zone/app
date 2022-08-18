@@ -23,6 +23,6 @@ const logos: Record<string, any> = {
  * @constructor
  */
 export function BlockchainAvatar({ blockchain }: BlockchainAvatar) {
-  const logo = logos[blockchain.id];
-  return <Avatar>{logo || <Text>{blockchain.name}</Text>}</Avatar>;
+  const Logo = logos[blockchain.id];
+  return <Avatar bg="white">{Logo ? <Logo /> : <Text>{blockchain.name}</Text>}</Avatar>;
 }

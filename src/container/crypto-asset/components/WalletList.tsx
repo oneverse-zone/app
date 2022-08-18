@@ -1,13 +1,13 @@
 import React from 'react';
 import { SectionList } from 'react-native';
 import { AddIcon, Avatar, Box, Button, Text } from 'native-base';
-import { lang } from '../../../../locales';
-import { ListItem } from '../../../../components/ListItem';
-import { Wallet, WalletType } from '../../../../entity/blockchain/wallet';
-import { FixedBottomView } from '../../../../components/FixedBottomView';
+import { lang } from '../../../locales';
+import { ListItem } from '../../../components/ListItem';
+import { Wallet, WalletType } from '../../../entity/blockchain/wallet';
+import { FixedBottomView } from '../../../components/FixedBottomView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { replace } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { replace } from '../../../core/navigation';
+import { route } from '../../router';
 import { tokenService } from '../../../../services/blockchain/Token';
 
 function renderSectionHeader({ section: { title } }: any) {

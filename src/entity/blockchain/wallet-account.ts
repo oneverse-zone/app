@@ -2,6 +2,9 @@
  * 钱包账户信息
  */
 
+import { Coin } from './coin';
+import { Token } from './token';
+
 /**
  * 身份账户信息
  * 派生路径
@@ -83,9 +86,9 @@ export type WalletAccount = {
  */
 export type WalletCoin = {
   balance: number | string;
-};
+} & Coin;
 
 /**
  * 账户中的tokens
  */
-export type WalletToken = {} & WalletCoin;
+export type WalletToken = {} & Token & WalletCoin;

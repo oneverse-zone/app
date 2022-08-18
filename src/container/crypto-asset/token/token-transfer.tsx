@@ -48,7 +48,7 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   getAccount() {
-    const accounts = walletAccountService.walletAccounts;
+    const accounts = walletAccountService.selectWalletAccounts;
     const account = accounts[this.state.accountIndex];
     if (account) {
       return account;

@@ -11,10 +11,12 @@ import { TokenScreen } from './token';
 import { NFTScreen } from './NFT';
 import { navigate } from '../../core/navigation';
 import { route } from '../router';
-import { WalletSelectButton } from './wallet/components/WalletSelectButton';
+import { WalletSelectButton } from './components/WalletSelectButton';
 import { Empty } from './Empty';
-import { WalletAddButton } from './wallet/components/WalletAddButton';
+import { WalletAddButton } from './components/WalletAddButton';
 import { walletManagerService } from '../../services/blockchain/wallet-manager';
+import { WalletNewActionSheet } from './components/WalletNewActionSheet';
+import { Page } from '../../components/Page';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -58,6 +60,23 @@ export class CryptoAsset extends Component<any, any> {
     headerRight: WalletAddButton,
   };
 
+  state = {
+    open: false,
+  };
+
+  openSwitch() {
+    this.setState({ open: !this.state.open });
+  }
+
+  async handleInitHd() {
+    this.openSwitch();
+    await walletManagerService.initDIDHDWallet('Wallet HD');
+  }
+
+  handleCreate() {}
+
+  handleRecover() {}
+
   handleSend() {
     navigate(route.TokenSelect, {
       nextRoute: route.TokenSend,
@@ -70,13 +89,9 @@ export class CryptoAsset extends Component<any, any> {
     });
   }
 
-  render() {
-    const { wallets } = walletManagerService;
-    if (wallets.length === 0) {
-      return <Empty {...this.props} />;
-    }
+  renderDefault() {
     return (
-      <Box flex={1}>
+      <>
         <Box
           borderRadius="lg"
           margin={3}
@@ -114,7 +129,26 @@ export class CryptoAsset extends Component<any, any> {
             })}
           </Tab.Navigator>
         </Box>
-      </Box>
+      </>
+    );
+  }
+
+  render() {
+    const { wallet, wallets, loading } = walletManagerService;
+    const { open } = this.state;
+
+    return (
+      <Page loading={loading} scroll={false}>
+        {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
+        <WalletNewActionSheet
+          didWallet={wallet}
+          isOpen={open}
+          onClose={this.openSwitch}
+          onCreateDidWallet={this.handleInitHd}
+          onCreate={this.handleCreate}
+          onRecover={this.handleRecover}
+        />
+      </Page>
     );
   }
 }

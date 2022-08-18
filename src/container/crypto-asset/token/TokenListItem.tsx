@@ -2,8 +2,7 @@ import React from 'react';
 import { Avatar } from 'native-base';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
-import { WalletToken } from '../../../entity/blockchain/wallet';
-import { tokenService } from '../../../services/blockchain/Token';
+import { WalletToken } from '../../../entity/blockchain/wallet-account';
 
 export type TokenListItemProps = {} & WalletToken & ListItemProps;
 
@@ -11,16 +10,13 @@ export type TokenListItemProps = {} & WalletToken & ListItemProps;
  * token 列表条目
  */
 export function TokenListItem(props: TokenListItemProps) {
-  const { walletName, coinId, contractAddress, symbol, blockchain, balance, ...other } = props;
-  const Logo = tokenService.findToken(coinId, contractAddress)?.logo;
-  const icon = Logo && (
+  const { id, address, symbol, balance, name, ...other } = props;
+  const icon = (
     <Avatar size="sm" bg="white">
-      <Logo />
+      {null ? <></> : other}
     </Avatar>
   );
 
   const footer = <Title title={`${balance}`} />;
-  return (
-    <ListItem icon={icon} title={walletName} subtitle={blockchain.name} footer={footer} showArrow={false} {...other} />
-  );
+  return <ListItem icon={icon} title={symbol} subtitle={name} footer={footer} showArrow={false} {...other} />;
 }

@@ -22,7 +22,7 @@ export class WalletAccountService {
   /**
    * 当前选择的帐户
    */
-  selectIndex = -1;
+  selectIndex = 0;
 
   constructor() {
     makeResettable(this);
@@ -38,20 +38,22 @@ export class WalletAccountService {
   }
 
   /**
+   * 当前选择的帐户信息
+   */
+  get selected(): WalletAccount | undefined {
+    return this.selectWalletAccounts[this.selectIndex];
+  }
+
+  /**
    * 选择账户
    * @param index 账户索引, 小于则认为是选择所有
    */
   switchAccount(index: number) {
-    if (index < 0) {
-      this.selectIndex = -1;
-      this.updateSelectWalletBalance();
-      return;
-    }
     const wallet = walletManagerService.selected;
     if (!wallet) {
       return;
     }
-    if (this.accounts[wallet.index]?.[index]) {
+    if (this.selectWalletAccounts[index]) {
       this.selectIndex = index;
       this.updateSelectWalletBalance();
     }
@@ -60,7 +62,7 @@ export class WalletAccountService {
   /**
    * 当前选择钱包的帐户信息
    */
-  get walletAccounts() {
+  get selectWalletAccounts(): Array<WalletAccount> {
     const wallet = walletManagerService.selected;
     if (!wallet) {
       return [];

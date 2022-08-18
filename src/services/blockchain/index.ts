@@ -80,10 +80,17 @@ export class BlockchainService {
    * 选择链
    * @param index 索引
    */
-  set select(index: number) {
+  selectBlockchain(index: number) {
     if (this.blockchains[index]) {
       this.selectIndex = index;
     }
+  }
+
+  /**
+   * 当前选择的链
+   */
+  get selected() {
+    return this.blockchains[this.selectIndex];
   }
 
   /**

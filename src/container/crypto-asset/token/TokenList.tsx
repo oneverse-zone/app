@@ -1,8 +1,8 @@
 import { FlatList } from 'native-base';
 import React from 'react';
-import { WalletToken } from '../../../entity/blockchain/wallet';
 import { TokenListItem } from './TokenListItem';
 import { IFlatListProps } from 'native-base/lib/typescript/components/basic/FlatList';
+import { WalletToken } from '../../../entity/blockchain/wallet-account';
 
 export type TokenListProps = {
   onSelect?: (token: WalletToken) => void;

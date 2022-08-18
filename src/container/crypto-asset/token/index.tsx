@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import { Box } from 'native-base';
-import { WalletToken } from '../../../entity/blockchain/wallet';
-import { walletService } from '../../../services/blockchain/wallet-manager';
 import { navigate } from '../../../core/navigation';
 import { route } from '../../router';
 import { TokenList } from './TokenList';
+import { walletAccountService } from '../../../services/blockchain/wallet-account';
+import { WalletToken } from '../../../entity/blockchain/wallet-account';
 
 @observer
 @autoBind
@@ -16,11 +16,11 @@ export class TokenScreen extends Component<any, any> {
   }
 
   render() {
-    const { selected } = walletService;
+    const { selected } = walletAccountService;
 
     return (
       <Box>
-        <TokenList data={selected?.tokens || []} onSelect={this.handleItemPress} />
+        <TokenList data={selected?.tokens ?? []} onSelect={this.handleItemPress} />
       </Box>
     );
   }

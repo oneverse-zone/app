@@ -15,7 +15,7 @@ import { BackupThree } from './backup/Three';
 import { BackupFour } from './backup/Four';
 import { LockScreen } from './Lock';
 import { BlockchainSelect } from './crypto-asset/blockchain/BlockchainSelect';
-import { WalletSelect } from './crypto-asset/wallet/WalletSelect';
+import { WalletManager } from './crypto-asset/wallet/wallet-manager';
 import { WalletCreate } from './crypto-asset/wallet/WalletCreate';
 import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 import { TokenDetail } from './crypto-asset/token/TokenDetail';
@@ -55,7 +55,7 @@ export const route = {
   WalletCreate: 'WalletCreate',
   WalletHDCreate: 'WalletHDCreate',
   WalletRecover: 'WalletRecover',
-  WalletSelect: 'WalletSelect',
+  WalletManager: 'WalletManager',
   TokenDetail: 'TokenDetail',
   TokenSend: 'TokenSend',
   TokenReceive: 'TokenReceive',
@@ -137,8 +137,8 @@ export const routers: Array<{
     component: WalletRecover,
   },
   {
-    name: route.WalletSelect,
-    component: WalletSelect,
+    name: route.WalletManager,
+    component: WalletManager,
   },
   {
     name: route.TokenDetail,

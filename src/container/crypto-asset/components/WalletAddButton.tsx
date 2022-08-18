@@ -1,7 +1,7 @@
 import React from 'react';
 import { AddIcon, IconButton } from 'native-base';
-import { navigate } from '../../../../core/navigation';
-import { route } from '../../../router';
+import { navigate } from '../../../core/navigation';
+import { route } from '../../router';
 
 function handleCreate() {
   navigate(route.BlockchainSelect);
