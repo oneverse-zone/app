@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { Box, Button, Row, Text } from 'native-base';
+import { AddIcon, Box, Button, IconButton, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
@@ -13,7 +13,6 @@ import { navigate } from '../../core/navigation';
 import { route } from '../router';
 import { WalletSelectButton } from './components/WalletSelectButton';
 import { Empty } from './Empty';
-import { WalletAddButton } from './components/WalletAddButton';
 import { walletManagerService } from '../../services/blockchain/wallet-manager';
 import { WalletNewActionSheet } from './components/WalletNewActionSheet';
 import { Page } from '../../components/Page';
@@ -49,22 +48,31 @@ const tabs: Record<
   },
 };
 
+function WalletAddButton({ navigation }: any) {
+  function handlePress() {
+    navigation.setParams({ open: true });
+  }
+
+  return <IconButton borderRadius="full" icon={<AddIcon />} onPress={handlePress} />;
+}
+
 /**
  * 加密资产
  */
 @observer
 @autoBind
 export class CryptoAsset extends Component<any, any> {
-  static options = {
+  static options = (props: any) => ({
     headerLeft: WalletSelectButton,
-    headerRight: WalletAddButton,
-  };
+    headerRight: () => <WalletAddButton {...props} />,
+  });
 
   state = {
     open: false,
   };
 
   openSwitch() {
+    this.props.navigation.setParams({ open: false });
     this.setState({ open: !this.state.open });
   }
 
@@ -73,9 +81,15 @@ export class CryptoAsset extends Component<any, any> {
     await walletManagerService.initDIDHDWallet('Wallet HD');
   }
 
-  handleCreate() {}
+  handleCreate() {
+    navigate(route.WalletCreate);
+    this.openSwitch();
+  }
 
-  handleRecover() {}
+  handleRecover() {
+    navigate(route.WalletRecover);
+    this.openSwitch();
+  }
 
   handleSend() {
     navigate(route.TokenSelect, {
@@ -136,13 +150,13 @@ export class CryptoAsset extends Component<any, any> {
   render() {
     const { wallet, wallets, loading } = walletManagerService;
     const { open } = this.state;
-
+    const { open: globalOpen } = this.props.route.params || {};
     return (
       <Page loading={loading} scroll={false}>
         {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
         <WalletNewActionSheet
           didWallet={wallet}
-          isOpen={open}
+          isOpen={globalOpen ?? open}
           onClose={this.openSwitch}
           onCreateDidWallet={this.handleInitHd}
           onCreate={this.handleCreate}

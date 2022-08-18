@@ -130,6 +130,7 @@ export class WalletManagerService {
         password: mnemonicPassword,
       });
       this.list.push(wallet);
+      return mnemonic;
     } catch (e: any) {
       Toast.show({
         title: lang('wallet.exist'),

@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { AddIcon, Avatar, Box, Button, FlatList, Icon, IconButton, Modal, Pressable, Row, Text } from 'native-base';
+import {
+  AddIcon,
+  Avatar,
+  Box,
+  Button,
+  FlatList,
+  Icon,
+  IconButton,
+  Menu,
+  Modal,
+  Pressable,
+  Row,
+  Text,
+} from 'native-base';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { lang } from '../../../locales';
@@ -73,7 +86,26 @@ export class WalletManager extends Component<any, any> {
         <Box flex={1} safeAreaBottom paddingX={3}>
           <Row height={60.001} justifyContent="space-between" alignItems="center">
             <Text fontSize="lg">{selected?.name}</Text>
-            <IconButton size="lg" _icon={{ as: MaterialIcons, name: 'more-horiz' }} />
+            <Menu
+              w="190"
+              placement="left bottom"
+              shouldOverlapWithTrigger
+              trigger={triggerProps => {
+                return (
+                  <Pressable accessibilityLabel="Wallet options" {...triggerProps}>
+                    <IconButton size="lg" _icon={{ as: MaterialIcons, name: 'more-horiz' }} />
+                  </Pressable>
+                );
+              }}>
+              <Menu.Item>Arial</Menu.Item>
+              <Menu.Item>Nunito Sans</Menu.Item>
+              <Menu.Item>Roboto</Menu.Item>
+              <Menu.Item>Poppins</Menu.Item>
+              <Menu.Item>SF Pro</Menu.Item>
+              <Menu.Item>Helvetica</Menu.Item>
+              <Menu.Item isDisabled>Sofia</Menu.Item>
+              <Menu.Item>Cookie</Menu.Item>
+            </Menu>
           </Row>
           <Pressable
             flexDirection="row"

@@ -5,7 +5,7 @@ import { Page } from '../../components/Page';
 import { PageTitle } from '../../components/PageTitle';
 import { lang } from '../../locales';
 import { Button } from '../../components/Button';
-import { navigate, resetTo } from '../../core/navigation';
+import { goBack, navigate, resetTo } from '../../core/navigation';
 import { route } from '../router';
 import { MnemonicAlert } from './MnemonicAlert';
 
@@ -28,7 +28,12 @@ export class BackupOne extends Component<any, any> {
   }
 
   handleLater() {
-    resetTo(route.Home);
+    const { type = 'account' } = this.props.route.params || {};
+    if (type === 'account') {
+      resetTo(route.Home);
+    } else {
+      goBack();
+    }
   }
 
   handleStart() {
@@ -37,9 +42,10 @@ export class BackupOne extends Component<any, any> {
 
   render() {
     const { open } = this.state;
+    const { type = 'account' } = this.props.route.params || {};
     return (
       <Page paddingX={4} Root={Column} space={5} safeAreaBottom>
-        <PageTitle title={lang('protect-your-account-safe')} />
+        <PageTitle title={lang(`protect-your-${type}-safe` as any)} />
         <Text alignItems="center">
           {'不要冒失丢帐户、资产的风险。在您信任的地方保存您的'}
           <NButton variant="link" padding={0} marginBottom={-0.49} alignItems="center" onPress={this.openSwitch}>

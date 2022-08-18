@@ -21,31 +21,26 @@ const tabs: Record<
     title: lang('tab.home'),
     component: OneVerse,
     icon: <MaterialIcons name="home" />,
-    ...OneVerse.options,
   },
   CryptoAsset: {
     title: lang('tab.crypto-asset'),
     component: CryptoAsset,
     icon: <MaterialIcons name="account-balance-wallet" />,
-    ...CryptoAsset.options,
   },
   AppCenter: {
     tabBarLabel: () => null,
     component: AppCenter,
     icon: <MaterialIcons name="blur-on" />,
-    ...AppCenter.options,
   },
   Message: {
     title: lang('tab.message'),
     component: Message,
     icon: <MaterialIcons name="chat" />,
-    ...Message.options,
   },
   User: {
     title: lang('tab.user'),
     component: User,
     icon: <MaterialIcons name="person" />,
-    ...User.options,
   },
 };
 
@@ -59,19 +54,27 @@ export function Home() {
     <Tab.Navigator initialRouteName="Index">
       {Object.keys(tabs).map(key => {
         const { component, icon, ...options } = tabs[key];
-        return (
-          <Tab.Screen
-            name={key}
-            key={key}
-            component={component}
-            options={{
-              ...options,
-              tabBarIcon: ({ size, color }) => {
-                return <Icon size={size + (key === 'AppCenter' ? 12 : 0)} color={color} as={icon} />;
-              },
-            }}
-          />
-        );
+
+        function optionsProxy(props: any): BottomTabNavigationOptions {
+          let base: BottomTabNavigationOptions = {
+            ...options,
+            tabBarIcon: ({ size, color }) => {
+              return <Icon size={size + (key === 'AppCenter' ? 12 : 0)} color={color} as={icon} />;
+            },
+          };
+          if (typeof (component as any).options === 'function') {
+            return {
+              ...base,
+              ...(component as any).options(props),
+            };
+          }
+          return {
+            ...base,
+            ...(component as any).options,
+          };
+        }
+
+        return <Tab.Screen name={key} key={key} component={component} options={optionsProxy} />;
       })}
     </Tab.Navigator>
   );
