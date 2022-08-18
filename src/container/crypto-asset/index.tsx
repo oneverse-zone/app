@@ -67,28 +67,9 @@ export class CryptoAsset extends Component<any, any> {
     headerRight: () => <WalletAddButton {...props} />,
   });
 
-  state = {
-    open: false,
-  };
-
   openSwitch() {
-    this.props.navigation.setParams({ open: false });
-    this.setState({ open: !this.state.open });
-  }
-
-  async handleInitHd() {
-    this.openSwitch();
-    await walletManagerService.initDIDHDWallet('Wallet HD');
-  }
-
-  handleCreate() {
-    navigate(route.WalletCreate);
-    this.openSwitch();
-  }
-
-  handleRecover() {
-    navigate(route.WalletRecover);
-    this.openSwitch();
+    const { open } = this.props.route.params || {};
+    this.props.navigation.setParams({ open: !open });
   }
 
   handleSend() {
@@ -149,19 +130,11 @@ export class CryptoAsset extends Component<any, any> {
 
   render() {
     const { wallet, wallets, loading } = walletManagerService;
-    const { open } = this.state;
-    const { open: globalOpen } = this.props.route.params || {};
+    const { open } = this.props.route.params || {};
     return (
       <Page loading={loading} scroll={false}>
         {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
-        <WalletNewActionSheet
-          didWallet={wallet}
-          isOpen={globalOpen ?? open}
-          onClose={this.openSwitch}
-          onCreateDidWallet={this.handleInitHd}
-          onCreate={this.handleCreate}
-          onRecover={this.handleRecover}
-        />
+        <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
       </Page>
     );
   }

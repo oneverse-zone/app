@@ -7,6 +7,7 @@ import {
   FlatList,
   Icon,
   IconButton,
+  IPressableProps,
   Menu,
   Modal,
   Pressable,
@@ -25,6 +26,13 @@ import { WalletAccountEmpty } from '../components/WalletAccountEmpty';
 import { blockchainService } from '../../../services/blockchain';
 import { navigate } from '../../../core/navigation';
 import { route } from '../../router';
+import { WalletNewActionSheet } from '../components/WalletNewActionSheet';
+import { Page } from '../../../components/Page';
+import { Title } from '../../../components/Title';
+
+function ItemSeparatorComponent() {
+  return <Box height={3} />;
+}
 
 /**
  * 钱包选择页面
@@ -39,7 +47,12 @@ export class WalletManager extends Component<any, any> {
 
   state = {
     createModalOpen: false,
+    open: false,
   };
+
+  openSwitch() {
+    this.setState({ open: !this.state.open });
+  }
 
   createOpenSwitch() {
     this.setState({ createModalOpen: !this.state.createModalOpen });
@@ -59,29 +72,80 @@ export class WalletManager extends Component<any, any> {
   //   }
   // }
 
-  renderWalletItem({ item }: { item: Wallet }) {
+  renderWalletItem({ item, index }: { item: Wallet; index: number }) {
     const { name } = item;
     return (
-      <Avatar bg="primary.500" size="lg">
-        {name.charAt(0)}
-      </Avatar>
+      <Pressable onPress={() => walletManagerService.selectWallet(index)}>
+        <Avatar bg="primary.500" size="lg">
+          {name.charAt(0)}
+        </Avatar>
+      </Pressable>
     );
   }
 
   renderAccountItem({ item }: { item: WalletAccount }) {
-    return <Text>{item.name}</Text>;
+    const { selected } = walletAccountService;
+    const props: IPressableProps = {};
+    if (selected?.tokens[0]?.blockchainId === item.tokens[0].blockchainId && selected?.address === item.address) {
+      props.bg = 'primary.500';
+    }
+    return (
+      <Pressable flexDirection="row" justifyContent="space-between" paddingBottom={3} borderRadius="lg" borderWidth={0}>
+        <Title
+          title={item.name}
+          titleProps={{
+            fontSize: 14,
+            fontWeight: '500',
+            color: 'black',
+          }}
+          subtitle={item.address}
+          subtitleProps={{
+            ellipsizeMode: 'middle',
+            numberOfLines: 1,
+            width: 80,
+            fontSize: 14,
+            fontWeight: '400',
+            color: 'gray.700',
+            style: {
+              width: 100,
+            },
+          }}
+        />
+        <Menu
+          w="190"
+          placement="left bottom"
+          shouldOverlapWithTrigger
+          trigger={triggerProps => {
+            return (
+              <Pressable accessibilityLabel="Wallet options" {...triggerProps} borderRadius="lg">
+                <IconButton size="lg" _icon={{ as: MaterialIcons, name: 'more-horiz' }} />
+              </Pressable>
+            );
+          }}>
+          <Menu.Item>Arial</Menu.Item>
+          <Menu.Item>{lang('wallet.account.address.copy')}</Menu.Item>
+        </Menu>
+      </Pressable>
+    );
   }
 
   render() {
-    const { wallets, selected } = walletManagerService;
+    const { wallet, wallets, selected, loading } = walletManagerService;
     const { selectWalletAccounts } = walletAccountService;
     const { selected: selectedBlockchain } = blockchainService;
-    const { createModalOpen } = this.state;
+    const { createModalOpen, open } = this.state;
     return (
-      <Row flex={1}>
-        <Box width={80.001} height="full" paddingY={3} borderRightWidth={1} alignItems="center" safeAreaBottom>
-          <FlatList data={wallets} renderItem={this.renderWalletItem} />
-          <IconButton size="lg" variant="solid" icon={<AddIcon />} />
+      <Page Root={Row} scroll={false} flex={1} loading={loading}>
+        <Box
+          width={80.001}
+          height="full"
+          paddingY={3}
+          borderRightWidth={1}
+          borderColor="coolGray.300"
+          alignItems="center"
+          safeAreaBottom>
+          <FlatList data={wallets} renderItem={this.renderWalletItem} ItemSeparatorComponent={ItemSeparatorComponent} />
+          <IconButton onPress={this.openSwitch} size="lg" variant="solid" icon={<AddIcon />} />
         </Box>
         <Box flex={1} safeAreaBottom paddingX={3}>
           <Row height={60.001} justifyContent="space-between" alignItems="center">
@@ -114,9 +178,12 @@ export class WalletManager extends Component<any, any> {
             width="full"
             height={50}
             backgroundColor="white"
+            borderWidth={1}
+            borderColor="coolGray.300"
             padding={3}
             borderRadius="xl"
-            onPress={this.goBlockchainSelect}>
+            onPress={this.goBlockchainSelect}
+            marginBottom={3}>
             <Text color="primary.500">{selectedBlockchain ? selectedBlockchain.name : lang('all')}</Text>
             <Icon as={MaterialIcons} name="expand-more" size="md" />
           </Pressable>
@@ -144,7 +211,9 @@ export class WalletManager extends Component<any, any> {
             <Modal.Body></Modal.Body>
           </Modal.Content>
         </Modal>
-      </Row>
+        {/*创建钱包*/}
+        <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
+      </Page>
     );
   }
 }

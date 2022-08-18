@@ -2,12 +2,12 @@ import React from 'react';
 import { Actionsheet, Box, IActionsheetProps, Text } from 'native-base';
 import { lang } from '../../../locales';
 import { Wallet } from '../../../entity/blockchain/wallet';
+import { navigate } from '../../../core/navigation';
+import { route } from '../../router';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 
 export type CreateWalletActionSheetProps = {
   didWallet?: Wallet;
-  onCreateDidWallet?: () => void;
-  onCreate?: () => void;
-  onRecover?: () => void;
 } & IActionsheetProps;
 
 function renderItem(title: string, describe: string, onPress?: any) {
@@ -27,13 +27,22 @@ function renderItem(title: string, describe: string, onPress?: any) {
  * 创建钱包ActionSheet
  * @constructor
  */
-export function WalletNewActionSheet({
-  didWallet,
-  onCreateDidWallet,
-  onCreate,
-  onRecover,
-  ...props
-}: CreateWalletActionSheetProps) {
+export function WalletNewActionSheet({ didWallet, ...props }: CreateWalletActionSheetProps) {
+  function handleCreate() {
+    navigate(route.WalletCreate);
+    props.onClose?.();
+  }
+
+  function handleRecover() {
+    navigate(route.WalletRecover);
+    props.onClose?.();
+  }
+
+  async function handleInitHd() {
+    props.onClose?.();
+    await walletManagerService.initDIDHDWallet('Wallet HD');
+  }
+
   return (
     <Actionsheet {...props}>
       <Actionsheet.Content>
@@ -45,10 +54,10 @@ export function WalletNewActionSheet({
           : renderItem(
               `${lang('wallet.create.did')}(${lang('recommend')})`,
               lang('wallet.create.did.describe'),
-              onCreateDidWallet,
+              handleInitHd,
             )}
-        {renderItem(lang('wallet.create.hd'), lang('wallet.create.hd.describe'), onCreate)}
-        {renderItem(lang('wallet.recover'), lang('wallet.recover.describe'), onRecover)}
+        {renderItem(lang('wallet.create.hd'), lang('wallet.create.hd.describe'), handleCreate)}
+        {renderItem(lang('wallet.recover'), lang('wallet.recover.describe'), handleRecover)}
         <Actionsheet.Item alignItems="center" onPress={props.onClose}>
           {lang('cancel')}
         </Actionsheet.Item>

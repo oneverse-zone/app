@@ -1,12 +1,13 @@
 import { makeResettable } from '../../mobx/mobx-reset';
 import { action, makeAutoObservable } from 'mobx';
-import { WalletAccount } from '../../entity/blockchain/wallet-account';
+import { WalletAccount, WalletToken } from '../../entity/blockchain/wallet-account';
 import { Coin } from '../../entity/blockchain/coin';
 import { Mnemonic, Wallet, WalletType } from '../../entity/blockchain/wallet';
 import { walletAdapter } from './adapter';
 import { securityService } from '../security';
 import { makePersistable } from 'mobx-persist-store';
 import { walletManagerService } from './wallet-manager';
+import { COIN_TOKEN_CONTRACT_ADDRESS, TokenType } from '../../entity/blockchain/token';
 
 /**
  * 钱包账户服务
@@ -115,6 +116,13 @@ export class WalletAccountService {
         if (exists) {
           throw new Error(`钱包已经存在`);
         }
+        const mainToken: WalletToken = {
+          ...item,
+          address: COIN_TOKEN_CONTRACT_ADDRESS,
+          balance: 0,
+          type: TokenType.COIN,
+        };
+        acc.tokens = [mainToken];
         return acc;
       });
 

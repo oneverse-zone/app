@@ -21,4 +21,9 @@ export type Coin = {
    * 小数点
    */
   decimals: number;
+
+  /**
+   * 链ID
+   */
+  blockchainId: string;
 };

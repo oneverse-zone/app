@@ -13,7 +13,7 @@ export function TokenListItem(props: TokenListItemProps) {
   const { id, address, symbol, balance, name, ...other } = props;
   const icon = (
     <Avatar size="sm" bg="white">
-      {null ? <></> : other}
+      {null ? <></> : name}
     </Avatar>
   );
 
