@@ -5,6 +5,7 @@ import { AccountToken, FullToken, WalletAccount } from '../../entity/blockchain/
 import { COIN_TOKEN_CONTRACT_ADDRESS, TokenType } from '../../entity/blockchain/token';
 import { walletAdapter } from './adapter';
 import { coinService } from './coin';
+import { walletManagerService } from './wallet-manager';
 
 /**
  * token 服务
@@ -26,6 +27,11 @@ export class TokenService {
     }).finally(() => {
       console.log(`加载token完成`);
     });
+  }
+
+  updateSelectAccountToken() {
+    const account = walletManagerService.selectedAccount;
+    account && this.updateAccountToken(account);
   }
 
   /**

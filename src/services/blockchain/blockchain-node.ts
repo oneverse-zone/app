@@ -54,9 +54,9 @@ export class BlockchainNodeService {
      */
     [ethereum.id]: [
       // main
-      ethereumMainInfura1,
+      // ethereumMainInfura1,
       // test
-      ethereumTestRinkeby,
+      // ethereumTestRinkeby,
       ethereumTestGoerli,
     ],
   };

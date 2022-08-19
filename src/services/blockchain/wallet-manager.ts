@@ -55,9 +55,7 @@ export class WalletManagerService {
     makePersistable(this, {
       name: 'WalletStore',
       properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountIndex', 'walletIndex'],
-    }).finally(() => {
-      this.selectedAccount && tokenService.updateAccountToken(this.selectedAccount);
-    });
+    }).finally(() => {});
   }
 
   /**
@@ -103,8 +101,7 @@ export class WalletManagerService {
       return;
     }
     this.selectedIndex = index;
-    this.selectedAccountIndex = 0;
-    // this.updateSelectWalletBalance();
+    this.selectWalletAccount(0);
   }
 
   /**
@@ -114,6 +111,7 @@ export class WalletManagerService {
   selectWalletAccount(index: number) {
     if (this.selected?.accounts[index]) {
       this.selectedAccountIndex = index;
+      tokenService.updateSelectAccountToken();
     }
   }
 
@@ -140,6 +138,7 @@ export class WalletManagerService {
         return;
       }
       this.wallet = await this.handleCreateWallet(name, coinService.systemCoins, mnemonic);
+      this.selectWallet(0);
     } catch (e: any) {
       console.log(`身份钱包创建失败: ${e.message}`, e);
       throw e;
@@ -161,11 +160,10 @@ export class WalletManagerService {
     this.loading = true;
     try {
       const mnemonic = randomMnemonic(mnemonicLength === 12 ? 16 : 32);
-      const wallet = await this.handleCreateWallet(name, coinService.systemCoins, {
+      await this.executeCreateWallet(name, coinService.systemCoins, {
         mnemonic,
         password: mnemonicPassword,
       });
-      this.list.push(wallet);
       return mnemonic;
     } catch (e: any) {
       Toast.show({
@@ -189,8 +187,7 @@ export class WalletManagerService {
     }
     this.loading = true;
     try {
-      const wallet = await this.handleCreateWallet(name, coinService.systemCoins, { mnemonic, password: password });
-      this.list.push(wallet);
+      await this.executeCreateWallet(name, coinService.systemCoins, { mnemonic, password: password });
     } finally {
       this.loading = false;
     }
@@ -207,11 +204,16 @@ export class WalletManagerService {
     }
     this.loading = true;
     try {
-      const wallet = await this.handleCreateWallet(name, coinService.systemCoins, secretKey);
-      this.list.push(wallet);
+      await this.executeCreateWallet(name, coinService.systemCoins, secretKey);
     } finally {
       this.loading = false;
     }
+  }
+
+  private async executeCreateWallet(name: string, coins: Array<Coin>, secretKey: Mnemonic | string) {
+    const wallet = await this.handleCreateWallet(name, coins, secretKey);
+    this.list.push(wallet);
+    this.selectWallet(this.list.length - 1);
   }
 
   /**

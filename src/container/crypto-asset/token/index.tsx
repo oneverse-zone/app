@@ -13,10 +13,7 @@ import { walletManagerService } from '../../../services/blockchain/wallet-manage
 @autoBind
 export class TokenScreen extends Component<any, any> {
   componentDidMount() {
-    const { selectedAccount } = walletManagerService;
-    if (selectedAccount) {
-      // tokenService.updateAccountToken(selectedAccount);
-    }
+    tokenService.updateSelectAccountToken();
   }
 
   handleItemPress(item: FullToken) {
