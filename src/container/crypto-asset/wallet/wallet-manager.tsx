@@ -4,12 +4,12 @@ import {
   Avatar,
   Box,
   Button,
+  ChevronDownIcon,
   FlatList,
-  Icon,
+  Spacer,
   IconButton,
   IPressableProps,
   Menu,
-  Modal,
   Pressable,
   Row,
   Text,
@@ -28,6 +28,9 @@ import { route } from '../../router';
 import { WalletNewActionSheet } from '../components/WalletNewActionSheet';
 import { Page } from '../../../components/Page';
 import { Title } from '../../../components/Title';
+import { BlockchainAvatar } from '../../../components/BlockchainAvatar';
+import { WalletAccountCreateModal } from '../blockchain/wallet-account-create-modal';
+import { coinService } from '../../../services/blockchain/coin';
 
 function ItemSeparatorComponent() {
   return <Box height={3} />;
@@ -61,21 +64,23 @@ export class WalletManager extends Component<any, any> {
     navigate(route.BlockchainSelect);
   }
 
-  // handleSelect(wallet: Wallet, index: number) {
-  //   walletService.selectWallet(index);
-  //   const { nextRoute, autoBack = true } = this.props.route.params || {};
-  //   if (nextRoute) {
-  //     replace(nextRoute);
-  //   } else if (autoBack) {
-  //     goBack();
-  //   }
-  // }
+  /**
+   * 处理创建账户
+   */
+  handleCreateAccount(name: string, addressIndex: number) {
+    const { selected, selectedAccount } = walletManagerService;
+    if (selected && selectedAccount) {
+      const coin = coinService.findById(selectedAccount.coinId);
+      coin && walletManagerService.createAccount(selected, coin, name, addressIndex);
+    }
+  }
 
   renderWalletItem({ item, index }: { item: Wallet; index: number }) {
     const { name } = item;
+    const { selected } = walletManagerService;
     return (
       <Pressable onPress={() => walletManagerService.selectWallet(index)}>
-        <Avatar bg="primary.500" size="lg">
+        <Avatar bg={selected?.id === item.id ? 'primary.500' : 'gray.300'} size="md">
           {name.charAt(0)}
         </Avatar>
       </Pressable>
@@ -86,10 +91,18 @@ export class WalletManager extends Component<any, any> {
     const { selectedAccount } = walletManagerService;
     const props: IPressableProps = {};
     if (selectedAccount?.id === item.id) {
-      props.bg = 'primary.500';
+      props.borderColor = 'primary.500';
     }
     return (
-      <Pressable flexDirection="row" justifyContent="space-between" paddingBottom={3} borderRadius="lg" borderWidth={0}>
+      <Pressable
+        borderColor="coolGray.300"
+        {...props}
+        flexDirection="row"
+        justifyContent="space-between"
+        padding={3}
+        borderRadius="lg"
+        borderWidth={1}
+        onPress={() => walletManagerService.selectAccount(item.id)}>
         <Title
           title={item.name}
           titleProps={{
@@ -129,18 +142,19 @@ export class WalletManager extends Component<any, any> {
   }
 
   render() {
-    const { wallet, wallets, selected, loading } = walletManagerService;
-    const { selectWalletAccounts } = walletManagerService;
+    const { wallet, wallets, selected, selectedAccount, loading } = walletManagerService;
+    const { selectedAccountsOnSelectChain } = walletManagerService;
     const { selected: selectedBlockchain } = blockchainService;
     const { createModalOpen, open } = this.state;
+
     return (
-      <Page Root={Row} scroll={false} flex={1} loading={loading}>
+      <Page Root={Row} scroll={false} flex={1} loading={loading} bg="white">
         <Box
           width={80.001}
           height="full"
           paddingY={3}
           borderRightWidth={1}
-          borderColor="coolGray.300"
+          borderColor="coolGray.100"
           alignItems="center"
           safeAreaBottom>
           <FlatList data={wallets} renderItem={this.renderWalletItem} ItemSeparatorComponent={ItemSeparatorComponent} />
@@ -183,13 +197,17 @@ export class WalletManager extends Component<any, any> {
             borderRadius="xl"
             onPress={this.goBlockchainSelect}
             marginBottom={3}>
+            {selectedBlockchain && <BlockchainAvatar blockchain={selectedBlockchain} size="sm" />}
             <Text color="primary.500">{selectedBlockchain ? selectedBlockchain.name : lang('all')}</Text>
-            <Icon as={MaterialIcons} name="expand-more" size="md" />
+            <Spacer />
+            <ChevronDownIcon />
           </Pressable>
           <FlatList
-            data={selectWalletAccounts}
+            data={selectedAccountsOnSelectChain}
             renderItem={this.renderAccountItem}
             ListEmptyComponent={WalletAccountEmpty}
+            ItemSeparatorComponent={ItemSeparatorComponent}
+            extraData={selectedAccount}
           />
           {selected?.type === WalletType.HD && (
             <Button
@@ -203,13 +221,13 @@ export class WalletManager extends Component<any, any> {
           )}
         </Box>
         {/*创建账户Modal*/}
-        <Modal isOpen={createModalOpen} onClose={this.createOpenSwitch}>
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>{lang('wallet.account.add')}</Modal.Header>
-            <Modal.Body></Modal.Body>
-          </Modal.Content>
-        </Modal>
+        <WalletAccountCreateModal
+          accounts={selectedAccountsOnSelectChain}
+          isOpen={createModalOpen}
+          onClose={this.createOpenSwitch}
+          onCreate={this.handleCreateAccount}
+        />
+
         {/*创建钱包*/}
         <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
       </Page>

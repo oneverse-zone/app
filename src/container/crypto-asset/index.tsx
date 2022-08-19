@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { AddIcon, Box, Button, IconButton, Row, Text } from 'native-base';
+import { AddIcon, Box, Button, ChevronDownIcon, Icon, IconButton, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
 import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
-
-import { TokenScreen } from './token';
-import { NFTScreen } from './NFT';
+import { TokenTabScreen } from './token/token-tab';
+import { NftTabScreen } from './nft/nft-tab';
 import { navigate } from '../../core/navigation';
 import { route } from '../router';
+import { WalletNewActionSheet } from './components/WalletNewActionSheet';
+import { Page } from '../../components/Page';
 import { WalletSelectButton } from './components/WalletSelectButton';
 import { Empty } from './Empty';
 import { walletManagerService } from '../../services/blockchain/wallet-manager';
-import { WalletNewActionSheet } from './components/WalletNewActionSheet';
-import { Page } from '../../components/Page';
+import { tokenService } from '../../services/blockchain/token';
+import { blockchainService } from '../../services/blockchain';
+import { logos } from '../../components/BlockchainAvatar';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -40,21 +42,34 @@ const tabs: Record<
 > = {
   Token: {
     title: lang('token'),
-    component: TokenScreen,
+    component: TokenTabScreen,
   },
   NFT: {
     title: lang('nft'),
-    component: NFTScreen,
+    component: NftTabScreen,
   },
 };
 
-function WalletAddButton({ navigation }: any) {
-  function handlePress() {
-    navigation.setParams({ open: true });
-  }
+function CryptoAssetRight({ navigation }: any) {
+  function handlePress() {}
 
   return <IconButton borderRadius="full" icon={<AddIcon />} onPress={handlePress} />;
 }
+
+const CryptoAssetTitle = observer(function CryptoAssetTitle() {
+  function handlePress() {
+    navigate(route.BlockchainSelect);
+  }
+
+  const { selected } = blockchainService;
+  const Logo = logos[selected?.id ?? ''];
+  const icon = Logo && <Icon as={Logo} size="md" />;
+  return (
+    <Button borderRadius="full" variant="ghost" leftIcon={icon} rightIcon={<ChevronDownIcon />} onPress={handlePress}>
+      {selected?.name ?? ''}
+    </Button>
+  );
+});
 
 /**
  * 加密资产
@@ -63,13 +78,17 @@ function WalletAddButton({ navigation }: any) {
 @autoBind
 export class CryptoAsset extends Component<any, any> {
   static options = (props: any) => ({
+    headerTitle: () => <CryptoAssetTitle {...props} />,
     headerLeft: WalletSelectButton,
-    headerRight: () => <WalletAddButton {...props} />,
+    // headerRight: () => <WalletAddButton {...props} />,
   });
 
+  state = {
+    open: false,
+  };
+
   openSwitch() {
-    const { open } = this.props.route.params || {};
-    this.props.navigation.setParams({ open: !open });
+    this.setState({ open: !this.state.open });
   }
 
   handleSend() {
@@ -85,6 +104,8 @@ export class CryptoAsset extends Component<any, any> {
   }
 
   renderDefault() {
+    const { selectedAccount } = walletManagerService;
+    const token = (tokenService.tokens[selectedAccount?.id ?? ''] || [])[0];
     return (
       <>
         <Box
@@ -130,7 +151,7 @@ export class CryptoAsset extends Component<any, any> {
 
   render() {
     const { wallet, wallets, loading } = walletManagerService;
-    const { open } = this.props.route.params || {};
+    const { open } = this.state;
     return (
       <Page loading={loading} scroll={false}>
         {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}

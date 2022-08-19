@@ -6,6 +6,7 @@ export const lang: Record<LangKey, LangValue> = {
   congratulations: '恭喜',
   advanced: '高级',
   'next-step': '下一步',
+  ok: '确定',
   balance: '余额',
   add: '添加',
   finish: '完成',
@@ -88,6 +89,10 @@ export const lang: Record<LangKey, LangValue> = {
   'wallet.recover': '恢复/导入钱包',
   'wallet.recover.describe': '通过您持有的助记词或私钥恢复已有的钱包',
   'wallet.account.add': '添加帐户',
+  'wallet.account.name': '账户名称',
+  'wallet.account.address.index': '账户地址编号',
+  'wallet.account.address.index.tip':
+    '钱包地址从索引0开始以顺序递增的方式编号。此数字用作BIP32派生中的子索引。(使用同一个助记词生成多个钱包账户)',
   'wallet.account.address.copy': '复制地址',
   'blockchain.select': '链选择',
   'blockchain.main': '主链',

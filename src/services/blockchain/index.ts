@@ -46,7 +46,8 @@ export class BlockchainService {
   /**
    * 主网链
    */
-  mainNets: Array<Blockchain> = [bitcoin, ethereum, polygon];
+  // mainNets: Array<Blockchain> = [bitcoin, ethereum, polygon];
+  mainNets: Array<Blockchain> = [ethereum];
 
   /**
    * 测试网链
@@ -89,7 +90,7 @@ export class BlockchainService {
   /**
    * 当前选择的链
    */
-  get selected() {
+  get selected(): Blockchain | undefined {
     return this.blockchains[this.selectIndex];
   }
 

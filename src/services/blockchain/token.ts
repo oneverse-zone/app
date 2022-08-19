@@ -6,6 +6,7 @@ import { COIN_TOKEN_CONTRACT_ADDRESS, TokenType } from '../../entity/blockchain/
 import { walletAdapter } from './adapter';
 import { coinService } from './coin';
 import { walletManagerService } from './wallet-manager';
+import { blockchainService } from './index';
 
 /**
  * token 服务
@@ -25,10 +26,29 @@ export class TokenService {
       name: 'TokenStore',
       properties: ['tokens'],
     }).finally(() => {
-      console.log(`加载token完成`);
+      console.log(`加载本地token完成`);
     });
   }
 
+  /**
+   * 获取当前选择的钱包，对应链、对应账户的token列表
+   */
+  get selectTokens(): FullToken[] {
+    const account = walletManagerService.selectedAccount;
+    if (!account) {
+      return [];
+    }
+    const tokens = this.tokens[account.id] ?? [];
+    const blockchain = blockchainService.selected;
+    if (!blockchain) {
+      return tokens;
+    }
+    return tokens.filter(item => item.blockchainId === blockchain.id);
+  }
+
+  /**
+   * 更新当前选择账户中的token信息
+   */
   updateSelectAccountToken() {
     const account = walletManagerService.selectedAccount;
     account && this.updateAccountToken(account);
@@ -51,7 +71,7 @@ export class TokenService {
    * 获取账户的所有token 信息
    * @param account
    */
-  getTokens(account: WalletAccount) {
+  private getTokens(account: WalletAccount) {
     const tokens: Array<FullToken> = [];
     const coin = coinService.findById(account.coinId);
     if (null == coin) {

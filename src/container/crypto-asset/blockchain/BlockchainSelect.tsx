@@ -18,7 +18,15 @@ import { Button } from '../../../components/Button';
 export class BlockchainSelect extends Component<any, any> {
   static options = {
     title: lang('blockchain.select'),
-    headerLeft: () => <IconButton colorScheme="dark" borderRadius="full" icon={<CloseIcon />} onPress={goBack} />,
+    headerLeft: () => (
+      <IconButton
+        colorScheme="dark"
+        borderRadius="full"
+        color="block"
+        icon={<CloseIcon color="#000" />}
+        onPress={goBack}
+      />
+    ),
     presentation: 'modal',
   };
 

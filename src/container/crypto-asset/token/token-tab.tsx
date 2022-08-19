@@ -11,7 +11,7 @@ import { walletManagerService } from '../../../services/blockchain/wallet-manage
 
 @observer
 @autoBind
-export class TokenScreen extends Component<any, any> {
+export class TokenTabScreen extends Component<any, any> {
   componentDidMount() {
     tokenService.updateSelectAccountToken();
   }

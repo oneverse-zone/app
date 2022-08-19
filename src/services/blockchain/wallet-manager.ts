@@ -13,6 +13,7 @@ import { randomMnemonic } from '@oneverse/utils';
 import { securityService } from '../security';
 import { tokenService } from './token';
 import { WalletAccount } from '../../entity/blockchain/wallet-account';
+import { blockchainService } from './index';
 
 /**
  * 钱包管理
@@ -38,9 +39,9 @@ export class WalletManagerService {
    */
   selectedIndex: number = 0;
   /**
-   * 当前选择的帐户下表
+   * 当前选择的帐户ID
    */
-  selectedAccountIndex: number = 0;
+  selectedAccountId: string = '';
 
   /**
    * 钱包索引
@@ -54,7 +55,7 @@ export class WalletManagerService {
     });
     makePersistable(this, {
       name: 'WalletStore',
-      properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountIndex', 'walletIndex'],
+      properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountId', 'walletIndex'],
     }).finally(() => {});
   }
 
@@ -80,15 +81,27 @@ export class WalletManagerService {
   /**
    * 当前选择的钱包对应的帐户列表
    */
-  get selectWalletAccounts(): Array<WalletAccount> {
+  get selectedAccounts(): Array<WalletAccount> {
     return this.selected?.accounts ?? [];
+  }
+
+  /**
+   * 当前选择的钱包对应选择链的帐户列表
+   */
+  get selectedAccountsOnSelectChain() {
+    const accounts = this.selectedAccounts;
+    const blockchain = blockchainService.selected;
+    if (!blockchain) {
+      return accounts;
+    }
+    return accounts.filter(item => item.blockchainId === blockchain.id);
   }
 
   /**
    * 当前选择的帐户
    */
   get selectedAccount(): WalletAccount | undefined {
-    return this.selectWalletAccounts[this.selectedAccountIndex];
+    return this.selectedAccounts.find(item => item.id === this.selectedAccountId);
   }
 
   /**
@@ -101,16 +114,17 @@ export class WalletManagerService {
       return;
     }
     this.selectedIndex = index;
-    this.selectWalletAccount(0);
+    this.selectAccount(this.selectedAccountsOnSelectChain[0]?.id ?? '');
   }
 
   /**
    * 选择账户
-   * @param index 账户索引
+   * @param id 账户ID
    */
-  selectWalletAccount(index: number) {
-    if (this.selected?.accounts[index]) {
-      this.selectedAccountIndex = index;
+  selectAccount(id: string) {
+    const idx = this.selectedAccounts.findIndex(item => item.id === id);
+    if (idx > -1) {
+      this.selectedAccountId = id;
       tokenService.updateSelectAccountToken();
     }
   }
@@ -210,6 +224,26 @@ export class WalletManagerService {
     }
   }
 
+  async createAccount(wallet: Wallet, coin: Coin, name: string, addressIndex: number) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const account = await this.executeCreateAccount(wallet, coin, name, addressIndex);
+      wallet.accounts.push(account);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /**
+   * 执行钱包创建
+   * @param name
+   * @param coins
+   * @param secretKey
+   * @private
+   */
   private async executeCreateWallet(name: string, coins: Array<Coin>, secretKey: Mnemonic | string) {
     const wallet = await this.handleCreateWallet(name, coins, secretKey);
     this.list.push(wallet);
@@ -245,7 +279,11 @@ export class WalletManagerService {
       ...(walletOption as any),
     };
     this.walletIndex += 1;
-    await this.createAccount(wallet, coins, 0);
+    const accounts = [];
+    for (const item of coins) {
+      accounts.push(await this.executeCreateAccount(wallet, item, 'Account 0', 0));
+    }
+    wallet.accounts = accounts;
     console.log(`创建HD钱包成功: ${wallet.id} ${wallet.name}`);
     return wallet;
   }
@@ -254,13 +292,18 @@ export class WalletManagerService {
    * 派生HD钱包
    * @param wallet
    * @param coin
+   * @param name 账户名称
    * @param addressIndex 地址索引
    */
-  @action
-  async createAccount(wallet: Wallet, coin: Coin | Coin[], addressIndex?: number) {
+  private async executeCreateAccount(
+    wallet: Wallet,
+    coin: Coin,
+    name: string,
+    addressIndex: number,
+  ): Promise<WalletAccount> {
     if (wallet.type === WalletType.SINGLE_CHAIN) {
       console.log(`助记词钱包不支持派生子钱包`);
-      return;
+      throw new Error(`助记词钱包不支持派生子钱包`);
     }
 
     const secretKey = await securityService.decrypt<Mnemonic | string>(wallet.secretKey);
@@ -280,23 +323,18 @@ export class WalletManagerService {
 
     const accounts = wallet.accounts;
 
-    const walletAccounts = (Array.isArray(coin) ? coin : [coin]).map(item => {
-      const acc = walletAdapter.createAccount({
-        name: `Account ${addressIndex}`,
-        coin: item,
-        ...(options as any),
-      });
-      const exists = accounts.findIndex(i => i.address === acc.address) > -1;
-      if (exists) {
-        throw new Error(`钱包已经存在`);
-      }
-      acc.walletId = wallet.id;
-      acc.id = nanoid();
-      return acc;
+    const account = walletAdapter.createAccount({
+      name,
+      coin,
+      ...(options as any),
     });
-
-    accounts.push(...walletAccounts);
-    wallet.accounts = accounts;
+    const exists = accounts.findIndex(i => i.address === account.address) > -1;
+    if (exists) {
+      throw new Error(`钱包已经存在`);
+    }
+    account.walletId = wallet.id;
+    account.id = nanoid();
+    return account;
   }
 }
 

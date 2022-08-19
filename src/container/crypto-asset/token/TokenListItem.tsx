@@ -2,7 +2,9 @@ import React from 'react';
 import { Avatar } from 'native-base';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
-import { WalletAccount, FullToken } from '../../../entity/blockchain/wallet-account';
+import { FullToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
+import { TokenType } from '../../../entity/blockchain/token';
+import { logos } from '../../../components/BlockchainAvatar';
 
 export type TokenListItemProps = {
   walletAccount: WalletAccount;
@@ -13,13 +15,21 @@ export type TokenListItemProps = {
  * token 列表条目
  */
 export function TokenListItem(props: TokenListItemProps) {
-  const { walletAccount, address, balance, name, symbol, ...other } = props;
-  const icon = (
+  const { walletAccount, address, balance, name, symbol, blockchainId, type, ...other } = props;
+
+  let icon;
+  if (type === TokenType.COIN) {
+    const Logo = logos[blockchainId];
+    icon = Logo && <Logo />;
+  }
+  if (!icon) {
+    icon = name.charAt(0);
+  }
+  const avatar = (
     <Avatar size="sm" bg="white">
-      {null ? <></> : name}
+      {icon}
     </Avatar>
   );
 
-  const footer = <Title title={`${balance}`} />;
-  return <ListItem icon={icon} title={symbol} subtitle={name} footer={footer} showArrow={false} {...other} />;
+  return <ListItem icon={avatar} title={`${balance} ${symbol}`} showArrow={false} {...other} />;
 }

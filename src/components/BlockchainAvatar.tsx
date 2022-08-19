@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Text } from 'native-base';
+import { Avatar, IAvatarProps, Text } from 'native-base';
 import { Blockchain } from '../entity/blockchain/blockchain';
 import { bitcoin, ethereum, polygon } from '../services/blockchain';
 
@@ -9,9 +9,9 @@ import maticLogo from '../assets/svg/token-logo/polygon-matic.svg';
 
 export type BlockchainAvatar = {
   blockchain: Blockchain;
-};
+} & IAvatarProps;
 
-const logos: Record<string, any> = {
+export const logos: Record<string, any> = {
   [bitcoin.id]: btcLogo,
   [ethereum.id]: ethLogo,
   [polygon.id]: maticLogo,
@@ -22,7 +22,11 @@ const logos: Record<string, any> = {
  * @param blockchain
  * @constructor
  */
-export function BlockchainAvatar({ blockchain }: BlockchainAvatar) {
+export function BlockchainAvatar({ blockchain, ...props }: BlockchainAvatar) {
   const Logo = logos[blockchain.id];
-  return <Avatar bg="white">{Logo ? <Logo /> : <Text>{blockchain.name}</Text>}</Avatar>;
+  return (
+    <Avatar bg="white" {...props}>
+      {Logo ? <Logo /> : <Text>{blockchain.name}</Text>}
+    </Avatar>
+  );
 }

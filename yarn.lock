@@ -7635,10 +7635,10 @@ metro-react-native-babel-preset@0.70.3:
     "@babel/template" "^7.0.0"
     react-refresh "^0.4.0"
 
-metro-react-native-babel-preset@^0.72.0:
-  version "0.72.0"
-  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.72.0.tgz#7cbb0fa9cc918aca372c40791291f159e7cd2d36"
-  integrity sha512-AcS5X/eacckVj6oX8G0/KT4Q9+PsZoUchTe5xnBimHAJ1ZjOhjnHSkdAM7+MHRQlp4L63pCSp0/bsJoDbF6X1g==
+metro-react-native-babel-preset@^0.72.1:
+  version "0.72.1"
+  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.72.1.tgz#6da276375f20312306c1545c47c439e445b9c628"
+  integrity sha512-DlvMw2tFrCqD9OXBoN11fPM09kHC22FZpnkTmG4Pr4kecV+aDmEGxwakjUcjELrX1JCXz2MLPvqeJkbiP1f5CA==
   dependencies:
     "@babel/core" "^7.14.0"
     "@babel/plugin-proposal-async-generator-functions" "^7.0.0"
@@ -8006,10 +8006,10 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-native-base@^3.4.12:
-  version "3.4.12"
-  resolved "https://registry.yarnpkg.com/native-base/-/native-base-3.4.12.tgz#1de1a783e568cd429c218563886d93ed27be2abc"
-  integrity sha512-w/LRL95dwHZZO+heu4y4FURtcTeYjkAoV4q4AD9mzrLzq4ejeBSxDzpT3O2l+N/xeBVP2u2TYVOP4ocYRZOKPQ==
+native-base@^3.4.13:
+  version "3.4.13"
+  resolved "https://registry.yarnpkg.com/native-base/-/native-base-3.4.13.tgz#e1cc00d922140ed50158f21f8e8c8f246b3f4cee"
+  integrity sha512-2Z3HMIWRqg2BK8b4fBvCCJr85hUsBcNiVOLENClsvS24n+7+J1wEzeLQqQPjc4bC4bCkCgiaeYqQvdjRL+x0Sg==
   dependencies:
     "@react-aria/focus" "3.2.3"
     "@react-aria/utils" "^3.6.0"
@@ -8803,10 +8803,10 @@ react-native-svg-transformer@^1.0.0:
     "@svgr/plugin-svgo" "^6.1.2"
     path-dirname "^1.0.2"
 
-react-native-svg@^12.4.4:
-  version "12.4.4"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-12.4.4.tgz#2ba684eaea9a7402fbbe0ed9737e77284631d00e"
-  integrity sha512-LpcNlEVCURexqPAvQ9ne8KrPVfYz0wIDygwud8VMRmXLezysXzyQN/DTsjm1BO9lIfYp55WQsr3u3yW/vk6iiA==
+react-native-svg@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-13.0.0.tgz#a26d28446aeb7e4bed7e1bb1cb42f2eb5462e652"
+  integrity sha512-CkWB8BYGjvmGiLqqJRHfTH8/Q5tJyhltUYCmi20sqOCbjfTR5dkQUUafV0oUOhvK2lS+zuB9Dpf1Beo92rls5Q==
   dependencies:
     css-select "^5.1.0"
     css-tree "^1.1.3"
