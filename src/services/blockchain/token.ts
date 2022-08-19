@@ -73,7 +73,7 @@ export class TokenService {
    */
   private getTokens(account: WalletAccount) {
     const tokens: Array<FullToken> = [];
-    const coin = coinService.findById(account.coinId);
+    const coin = coinService.findByBlockchainId(account.blockchainId);
     if (null == coin) {
       return tokens;
     }

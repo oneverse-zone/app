@@ -11,7 +11,7 @@ import { AbstractProvider } from './abstract-provider';
 import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { blockchainNodeService } from '../blockchain-node';
 import { TokenType } from '../../../entity/blockchain/token';
-import { ethereum } from '../index';
+import { ethereum } from '../chainlist/ethereum';
 
 // The minimum ABI to get ERC20 Token balance
 const ERC20_BASE_ABI = [
@@ -107,7 +107,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
  */
 export class EthereumWalletProvider extends BaseEthereumWalletProvider implements BaseProvider {
   support(blockchainId: string, coinId: number): boolean | Promise<boolean> {
-    return blockchainId === ethereum.id && coinId === ethereum.coinId;
+    return coinId === ethereum.coinId;
   }
 
   isEthereum(): boolean {

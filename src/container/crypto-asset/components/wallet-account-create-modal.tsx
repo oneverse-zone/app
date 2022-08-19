@@ -15,8 +15,8 @@ export type WalletAccountCreateModalProps = {
  * @constructor
  */
 export function WalletAccountCreateModal({ accounts, onCreate, ...props }: WalletAccountCreateModalProps) {
-  const max = Math.max(...accounts.map<number>(item => item.addressIndex as number)) ?? 0;
-  console.log(accounts, max);
+  let max = Math.max(...accounts.map<number>(item => item.addressIndex as number));
+  !Number.isInteger(max) && (max = -1);
   const [name, setName] = useState(`Account ${max + 1}`);
   const [addressIndex, setAddressIndex] = useState(`${max + 1}`);
 

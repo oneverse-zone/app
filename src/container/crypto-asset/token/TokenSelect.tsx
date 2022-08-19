@@ -3,7 +3,7 @@ import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { Page } from '../../../components/Page';
 import { walletService } from '../../../services/blockchain/wallet-manager';
-import { TokenList } from './TokenList';
+import { TokenList } from '../components/TokenList';
 import { navigate, replace } from '../../../core/navigation';
 import { WalletToken } from '../../../entity/blockchain/wallet';
 import { lang } from '../../../locales';

@@ -38,14 +38,14 @@ export class BlockchainSelect extends Component<any, any> {
   }
 
   render() {
-    const { mainNets, testNets, customNets, selected } = blockchainService;
+    const { mains, tests, customs, selected } = blockchainService;
     return (
       <Box flex={1}>
         <BlockchainList
           selected={selected}
-          mainNets={mainNets}
-          testNets={testNets}
-          customNets={customNets}
+          mainNets={mains}
+          testNets={tests}
+          customNets={customs}
           onItemPress={this.handleBlockchainSelect}
         />
         <FixedBottomView>

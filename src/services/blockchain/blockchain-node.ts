@@ -3,7 +3,7 @@ import { makePersistable } from 'mobx-persist-store';
 import { makeResettable } from '../../mobx/mobx-reset';
 import { Blockchain } from '../../entity/blockchain/blockchain';
 import { NetworkEnv, NetworkNode } from '../../entity/blockchain/network-node';
-import { ethereum } from './index';
+import { ethereum, ethereumGoerli, ethereumRinkeby } from './chainlist/ethereum';
 
 /**
  * 以太坊网络
@@ -21,7 +21,7 @@ const ethereumMainInfura1: NetworkNode = {
  * 以太坊测试网络 Rinkeby
  */
 const ethereumTestRinkeby: NetworkNode = {
-  blockchainId: ethereum.id,
+  blockchainId: ethereumRinkeby.id,
   builtIn: true,
   chainId: 1,
   name: 'Ethereum Testnet Rinkeby',
@@ -33,7 +33,7 @@ const ethereumTestRinkeby: NetworkNode = {
  * 以太坊测试网络 Goerli
  */
 const ethereumTestGoerli: NetworkNode = {
-  blockchainId: ethereum.id,
+  blockchainId: ethereumGoerli.id,
   builtIn: true,
   chainId: 1,
   name: 'Ethereum Testnet Rinkeby',
@@ -52,13 +52,9 @@ export class BlockchainNodeService {
     /**
      * 以太坊主链
      */
-    [ethereum.id]: [
-      // main
-      // ethereumMainInfura1,
-      // test
-      // ethereumTestRinkeby,
-      ethereumTestGoerli,
-    ],
+    [ethereum.id]: [ethereumMainInfura1],
+    [ethereumRinkeby.id]: [ethereumTestRinkeby],
+    [ethereumGoerli.id]: [ethereumTestGoerli],
   };
 
   /**

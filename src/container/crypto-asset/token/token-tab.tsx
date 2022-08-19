@@ -4,7 +4,7 @@ import { autoBind } from 'jsdk/autoBind';
 import { Box } from 'native-base';
 import { navigate } from '../../../core/navigation';
 import { route } from '../../router';
-import { TokenList } from './TokenList';
+import { TokenList } from '../components/TokenList';
 import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';

@@ -114,6 +114,10 @@ export class WalletManagerService {
       return;
     }
     this.selectedIndex = index;
+    this.selectChainFirstAccount();
+  }
+
+  selectChainFirstAccount() {
     this.selectAccount(this.selectedAccountsOnSelectChain[0]?.id ?? '');
   }
 
@@ -123,8 +127,8 @@ export class WalletManagerService {
    */
   selectAccount(id: string) {
     const idx = this.selectedAccounts.findIndex(item => item.id === id);
+    this.selectedAccountId = id;
     if (idx > -1) {
-      this.selectedAccountId = id;
       tokenService.updateSelectAccountToken();
     }
   }
@@ -328,8 +332,10 @@ export class WalletManagerService {
       coin,
       ...(options as any),
     });
-    const exists = accounts.findIndex(i => i.address === account.address) > -1;
+    const exists =
+      accounts.findIndex(i => i.address === account.address && i.blockchainId == account.blockchainId) > -1;
     if (exists) {
+      console.log('钱包已经存在');
       throw new Error(`钱包已经存在`);
     }
     account.walletId = wallet.id;

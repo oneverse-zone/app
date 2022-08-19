@@ -29,7 +29,7 @@ import { WalletNewActionSheet } from '../components/WalletNewActionSheet';
 import { Page } from '../../../components/Page';
 import { Title } from '../../../components/Title';
 import { BlockchainAvatar } from '../../../components/BlockchainAvatar';
-import { WalletAccountCreateModal } from '../blockchain/wallet-account-create-modal';
+import { WalletAccountCreateModal } from '../components/wallet-account-create-modal';
 import { coinService } from '../../../services/blockchain/coin';
 
 function ItemSeparatorComponent() {
@@ -68,9 +68,10 @@ export class WalletManager extends Component<any, any> {
    * 处理创建账户
    */
   handleCreateAccount(name: string, addressIndex: number) {
-    const { selected, selectedAccount } = walletManagerService;
-    if (selected && selectedAccount) {
-      const coin = coinService.findById(selectedAccount.coinId);
+    const { selected } = walletManagerService;
+    const { selected: selectedChain } = blockchainService;
+    if (selected && selectedChain) {
+      const coin = coinService.findByBlockchainId(selectedChain.id);
       coin && walletManagerService.createAccount(selected, coin, name, addressIndex);
     }
   }
