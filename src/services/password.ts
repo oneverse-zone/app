@@ -26,7 +26,6 @@ class PasswordService {
     const key = await SecurityService.toKey(password);
 
     const data = await SecurityService.encryptWithKey(key, text);
-    console.log(`密文: ${data}`);
     await repository.set(passwordStorageKey, data);
   }
 

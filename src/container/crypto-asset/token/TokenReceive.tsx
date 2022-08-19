@@ -10,7 +10,7 @@ import { WalletToken } from '../../../entity/blockchain/wallet';
 import { lang } from '../../../locales';
 import { goBack } from '../../../core/navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { tokenService } from '../../../services/blockchain/Token';
+import { tokenService } from '../../../services/blockchain/token';
 
 /**
  * token 接收

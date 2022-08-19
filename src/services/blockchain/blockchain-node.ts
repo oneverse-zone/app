@@ -90,10 +90,10 @@ export class BlockchainNodeService {
   get allNodes(): Record<string, Array<NetworkNode>> {
     const result: Record<string, Array<NetworkNode>> = {};
     Object.keys(this.nodes).forEach(id => {
-      result[id] = [...result[id], ...this.nodes[id]];
+      result[id] = [...(result[id] ?? []), ...(this.nodes[id] ?? [])];
     });
     Object.keys(this.customNodes).forEach(id => {
-      result[id] = [...result[id], ...this.customNodes[id]];
+      result[id] = [...(result[id] ?? []), ...(this.customNodes[id] ?? [])];
     });
     return result;
   }
@@ -102,6 +102,7 @@ export class BlockchainNodeService {
    * 获取最优节点
    */
   getFastNode(blockchain: Blockchain): NetworkNode {
+    console.log(`获取${blockchain.name}最快的节点`);
     const blockchainId = blockchain.id;
     let node = this.defaultNode[blockchainId];
     if (node) {

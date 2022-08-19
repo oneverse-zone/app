@@ -2,15 +2,18 @@ import React from 'react';
 import { Avatar } from 'native-base';
 import { Title } from '../../../components/Title';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
-import { WalletToken } from '../../../entity/blockchain/wallet-account';
+import { WalletAccount, FullToken } from '../../../entity/blockchain/wallet-account';
 
-export type TokenListItemProps = {} & WalletToken & ListItemProps;
+export type TokenListItemProps = {
+  walletAccount: WalletAccount;
+} & FullToken &
+  ListItemProps;
 
 /**
  * token 列表条目
  */
 export function TokenListItem(props: TokenListItemProps) {
-  const { id, address, symbol, balance, name, ...other } = props;
+  const { walletAccount, address, balance, name, symbol, ...other } = props;
   const icon = (
     <Avatar size="sm" bg="white">
       {null ? <></> : name}

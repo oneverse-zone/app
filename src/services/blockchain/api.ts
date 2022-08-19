@@ -1,5 +1,5 @@
 import { Coin } from '../../entity/blockchain/coin';
-import { WalletAccount } from '../../entity/blockchain/wallet-account';
+import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
 
 export type CreateHDWalletAccountOptions = {
   secretKey?: never;
@@ -56,9 +56,10 @@ export interface BaseProvider {
 export interface WalletProvider {
   /**
    * 是否支持该coin
-   * @param coin
+   * @param blockchainId 链ID
+   * @param coinId 币ID
    */
-  support(coin: Coin): boolean | Promise<boolean>;
+  support(blockchainId: string, coinId: number): boolean | Promise<boolean>;
 
   /**
    * 创建钱包token
@@ -68,8 +69,9 @@ export interface WalletProvider {
   /**
    * 获取Token余额
    * @param account 账户信息
+   * @param token token 信息
    */
-  getBalance(account: WalletAccount): Promise<string>;
+  getBalance(account: WalletAccount, token: AccountToken): Promise<string>;
 
   /**
    * 预估GAS

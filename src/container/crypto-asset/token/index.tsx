@@ -5,22 +5,34 @@ import { Box } from 'native-base';
 import { navigate } from '../../../core/navigation';
 import { route } from '../../router';
 import { TokenList } from './TokenList';
-import { walletAccountService } from '../../../services/blockchain/wallet-account';
-import { WalletToken } from '../../../entity/blockchain/wallet-account';
+import { FullToken } from '../../../entity/blockchain/wallet-account';
+import { tokenService } from '../../../services/blockchain/token';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 
 @observer
 @autoBind
 export class TokenScreen extends Component<any, any> {
-  handleItemPress(item: WalletToken) {
+  componentDidMount() {
+    const { selectedAccount } = walletManagerService;
+    if (selectedAccount) {
+      // tokenService.updateAccountToken(selectedAccount);
+    }
+  }
+
+  handleItemPress(item: FullToken) {
     navigate(route.TokenDetail, item);
   }
 
   render() {
-    const { selected } = walletAccountService;
-
+    const { selectedAccount } = walletManagerService;
+    const { tokens } = tokenService;
     return (
       <Box>
-        <TokenList data={selected?.tokens ?? []} onSelect={this.handleItemPress} />
+        <TokenList
+          walletAccount={selectedAccount!}
+          data={tokens[selectedAccount?.id ?? ''] ?? []}
+          onSelect={this.handleItemPress}
+        />
       </Box>
     );
   }

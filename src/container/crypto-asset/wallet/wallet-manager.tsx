@@ -20,7 +20,6 @@ import { lang } from '../../../locales';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 import { Wallet, WalletType } from '../../../entity/blockchain/wallet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { walletAccountService } from '../../../services/blockchain/wallet-account';
 import { WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { WalletAccountEmpty } from '../components/WalletAccountEmpty';
 import { blockchainService } from '../../../services/blockchain';
@@ -84,9 +83,9 @@ export class WalletManager extends Component<any, any> {
   }
 
   renderAccountItem({ item }: { item: WalletAccount }) {
-    const { selected } = walletAccountService;
+    const { selectedAccount } = walletManagerService;
     const props: IPressableProps = {};
-    if (selected?.tokens[0]?.blockchainId === item.tokens[0].blockchainId && selected?.address === item.address) {
+    if (selectedAccount?.id === item.id) {
       props.bg = 'primary.500';
     }
     return (
@@ -131,7 +130,7 @@ export class WalletManager extends Component<any, any> {
 
   render() {
     const { wallet, wallets, selected, loading } = walletManagerService;
-    const { selectWalletAccounts } = walletAccountService;
+    const { selectWalletAccounts } = walletManagerService;
     const { selected: selectedBlockchain } = blockchainService;
     const { createModalOpen, open } = this.state;
     return (

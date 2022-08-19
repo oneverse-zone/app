@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Column, FormControl, Input, Row, Slider, TextArea } from 'native-base';
+import { Column, FormControl, Input, TextArea } from 'native-base';
 import { lang } from '../../../locales';
 import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
 import { goBack } from '../../../core/navigation';
-import { WalletAccount, WalletToken } from '../../../entity/blockchain/wallet-account';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
-import { walletAccountService } from '../../../services/blockchain/wallet-account';
-import { walletAdapter } from '../../../services/blockchain/adapter';
 import { txService } from '../../../services/blockchain/tx';
+import { AccountToken } from '../../../entity/blockchain/wallet-account';
 
 /**
  * 账户转账
@@ -48,7 +46,7 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   getAccount() {
-    const accounts = walletAccountService.selectWalletAccounts;
+    const accounts = walletManagerService.selected?.accounts ?? [];
     const account = accounts[this.state.accountIndex];
     if (account) {
       return account;
@@ -56,7 +54,7 @@ export class TokenTransfer extends Component<any, any> {
     goBack();
   }
 
-  getToken(): WalletToken | undefined {
+  getToken(): AccountToken | undefined {
     const account = this.getAccount();
     if (!account) {
       return;
@@ -76,7 +74,7 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   async handleSend() {
-    const token: WalletToken = this.props.route?.params;
+    // const token = this.props.route?.params;
     const { toAddress, value, gasPrice, gasLimit } = this.state;
     // await walletService.sendTransaction(token, toAddress, value, gasPrice, gasLimit);
   }

@@ -2,24 +2,25 @@ import { FlatList } from 'native-base';
 import React from 'react';
 import { TokenListItem } from './TokenListItem';
 import { IFlatListProps } from 'native-base/lib/typescript/components/basic/FlatList';
-import { WalletToken } from '../../../entity/blockchain/wallet-account';
+import { FullToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
 
 export type TokenListProps = {
-  onSelect?: (token: WalletToken) => void;
-} & Omit<IFlatListProps<WalletToken>, 'renderItem'>;
+  walletAccount: WalletAccount;
+  onSelect?: (token: FullToken) => void;
+} & Omit<IFlatListProps<FullToken>, 'renderItem'>;
 
 /**
  * token 列表
  * @param tokens
  * @constructor
  */
-export function TokenList({ onSelect, ...props }: TokenListProps) {
-  function handlePress(item: WalletToken) {
+export function TokenList({ walletAccount, onSelect, ...props }: TokenListProps) {
+  function handlePress(item: FullToken) {
     onSelect?.(item);
   }
 
-  function renderItem({ item }: { item: WalletToken }) {
-    return <TokenListItem {...item} onPress={() => handlePress(item)} />;
+  function renderItem({ item }: { item: FullToken }) {
+    return <TokenListItem walletAccount={walletAccount} {...item} onPress={() => handlePress(item)} />;
   }
 
   return <FlatList {...props} renderItem={renderItem} />;

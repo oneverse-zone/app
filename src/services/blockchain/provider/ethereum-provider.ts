@@ -1,15 +1,29 @@
-import { BaseProvider, CreateWalletAccountOptions, WalletProvider } from '../types';
+import { BaseProvider, CreateWalletAccountOptions, WalletProvider } from '../api';
 import { formatUnits } from '@ethersproject/units';
 import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { getDefaultProvider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 
 import { walletAdapter } from '../adapter';
 import { AbstractProvider } from './abstract-provider';
-import { WalletAccount } from '../../../entity/blockchain/wallet-account';
-import { Coin } from '../../../entity/blockchain/coin';
-import { blockchainNodeService } from '../node';
+import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
+import { blockchainNodeService } from '../blockchain-node';
+import { TokenType } from '../../../entity/blockchain/token';
+import { ethereum } from '../index';
+
+// The minimum ABI to get ERC20 Token balance
+const ERC20_BASE_ABI = [
+  // balanceOf
+  {
+    constant: true,
+    inputs: [{ name: '_owner', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: 'balance', type: 'uint256' }],
+    type: 'function',
+  },
+];
 
 /**
  * 以太坊系列钱包基础实现
@@ -29,25 +43,24 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       wallet = new BlockchainWallet(HDNode.fromMnemonic(mnemonic, password).derivePath(derivePath));
     }
 
-    const base = {
+    const defaultAccount: WalletAccount = {
+      id: '', //由业务服务自行设置
+      walletId: '', //由业务服务自行设置
+      blockchainId: coin.blockchainId,
+      coinId: coin.id,
       name,
       address: wallet?.address!,
-      balance: 0,
-      coin,
       tokens: [],
     };
 
     // sign chain
     if (secretKey) {
-      return {
-        ...base,
-      };
+      return defaultAccount;
     }
 
     return {
-      ...base,
+      ...defaultAccount,
       // hd wallet
-      coinType: coin.id,
       accountIndex,
       changeIndex,
       addressIndex,
@@ -55,30 +68,35 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     };
   }
 
-  async getBalance(account: WalletAccount): Promise<string> {
-    const provider = this.getProvider(account.coin);
-    const balanceWei = await provider.getBalance(account.address);
-    return formatUnits(balanceWei);
+  async getBalance(account: WalletAccount, token: AccountToken): Promise<string> {
+    const provider = this.getProvider(account.blockchainId);
+    if (token.type === TokenType.COIN) {
+      const balanceWei = await provider.getBalance(account.address);
+      return formatUnits(balanceWei);
+    }
+    const contract = new Contract(token.address, ERC20_BASE_ABI, provider);
+    return await contract.balanceOf(account.address);
   }
 
   async estimateGas(account: WalletAccount, transaction: any): Promise<string> {
-    const provider = this.getProvider(account.coin);
+    const provider = this.getProvider(account.blockchainId);
     const signer = new VoidSigner(account.address, provider);
     const value = await signer.estimateGas(transaction);
     return value.toString();
   }
 
   async getGasPrice(account: WalletAccount): Promise<string> {
-    const provider = this.getProvider(account.coin);
+    const provider = this.getProvider(account.blockchainId);
     const gasPrice = await provider.getGasPrice();
     return gasPrice.toString();
   }
 
-  protected getProvider(coin: Coin) {
-    const blockchain = this.getBlockchain(coin);
+  protected getProvider(blockchainId: string) {
+    const blockchain = this.findBlockchainById(blockchainId);
     if (null == blockchain) {
-      throw new Error(`不支持的币: ${coin.id} ${coin.name}`);
+      throw new Error(`不支持的链: ${blockchainId}`);
     }
+    console.log(`${blockchain.name} 提供服务`);
     const fastNode = blockchainNodeService.getFastNode(blockchain);
     return getDefaultProvider(fastNode.network);
   }
@@ -88,6 +106,10 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
  * 以太坊钱包提供者
  */
 export class EthereumWalletProvider extends BaseEthereumWalletProvider implements BaseProvider {
+  support(blockchainId: string, coinId: number): boolean | Promise<boolean> {
+    return blockchainId === ethereum.id && coinId === ethereum.coinId;
+  }
+
   isEthereum(): boolean {
     return true;
   }
