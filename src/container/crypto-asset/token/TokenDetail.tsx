@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Avatar, Box, Button, Column, Icon, Row, Text, Toast } from 'native-base';
+import { Box, Button, Column, Icon, Row, Text, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 
 import { goBack, navigate } from '../../../core/navigation';
-import { WalletToken } from '../../../entity/blockchain/wallet';
 import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';
 import { TokenTransactionScreen } from './TokenTransaction';
-import { tokenService } from '../../../services/blockchain/token';
+import { FullToken } from '../../../entity/blockchain/wallet-account';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
+import { TokenAvatar } from '../components/token-avatar';
+import { formatBalance } from '../../../utils/coin-utils';
 
 const commonTab: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -66,7 +68,7 @@ export class TokenDetail extends Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    const token: WalletToken = props.route?.params;
+    const token: FullToken = props.route?.params;
 
     if (!token) {
       console.log('没有传递token信息，返回上一页');
@@ -79,18 +81,18 @@ export class TokenDetail extends Component<any, any> {
   }
 
   handleSend() {
-    const token: WalletToken = this.props.route?.params;
+    const token: FullToken = this.props.route?.params;
     navigate(route.TokenSend, token);
   }
 
   handleReceive() {
-    const token: WalletToken = this.props.route?.params;
+    const token: FullToken = this.props.route?.params;
     navigate(route.TokenReceive, token);
   }
 
   handleCopy() {
-    const token: WalletToken = this.props.route?.params;
-    Clipboard.setString(token?.address);
+    const { selectedAccount } = walletManagerService;
+    Clipboard.setString(selectedAccount?.address ?? '');
     Toast.show({
       placement: 'top',
       description: lang('copy.success'),
@@ -98,30 +100,31 @@ export class TokenDetail extends Component<any, any> {
   }
 
   render() {
-    const token: WalletToken = this.props.route?.params;
-    const { walletName, name, coinId, balance, contractAddress, address, symbol } = token;
+    const token: FullToken = this.props.route?.params;
+    const { name, balance, symbol } = token;
+    const { selectedAccount } = walletManagerService;
 
-    const Logo = tokenService.findToken(coinId, contractAddress)?.logo;
-    const icon = Logo && (
-      <Avatar size="sm" bg="white">
-        <Logo />
-      </Avatar>
-    );
     return (
       <Box flex={1}>
         <Box bgColor="white" padding={3}>
           <Row space="3" alignItems="center">
-            {icon}
+            <TokenAvatar token={token} />
             <Column>
-              <Text fontWeight="400">{walletName}</Text>
-              <Text width={150} ellipsizeMode="middle" numberOfLines={1} onPress={this.handleCopy} lineHeight={24}>
-                {address}
-                <Icon size="xs" as={<MaterialIcons name="content-copy" />} />
+              <Text fontWeight="400">{name}</Text>
+              <Text
+                width={150}
+                ellipsizeMode="middle"
+                numberOfLines={1}
+                onPress={this.handleCopy}
+                lineHeight={24}
+                borderRadius="full">
+                {selectedAccount?.address}
+                <Icon size="xs" as={<MaterialIcons name="content-copy" />} marginLeft={3} />
               </Text>
             </Column>
           </Row>
           <Text fontWeight="500" fontSize="2xl" my={1}>
-            {balance}
+            {formatBalance(balance)}
             <Text fontSize="md"> {symbol}</Text>
           </Text>
         </Box>
