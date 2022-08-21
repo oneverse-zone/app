@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { AddIcon, Box, Button, ChevronDownIcon, Icon, IconButton, Row, Text } from 'native-base';
+import { AddIcon, Box, Button, ChevronDownIcon, Column, Icon, IconButton, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
@@ -15,9 +15,10 @@ import { Page } from '../../components/Page';
 import { WalletSelectButton } from './components/WalletSelectButton';
 import { Empty } from './Empty';
 import { walletManagerService } from '../../services/blockchain/wallet-manager';
-import { tokenService } from '../../services/blockchain/token';
 import { blockchainService } from '../../services/blockchain';
 import { logos } from '../../components/BlockchainAvatar';
+import { AddressText } from '../../components/AddressText';
+import { tokenService } from '../../services/blockchain/token';
 
 const commonOptions: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -92,20 +93,17 @@ export class CryptoAsset extends Component<any, any> {
   }
 
   handleSend() {
-    navigate(route.TokenSelect, {
-      nextRoute: route.TokenSend,
-    });
+    const { selectedMainTokenIndex } = tokenService;
+    console.log(`transfer ${selectedMainTokenIndex}`);
+    navigate(route.TokenTransfer, { tokenIndex: selectedMainTokenIndex });
   }
 
   handleReceive() {
-    navigate(route.TokenSelect, {
-      nextRoute: route.TokenReceive,
-    });
+    navigate(route.TokenReceive);
   }
 
   renderDefault() {
     const { selectedAccount } = walletManagerService;
-    const token = (tokenService.tokens[selectedAccount?.id ?? ''] || [])[0];
     return (
       <>
         <Box
@@ -113,11 +111,15 @@ export class CryptoAsset extends Component<any, any> {
           margin={3}
           padding={3}
           backgroundColor="primary.500"
-          minH={120}
+          minH={100}
           justifyContent="space-between">
-          <Text fontWeight="500" fontSize="2xl" color="white">
-            {0}
-          </Text>
+          <Column>
+            <Text color="white">{selectedAccount?.name}</Text>
+            <AddressText fontSize="xs" color="white" width={120.001} address={selectedAccount?.address ?? ''} />
+            <Text fontWeight="500" fontSize="2xl" color="white">
+              {0}
+            </Text>
+          </Column>
           <Row>
             <Button
               size="sm"

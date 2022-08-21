@@ -6,7 +6,6 @@ import { COIN_TOKEN_CONTRACT_ADDRESS, TokenType } from '../../entity/blockchain/
 import { walletAdapter } from './adapter';
 import { coinService } from './coin';
 import { walletManagerService } from './wallet-manager';
-import { blockchainService } from './index';
 
 /**
  * token 服务
@@ -38,12 +37,14 @@ export class TokenService {
     if (!account) {
       return [];
     }
-    const tokens = this.tokens[account.id] ?? [];
-    const blockchain = blockchainService.selected;
-    if (!blockchain) {
-      return tokens;
-    }
-    return tokens.filter(item => item.blockchainId === blockchain.id);
+    return this.tokens[account.id] ?? [];
+  }
+
+  /**
+   * 获取当前账户的主链币Token信息
+   */
+  get selectedMainTokenIndex(): number {
+    return this.selectTokens.findIndex(item => item.type === TokenType.COIN);
   }
 
   /**
@@ -62,9 +63,7 @@ export class TokenService {
       item.balance = await this.handleQueryBalance(account, item);
       return item;
     });
-    const values = await Promise.all(tasks);
-    console.log(values);
-    this.tokens[account.id] = values;
+    this.tokens[account.id] = await Promise.all(tasks);
   }
 
   /**
@@ -96,7 +95,7 @@ export class TokenService {
 
   private handleQueryBalance(account: WalletAccount, token: AccountToken): Promise<string> {
     console.log(`查询余额: ${account.address} Token=${token.address}`);
-    return walletAdapter.getBalance(account, token);
+    return walletAdapter.getBalanceUI(account, token);
   }
 }
 

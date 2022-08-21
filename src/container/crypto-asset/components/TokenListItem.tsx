@@ -2,6 +2,7 @@ import React from 'react';
 import { ListItem, ListItemProps } from '../../../components/ListItem';
 import { FullToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { TokenAvatar } from './token-avatar';
+import { formatBalance } from '../../../utils/coin-utils';
 
 export type TokenListItemProps = {
   walletAccount: WalletAccount;
@@ -16,5 +17,5 @@ export function TokenListItem(props: TokenListItemProps) {
 
   const avatar = <TokenAvatar token={props} />;
 
-  return <ListItem icon={avatar} title={`${balance} ${symbol}`} showArrow={false} {...other} />;
+  return <ListItem icon={avatar} title={`${formatBalance(balance)} ${symbol}`} showArrow={false} {...other} />;
 }

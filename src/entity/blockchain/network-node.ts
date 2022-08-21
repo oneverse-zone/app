@@ -34,11 +34,10 @@ export type NetworkNode = {
    * url 或 网络名称
    */
   network: string;
-
   /**
-   * 网络环境
+   * 网络参数
    */
-  networkEnv: NetworkEnv;
+  networkOptions?: any;
 
   /**
    * 内置网络

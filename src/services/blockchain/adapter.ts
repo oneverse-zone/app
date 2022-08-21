@@ -2,6 +2,8 @@ import { CreateWalletAccountOptions, WalletProvider } from './api';
 import { Token } from '../../entity/blockchain/token';
 import { Coin } from '../../entity/blockchain/coin';
 import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
+import { Wallet } from '../../entity/blockchain/wallet';
+import { GasInfo } from '../../entity/blockchain/gas';
 
 /**
  * 区块链适配器
@@ -11,6 +13,10 @@ export class WalletAdapter implements WalletProvider {
 
   support(blockchainId: string, coinId: number): boolean | Promise<boolean> {
     return true;
+  }
+
+  gasPriceUnit(account: WalletAccount): string {
+    return this.getProvider(account.blockchainId, account.coinId).gasPriceUnit(account);
   }
 
   /**
@@ -24,6 +30,9 @@ export class WalletAdapter implements WalletProvider {
   getBalance(account: WalletAccount, token: AccountToken): Promise<string> {
     return this.getProvider(account.blockchainId, account.coinId).getBalance(account, token);
   }
+  getBalanceUI(account: WalletAccount, token: AccountToken): Promise<string> {
+    return this.getProvider(account.blockchainId, account.coinId).getBalanceUI(account, token);
+  }
 
   estimateGas(account: WalletAccount, transaction: any): Promise<string> {
     return this.getProvider(account.blockchainId, account.coinId).estimateGas(account, transaction);
@@ -31,6 +40,18 @@ export class WalletAdapter implements WalletProvider {
 
   getGasPrice(account: WalletAccount): Promise<string> {
     return this.getProvider(account.blockchainId, account.coinId).getGasPrice(account);
+  }
+
+  // getFeeData(account: WalletAccount): Promise<any> {
+  //   return this.getProvider(account.blockchainId, account.coinId).getFeeData(account);
+  // }
+
+  getGasFeeInfos(account: WalletAccount, gasLimit: string | bigint | number): Promise<Array<GasInfo>> {
+    return this.getProvider(account.blockchainId, account.coinId).getGasFeeInfos(account, gasLimit);
+  }
+
+  sendTransaction(wallet: Wallet, account: WalletAccount, transaction: any): Promise<any> {
+    return this.getProvider(account.blockchainId, account.coinId).sendTransaction(wallet, account, transaction);
   }
 
   /**

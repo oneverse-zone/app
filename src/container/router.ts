@@ -20,8 +20,8 @@ import { WalletCreate } from './crypto-asset/wallet/WalletCreate';
 import { WalletRecover } from './crypto-asset/wallet/WalletRecover';
 import { TokenDetail } from './crypto-asset/token/TokenDetail';
 import { TokenTransfer } from './crypto-asset/token/token-transfer';
-import { TokenSelect } from './crypto-asset/token/TokenSelect';
 import { TokenReceive } from './crypto-asset/token/TokenReceive';
+import { GasSetting } from './crypto-asset/gas/gas-setting';
 
 export const route = {
   Splash: 'Splash',
@@ -55,9 +55,10 @@ export const route = {
   WalletRecover: 'WalletRecover',
   WalletManager: 'WalletManager',
   TokenDetail: 'TokenDetail',
-  TokenSend: 'TokenSend',
+  TokenTransfer: 'TokenTransfer',
   TokenReceive: 'TokenReceive',
   TokenSelect: 'TokenSelect',
+  GasSetting: 'GasSetting',
 
   Setting: 'Setting',
 };
@@ -139,16 +140,20 @@ export const routers: Array<{
     component: TokenDetail,
   },
   {
-    name: route.TokenSend,
+    name: route.TokenTransfer,
     component: TokenTransfer,
   },
   {
     name: route.TokenReceive,
     component: TokenReceive,
   },
+  // {
+  //   name: route.TokenSelect,
+  //   component: TokenSelect,
+  // },
   {
-    name: route.TokenSelect,
-    component: TokenSelect,
+    name: route.GasSetting,
+    component: GasSetting,
   },
   {
     name: route.ProfilePersist,

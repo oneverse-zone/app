@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Box, Button, Column, Icon, Row, Text, Toast } from 'native-base';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { Box, Button, Column, Row, Text } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 
@@ -16,6 +14,7 @@ import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 import { TokenAvatar } from '../components/token-avatar';
 import { formatBalance } from '../../../utils/coin-utils';
+import { AddressText } from '../../../components/AddressText';
 
 const commonTab: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -82,21 +81,12 @@ export class TokenDetail extends Component<any, any> {
 
   handleSend() {
     const token: FullToken = this.props.route?.params;
-    navigate(route.TokenSend, token);
+    navigate(route.TokenTransfer, token);
   }
 
   handleReceive() {
     const token: FullToken = this.props.route?.params;
     navigate(route.TokenReceive, token);
-  }
-
-  handleCopy() {
-    const { selectedAccount } = walletManagerService;
-    Clipboard.setString(selectedAccount?.address ?? '');
-    Toast.show({
-      placement: 'top',
-      description: lang('copy.success'),
-    });
   }
 
   render() {
@@ -111,16 +101,7 @@ export class TokenDetail extends Component<any, any> {
             <TokenAvatar token={token} />
             <Column>
               <Text fontWeight="400">{name}</Text>
-              <Text
-                width={150}
-                ellipsizeMode="middle"
-                numberOfLines={1}
-                onPress={this.handleCopy}
-                lineHeight={24}
-                borderRadius="full">
-                {selectedAccount?.address}
-                <Icon size="xs" as={<MaterialIcons name="content-copy" />} marginLeft={3} />
-              </Text>
+              <AddressText address={selectedAccount?.address ?? ''} width={150} lineHeight={24} />
             </Column>
           </Row>
           <Text fontWeight="500" fontSize="2xl" my={1}>

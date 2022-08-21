@@ -2,44 +2,9 @@ import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { makeResettable } from '../../mobx/mobx-reset';
 import { Blockchain } from '../../entity/blockchain/blockchain';
-import { NetworkEnv, NetworkNode } from '../../entity/blockchain/network-node';
+import { NetworkNode } from '../../entity/blockchain/network-node';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from './chainlist/ethereum';
-
-/**
- * 以太坊网络
- */
-const ethereumMainInfura1: NetworkNode = {
-  blockchainId: ethereum.id,
-  builtIn: true,
-  chainId: 1,
-  name: 'Ethereum Mainnet',
-  networkEnv: NetworkEnv.MAIN,
-  network: 'https://mainnet.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
-};
-
-/**
- * 以太坊测试网络 Rinkeby
- */
-const ethereumTestRinkeby: NetworkNode = {
-  blockchainId: ethereumRinkeby.id,
-  builtIn: true,
-  chainId: 1,
-  name: 'Ethereum Testnet Rinkeby',
-  networkEnv: NetworkEnv.MAIN,
-  network: 'https://rinkeby.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
-};
-
-/**
- * 以太坊测试网络 Goerli
- */
-const ethereumTestGoerli: NetworkNode = {
-  blockchainId: ethereumGoerli.id,
-  builtIn: true,
-  chainId: 1,
-  name: 'Ethereum Testnet Rinkeby',
-  networkEnv: NetworkEnv.MAIN,
-  network: 'https://goerli.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
-};
+import { ethereumGoerliNets, ethereumMainNets, ethereumRinkebyNets } from './nodelist/ethereum';
 
 /**
  * 节点服务
@@ -52,9 +17,9 @@ export class BlockchainNodeService {
     /**
      * 以太坊主链
      */
-    [ethereum.id]: [ethereumMainInfura1],
-    [ethereumRinkeby.id]: [ethereumTestRinkeby],
-    [ethereumGoerli.id]: [ethereumTestGoerli],
+    [ethereum.id]: ethereumMainNets,
+    [ethereumRinkeby.id]: ethereumRinkebyNets,
+    [ethereumGoerli.id]: ethereumGoerliNets,
   };
 
   /**
