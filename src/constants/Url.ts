@@ -1,4 +1,3 @@
 // export const ceramicApi = 'http://192.168.91.231:7007';
-export const ceramicApi = 'http://192.168.7.14:7007/';
-// export const ethereumApi = 'http://192.168.91.231:7545';
-export const ethereumApi = 'http://192.168.7.14:7545';
+// export const ceramicApi = 'https://ceramic-private-clay.3boxlabs.com';
+export const ceramicApi = 'https://ceramic-clay.3boxlabs.com';
