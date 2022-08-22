@@ -23,6 +23,7 @@ import { Button } from '../components/Button';
 import { sessionService } from '../services/Session';
 import { resetTo } from '../core/navigation';
 import { route } from './router';
+import { ServiceError } from '@aomi/common-service/exception/ServiceError';
 
 /**
  * 锁频页面
@@ -73,7 +74,11 @@ export class LockScreen extends Component<any, any> {
       resetTo(route.Home);
     } catch (e) {
       console.log('解锁失败', e);
-      this.setState({ loginErr: lang('password.error') });
+      if (e instanceof ServiceError) {
+        this.setState({ loginErr: lang(`error.login.${e.status}` as any) });
+      } else {
+        this.setState({ loginErr: lang('password.error') });
+      }
     }
   }
 

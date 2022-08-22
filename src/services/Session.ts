@@ -15,6 +15,7 @@ import { lang } from '../locales';
 import { makeResettable, resetState } from '../mobx/mobx-reset';
 import { passwordService } from './password';
 import { securityService } from './security';
+import { ServiceError } from '@aomi/common-service/exception/ServiceError';
 
 export class Session {
   didService: DIDService | undefined;
@@ -179,10 +180,10 @@ export class Session {
       this.id = this.didService.did.id.toString();
       console.log(`DID身份初始化成功: ${this.id}`);
     } catch (e: any) {
-      console.warn('DID身份初始化失败', e.message);
+      console.warn('DID身份初始化失败', e.message, e);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
       }
-      throw e;
+      throw new ServiceError({ status: '300', describe: '', payload: '' });
     }
   }
 }

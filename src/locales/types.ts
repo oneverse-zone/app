@@ -112,6 +112,10 @@ export type LangKey =
   | 'gas.gear.fast'
   | 'gas.gear.standard'
   | 'gas.gear.low'
+  | 'gas.maxFeePerGas'
+  | 'gas.maxFeePerGas.describe'
+  | 'gas.maxPriorityFeePerGas'
+  | 'gas.maxPriorityFeePerGas.describe'
   | 'gas.limit'
   | 'gas.limit.describe'
   | 'gas.price'
@@ -120,4 +124,5 @@ export type LangKey =
   | 'tab.home'
   | 'tab.user'
   | 'tab.crypto-asset'
-  | 'tab.message';
+  | 'tab.message'
+  | 'error.login.300';

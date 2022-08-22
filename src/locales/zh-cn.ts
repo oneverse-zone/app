@@ -111,13 +111,17 @@ export const lang: Record<LangKey, LangValue> = {
   'token.select': 'Token 选择',
   'token.in': '转入',
   'token.out': '转出',
-  gas: '矿工费',
-  'gas.fee': '矿工费',
-  'gas.setting': '矿工费设置',
+  gas: '燃料',
+  'gas.fee': '燃料费',
+  'gas.setting': '燃料设置',
   'gas.estimate.range': '预估范围',
   'gas.gear.fast': '最快',
   'gas.gear.standard': '标准',
   'gas.gear.low': '缓慢',
+  'gas.maxFeePerGas': 'MaxFeePerGas',
+  'gas.maxFeePerGas.describe': '每单位燃料您愿意支付的最高价格',
+  'gas.maxPriorityFeePerGas': 'MaxPriorityFeePerGas',
+  'gas.maxPriorityFeePerGas.describe': '每单位燃料您愿意支付的小费最高价格',
   'gas.limit': '燃料限制',
   'gas.limit.describe': '燃料限制是指您愿意花费的最大燃料量',
   'gas.price': '燃料价格',
@@ -127,6 +131,8 @@ export const lang: Record<LangKey, LangValue> = {
   'tab.message': '消息',
   'tab.user': '我的',
   'tab.crypto-asset': '资产',
+
+  'error.login.300': '连接网络节点失败,请检查网络连接',
 };
 
 export const resErrMsg: Record<string, any> = {

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 
-import { Box, Card, Column, Icon, Text } from 'native-base';
+import { Box, Card, Column, Icon, Text, FormControl, Divider, KeyboardAvoidingView } from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { Page } from '../../../components/Page';
@@ -14,6 +14,9 @@ import { lang } from '../../../locales';
 import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
 import { ListItem } from '../../../components/ListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Input } from '../../../components/Input';
+import { Button } from '../../../components/Button';
+import { Platform } from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -78,8 +81,41 @@ function GasGearTab({
  * gas 自定义设置页面
  * @constructor
  */
-function GasCustom({}: any) {
-  return <Box></Box>;
+function GasCustom({
+  defaultGasLimit,
+  defaultMaxFeePerGas,
+  defaultMaxPriorityFeePerGas,
+  gasPriceUnit,
+}: {
+  defaultGasLimit: string | bigint | number;
+  defaultMaxFeePerGas: string | bigint | number;
+  defaultMaxPriorityFeePerGas: string | bigint | number;
+  gasPriceUnit: string;
+}) {
+  const [maxFeePerGas, setMaxFeePerGas] = useState(`${defaultMaxFeePerGas ?? ''}`);
+  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(`${defaultMaxPriorityFeePerGas ?? ''}`);
+  const [gasLimit, setGasLimit] = useState(`${defaultGasLimit ?? ''}`);
+  return (
+    <Column margin={3} padding={3} space={3} borderRadius="lg" bgColor="white">
+      <FormControl>
+        <FormControl.Label>{`${lang('gas.maxFeePerGas')} (${gasPriceUnit})`}</FormControl.Label>
+        <Input keyboardType="numeric" value={maxFeePerGas} onChangeText={setMaxFeePerGas} />
+        <FormControl.HelperText>{lang('gas.maxFeePerGas.describe')}</FormControl.HelperText>
+      </FormControl>
+      <FormControl>
+        <FormControl.Label>{`${lang('gas.maxPriorityFeePerGas')} (${gasPriceUnit})`}</FormControl.Label>
+        <Input keyboardType="numeric" value={maxPriorityFeePerGas} onChangeText={setMaxPriorityFeePerGas} />
+        <FormControl.HelperText>{lang('gas.price.describe')}</FormControl.HelperText>
+      </FormControl>
+      <FormControl>
+        <FormControl.Label>{lang('gas.limit')}</FormControl.Label>
+        <Input keyboardType="numeric" value={gasLimit} onChangeText={setGasLimit} />
+        <FormControl.HelperText>{lang('gas.limit.describe')}</FormControl.HelperText>
+      </FormControl>
+
+      <Button>{lang('ok')}</Button>
+    </Column>
+  );
 }
 
 /**
@@ -128,9 +164,13 @@ export class GasSetting extends Component<any, any> {
   render() {
     const { selected, selectedGasInfoIndex, gasInfos, gasPriceUnit } = gasService;
     const token = this.getToken();
-    console.log(selectedGasInfoIndex);
     return (
-      <Page>
+      <Page
+        Root={KeyboardAvoidingView}
+        behavior={Platform.select({
+          ios: 'padding',
+          android: 'height',
+        })}>
         <Card>
           <Text>{lang('gas.fee')}</Text>
           <Text fontSize="xs">
@@ -149,7 +189,17 @@ export class GasSetting extends Component<any, any> {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="GasCustom">{p => <GasCustom {...p} />}</Tab.Screen>
+          <Tab.Screen name="GasCustom">
+            {p => (
+              <GasCustom
+                defaultGasLimit={this.state.gasLimit}
+                defaultMaxFeePerGas={selected.maxFeePerGasUI}
+                defaultMaxPriorityFeePerGas={selected.maxPriorityFeePerGasUI}
+                gasPriceUnit={gasPriceUnit}
+                {...p}
+              />
+            )}
+          </Tab.Screen>
         </Tab.Navigator>
       </Page>
     );

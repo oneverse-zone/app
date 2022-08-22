@@ -364,7 +364,7 @@ PODS:
     - React-perflogger (= 0.69.4)
   - RNCAsyncStorage (1.17.9):
     - React-Core
-  - RNCClipboard (1.10.0):
+  - RNCClipboard (1.11.0):
     - React-Core
   - RNKeychain (8.1.1):
     - React-Core
@@ -606,7 +606,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 61ee22a8cdf8b6bb2a7fb7b4ba2cc763e5285196
   ReactCommon: 8f67bd7e0a6afade0f20718f859dc8c2275f2e83
   RNCAsyncStorage: b2489b49e38c85e10ed45a888d13a2a4c7b32ea1
-  RNCClipboard: f1736c75ab85b627a4d57587edb4b60999c4dd80
+  RNCClipboard: 4b8bec7c195e27bcec746f52dff7601161683249
   RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNScreens: ee31ecdf23fe81e93c74feaa086cf173d758ab58

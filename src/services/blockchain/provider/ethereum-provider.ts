@@ -73,7 +73,7 @@ function formatGasInfo({
  */
 export abstract class BaseEthereumWalletProvider extends AbstractProvider implements WalletProvider {
   gasPriceUnit(account: WalletAccount): string {
-    return GAS_PRICE_UNIT;
+    return GAS_PRICE_UNIT.toUpperCase();
   }
 
   createAccount(args: CreateWalletAccountOptions): WalletAccount {
