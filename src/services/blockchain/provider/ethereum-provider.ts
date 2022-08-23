@@ -1,4 +1,4 @@
-import { BaseProvider, CreateWalletAccountOptions, WalletProvider } from '../api';
+import { BaseProvider, CreateWalletAccountOptions, CustomGasFeeInfoOptions, WalletProvider } from '../api';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
@@ -16,6 +16,7 @@ import { Wallet } from '../../../entity/blockchain/wallet';
 import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
 import { BigNumber } from '@ethersproject/bignumber';
 import { BigNumberish } from '@ethersproject/bignumber/src.ts/bignumber';
+import { parseUnits } from '@ethersproject/units/src.ts';
 
 // The minimum ABI to get ERC20 Token balance
 const ERC20_BASE_ABI = [
@@ -230,6 +231,37 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     });
 
     return [fast, standard, low];
+  }
+
+  async customGasFeeInfo(account: WalletAccount, options: CustomGasFeeInfoOptions): Promise<GasInfo> {
+    const provider = this.getProvider(account.blockchainId);
+    const feeData = await provider.getFeeData();
+
+    const { lastBaseFeePerGas } = feeData;
+    if (!lastBaseFeePerGas) {
+      throw new Error('无法获取链上数据');
+    }
+
+    const maxPriorityFeePerGas = parseUnits(options.maxPriorityFeePerGas, GAS_PRICE_UNIT);
+    const maxFeePerGas = parseUnits(options.maxFeePerGas, GAS_PRICE_UNIT);
+
+    const minGasFee = lastBaseFeePerGas.add(maxPriorityFeePerGas).mul(options.gasLimit);
+    const maxGasFee = maxFeePerGas.mul(options.gasLimit);
+
+    return formatGasInfo({
+      lastBaseFeePerGas: lastBaseFeePerGas,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+
+      gasLimit: options.gasLimit,
+
+      minGasFee,
+      maxGasFee,
+
+      gear: GasGear.CUSTOM,
+      // 30s
+      time: 30,
+    });
   }
 
   sendTransaction(wallet: Wallet, account: WalletAccount, transaction: any): Promise<any> {

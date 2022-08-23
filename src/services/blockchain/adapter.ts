@@ -1,4 +1,4 @@
-import { CreateWalletAccountOptions, WalletProvider } from './api';
+import { CreateWalletAccountOptions, CustomGasFeeInfoOptions, WalletProvider } from './api';
 import { Token } from '../../entity/blockchain/token';
 import { Coin } from '../../entity/blockchain/coin';
 import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
@@ -30,6 +30,7 @@ export class WalletAdapter implements WalletProvider {
   getBalance(account: WalletAccount, token: AccountToken): Promise<string> {
     return this.getProvider(account.blockchainId, account.coinId).getBalance(account, token);
   }
+
   getBalanceUI(account: WalletAccount, token: AccountToken): Promise<string> {
     return this.getProvider(account.blockchainId, account.coinId).getBalanceUI(account, token);
   }
@@ -48,6 +49,10 @@ export class WalletAdapter implements WalletProvider {
 
   getGasFeeInfos(account: WalletAccount, gasLimit: string | bigint | number): Promise<Array<GasInfo>> {
     return this.getProvider(account.blockchainId, account.coinId).getGasFeeInfos(account, gasLimit);
+  }
+
+  customGasFeeInfo(account: WalletAccount, options: CustomGasFeeInfoOptions): Promise<GasInfo> {
+    return this.getProvider(account.blockchainId, account.coinId).customGasFeeInfo(account, options);
   }
 
   sendTransaction(wallet: Wallet, account: WalletAccount, transaction: any): Promise<any> {

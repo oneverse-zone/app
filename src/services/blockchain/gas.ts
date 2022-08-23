@@ -1,8 +1,9 @@
 import { makeAutoObservable } from 'mobx';
 import { GasGear, GasInfo } from '../../entity/blockchain/gas';
-import { WalletAccount } from '../../entity/blockchain/wallet-account';
 import { walletAdapter } from './adapter';
 import { walletManagerService } from './wallet-manager';
+import { CustomGasFeeInfoOptions } from './api';
+import { goBack } from '../../core/navigation';
 
 export const DEFAULT_GAS_INFO: GasInfo = {
   gasLimit: 0,
@@ -28,11 +29,14 @@ class GasService {
    * value gas 档位信息
    */
   private _gasInfos: Record<string, Array<GasInfo>> = {};
+  customGasInfo: Record<string, GasInfo> = {};
 
   /**
    * 用户选择的gas档位
    */
   selectedGasInfoIndex = 1;
+
+  gasLimit: bigint | string | number = 21000;
 
   constructor() {
     makeAutoObservable(this, undefined, {
@@ -43,8 +47,11 @@ class GasService {
   /**
    * 更新档位信息
    */
-  async update(gasLimit: bigint | string | number) {
+  async update() {
     if (this.loading) {
+      return;
+    }
+    if (this.selectedGasInfoIndex === -1) {
       return;
     }
     this.loading = true;
@@ -53,7 +60,7 @@ class GasService {
       if (!selectedAccount) {
         return;
       }
-      this._gasInfos[selectedAccount.blockchainId] = await walletAdapter.getGasFeeInfos(selectedAccount, gasLimit);
+      this._gasInfos[selectedAccount.blockchainId] = await walletAdapter.getGasFeeInfos(selectedAccount, this.gasLimit);
     } finally {
       this.loading = false;
     }
@@ -66,6 +73,9 @@ class GasService {
     const { selectedAccount } = walletManagerService;
     if (!selectedAccount) {
       return DEFAULT_GAS_INFO;
+    }
+    if (this.selectedGasInfoIndex === -1) {
+      return this.customGasInfo[selectedAccount.blockchainId] || DEFAULT_GAS_INFO;
     }
 
     const gasInfos = this._gasInfos[selectedAccount.blockchainId] ?? [];
@@ -93,6 +103,25 @@ class GasService {
 
   select(index: number) {
     this.selectedGasInfoIndex = index;
+  }
+
+  async addCustom(param: CustomGasFeeInfoOptions) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const { selectedAccount } = walletManagerService;
+      if (!selectedAccount) {
+        return;
+      }
+
+      this.customGasInfo[selectedAccount.blockchainId] = await walletAdapter.customGasFeeInfo(selectedAccount, param);
+      this.selectedGasInfoIndex = -1;
+      goBack();
+    } finally {
+      this.loading = false;
+    }
   }
 }
 

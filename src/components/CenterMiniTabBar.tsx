@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
-import { Box, Center, Pressable, Row, Text, View } from 'native-base';
+import { Box, Center, Text } from 'native-base';
 import { MaterialTopTabBar } from '@react-navigation/material-top-tabs';
 
 /**
@@ -11,8 +10,9 @@ import { MaterialTopTabBar } from '@react-navigation/material-top-tabs';
  */
 export function CenterMiniTabBar(props: MaterialTopTabBarProps) {
   return (
-    <Box safeAreaTop>
+    <Center borderWidth={1} height={50} borderColor="blue.500" bgColor="">
+      <Text>1</Text>
       <MaterialTopTabBar {...props} />
-    </Box>
+    </Center>
   );
 }

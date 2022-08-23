@@ -38,6 +38,21 @@ const tabs: Record<
   GameFi: {
     component: All,
   },
+  GameFi1: {
+    component: All,
+  },
+  GameFi2: {
+    component: All,
+  },
+  GameFi3: {
+    component: All,
+  },
+  GameFi4: {
+    component: All,
+  },
+  GameFi5: {
+    component: All,
+  },
 };
 
 /**

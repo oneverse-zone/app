@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { ChevronRightIcon, Column, IPressableProps, Pressable, Row, Spacer, Text } from 'native-base';
 import { GasInfo } from '../../../entity/blockchain/gas';
 import { lang } from '../../../locales';
@@ -22,7 +23,14 @@ export function GasCard({ gasInfo, tokenIndex, ...props }: GasCardProps) {
   }
 
   return (
-    <Pressable borderRadius="lg" bgColor="white" padding={3} onPress={goGasSetting} {...props}>
+    <Pressable
+      borderRadius="lg"
+      borderColor="primary.500"
+      borderWidth={StyleSheet.hairlineWidth}
+      bgColor="white"
+      padding={3}
+      onPress={goGasSetting}
+      {...props}>
       <Row alignItems="center">
         <Column>
           <Text fontSize="xs" color="coolGray.400">

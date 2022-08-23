@@ -42,6 +42,15 @@ export type CreateWalletAccountOptions = {
 } & (CreateHDWalletAccountOptions | CreateSingleChainWalletAccountOptions);
 
 /**
+ * 自定义GAS fee
+ */
+export type CustomGasFeeInfoOptions = {
+  gasLimit: string;
+  maxPriorityFeePerGas: string;
+  maxFeePerGas: string;
+};
+
+/**
  * 基础服务接口
  */
 export interface BaseProvider {
@@ -113,6 +122,8 @@ export interface WalletProvider {
    * @param gasLimit gas 限制
    */
   getGasFeeInfos(account: WalletAccount, gasLimit: string | bigint | number): Promise<Array<GasInfo>>;
+
+  customGasFeeInfo(account: WalletAccount, options: CustomGasFeeInfoOptions): Promise<GasInfo>;
 
   // getTransactionCount(blockTag?: BlockTag): Promise<number>;
   //
