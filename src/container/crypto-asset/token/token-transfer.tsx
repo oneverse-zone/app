@@ -17,6 +17,7 @@ import Decimal from 'decimal.js';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { DEFAULT_GAS_INFO, gasService } from '../../../services/blockchain/gas';
 import { GasCard } from '../components/gas-card';
+import { accountAdapter } from '../../../services/blockchain/account-adapter';
 
 const MAX_QUERY_GAS_COUNT = 50;
 
@@ -75,7 +76,7 @@ export class TokenTransfer extends Component<any, any> {
     if (!token || !selectedAccount) {
       return;
     }
-    gasService.update(this.state.gasLimit);
+    gasService.update();
   }
 
   async handleSend() {
@@ -111,7 +112,8 @@ export class TokenTransfer extends Component<any, any> {
     if (!toAddress || !value || !gasLimit) {
       return false;
     }
-    return true;
+
+    return accountAdapter().isAddress(toAddress);
   }
 
   render() {
@@ -134,20 +136,6 @@ export class TokenTransfer extends Component<any, any> {
           </FormControl>
           <GasCard gasInfo={gasInfo} tokenIndex={tokenIndex} />
 
-          {/*<FormControl>*/}
-          {/*  <FormControl.Label>{`${lang('gas.price')} (${lang('gas.eth.unit.gwei')})`}</FormControl.Label>*/}
-          {/*  <Input keyboardType="numeric" onChangeText={v => this.handleNumberValueChange('gasPrice', v)} />*/}
-          {/*  <FormControl.HelperText>{lang('gas.price.describe')}</FormControl.HelperText>*/}
-          {/*</FormControl>*/}
-          {/*<FormControl>*/}
-          {/*  <FormControl.Label>{lang('gas.limit')}</FormControl.Label>*/}
-          {/*  <Input*/}
-          {/*    value={gasLimit}*/}
-          {/*    keyboardType="numeric"*/}
-          {/*    onChangeText={v => this.handleNumberValueChange('gasLimit', v)}*/}
-          {/*  />*/}
-          {/*  <FormControl.HelperText>{lang('gas.limit.describe')}</FormControl.HelperText>*/}
-          {/*</FormControl>*/}
           <Button isDisabled={!this.isValid() || loading} isLoading={loading} onPress={this.handleSend}>
             {lang('token.send')}
           </Button>

@@ -1,10 +1,12 @@
 import { BaseProvider, CreateWalletAccountOptions, CustomGasFeeInfoOptions, WalletProvider } from '../api';
-import { formatEther, formatUnits } from '@ethersproject/units';
+import { formatEther, formatUnits, parseUnits } from '@ethersproject/units';
+import { isAddress } from '@ethersproject/address';
 import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
-import { getDefaultProvider } from '@ethersproject/providers';
+import { getDefaultProvider, UrlJsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { walletAdapter } from '../adapter';
 import { AbstractProvider } from './abstract-provider';
@@ -14,9 +16,6 @@ import { TokenType } from '../../../entity/blockchain/token';
 import { ethereum } from '../chainlist/ethereum';
 import { Wallet } from '../../../entity/blockchain/wallet';
 import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
-import { BigNumber } from '@ethersproject/bignumber';
-import { BigNumberish } from '@ethersproject/bignumber/src.ts/bignumber';
-import { parseUnits } from '@ethersproject/units/src.ts';
 
 // The minimum ABI to get ERC20 Token balance
 const ERC20_BASE_ABI = [
@@ -73,7 +72,20 @@ function formatGasInfo({
  * 以太坊系列钱包基础实现
  */
 export abstract class BaseEthereumWalletProvider extends AbstractProvider implements WalletProvider {
-  gasPriceUnit(account: WalletAccount): string {
+  blockchainId;
+  coinId;
+
+  constructor(blockchainId: string, coinId: number) {
+    super();
+    this.blockchainId = blockchainId;
+    this.coinId = coinId;
+  }
+
+  isAddress(address: string): boolean {
+    return isAddress(address);
+  }
+
+  gasPriceUnit(): string {
     return GAS_PRICE_UNIT.toUpperCase();
   }
 
@@ -117,7 +129,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
   }
 
   async getBalance(account: WalletAccount, token: AccountToken): Promise<string> {
-    const provider = this.getProvider(account.blockchainId);
+    const provider = this.getProvider();
     if (token.type === TokenType.COIN) {
       const balanceWei = await provider.getBalance(account.address);
       return balanceWei.toString();
@@ -135,16 +147,16 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
   }
 
   async estimateGas(account: WalletAccount, transaction: any): Promise<string> {
-    const provider = this.getProvider(account.blockchainId);
+    const provider = this.getProvider();
     const signer = new VoidSigner(account.address, provider);
     const value = await signer.estimateGas(transaction);
     return value.toString();
   }
 
-  async getGasPrice(account: WalletAccount): Promise<string> {
-    const provider = this.getProvider(account.blockchainId);
+  async getGasPrice(): Promise<string> {
+    const provider = this.getProvider();
     const gasPrice = await provider.getGasPrice();
-    return formatUnits(gasPrice, this.gasPriceUnit(account));
+    return formatUnits(gasPrice, this.gasPriceUnit());
   }
 
   /**
@@ -157,8 +169,8 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
    *
    * 区间规则: min = (BaseFee + PriorityFee)* Gas, max = MaxFee * Gas
    */
-  async getGasFeeInfos(account: WalletAccount, gasLimit: string | bigint | number): Promise<Array<GasInfo>> {
-    const provider = this.getProvider(account.blockchainId);
+  async getGasFeeInfos(gasLimit: string | bigint | number): Promise<Array<GasInfo>> {
+    const provider = this.getProvider();
     const feeData = await provider.getFeeData();
 
     const { lastBaseFeePerGas } = feeData;
@@ -233,8 +245,8 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     return [fast, standard, low];
   }
 
-  async customGasFeeInfo(account: WalletAccount, options: CustomGasFeeInfoOptions): Promise<GasInfo> {
-    const provider = this.getProvider(account.blockchainId);
+  async customGasFeeInfo(options: CustomGasFeeInfoOptions): Promise<GasInfo> {
+    const provider = this.getProvider();
     const feeData = await provider.getFeeData();
 
     const { lastBaseFeePerGas } = feeData;
@@ -265,18 +277,18 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
   }
 
   sendTransaction(wallet: Wallet, account: WalletAccount, transaction: any): Promise<any> {
-    const provider = this.getProvider(account.blockchainId);
+    const provider = this.getProvider();
     return Promise.resolve(undefined);
   }
 
-  protected getProvider(blockchainId: string) {
-    const blockchain = this.findBlockchainById(blockchainId);
+  protected getProvider(): UrlJsonRpcProvider {
+    const blockchain = this.findBlockchainById(this.blockchainId);
     if (null == blockchain) {
-      throw new Error(`不支持的链: ${blockchainId}`);
+      throw new Error(`不支持的链: ${this.blockchainId}`);
     }
     console.log(`${blockchain.name} 提供服务`);
     const fastNode = blockchainNodeService.getFastNode(blockchain);
-    return getDefaultProvider(fastNode.network, fastNode.networkOptions);
+    return getDefaultProvider(fastNode.network, fastNode.networkOptions) as UrlJsonRpcProvider;
   }
 }
 
@@ -284,6 +296,10 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
  * 以太坊钱包提供者
  */
 export class EthereumWalletProvider extends BaseEthereumWalletProvider implements BaseProvider {
+  constructor() {
+    super(ethereum.id, ethereum.coinId);
+  }
+
   support(blockchainId: string, coinId: number): boolean | Promise<boolean> {
     return coinId === ethereum.coinId;
   }

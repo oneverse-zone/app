@@ -6,6 +6,7 @@ import { COIN_TOKEN_CONTRACT_ADDRESS, TokenType } from '../../entity/blockchain/
 import { walletAdapter } from './adapter';
 import { coinService } from './coin';
 import { walletManagerService } from './wallet-manager';
+import { accountAdapter } from './account-adapter';
 
 /**
  * token 服务
@@ -95,7 +96,7 @@ export class TokenService {
 
   private handleQueryBalance(account: WalletAccount, token: AccountToken): Promise<string> {
     console.log(`查询余额: ${account.address} Token=${token.address}`);
-    return walletAdapter.getBalanceUI(account, token);
+    return walletAdapter.getAccountProvider(account).getBalanceUI(account, token);
   }
 }
 

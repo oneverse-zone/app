@@ -4,6 +4,7 @@ import { walletAdapter } from './adapter';
 import { walletManagerService } from './wallet-manager';
 import { CustomGasFeeInfoOptions } from './api';
 import { goBack } from '../../core/navigation';
+import { accountAdapter } from './account-adapter';
 
 export const DEFAULT_GAS_INFO: GasInfo = {
   gasLimit: 0,
@@ -60,7 +61,7 @@ class GasService {
       if (!selectedAccount) {
         return;
       }
-      this._gasInfos[selectedAccount.blockchainId] = await walletAdapter.getGasFeeInfos(selectedAccount, this.gasLimit);
+      this._gasInfos[selectedAccount.blockchainId] = await accountAdapter().getGasFeeInfos(this.gasLimit);
     } finally {
       this.loading = false;
     }
@@ -90,7 +91,7 @@ class GasService {
     if (!selectedAccount) {
       return '';
     }
-    return walletAdapter.gasPriceUnit(selectedAccount);
+    return accountAdapter().gasPriceUnit();
   }
 
   get gasInfos(): Array<GasInfo> {
@@ -116,7 +117,7 @@ class GasService {
         return;
       }
 
-      this.customGasInfo[selectedAccount.blockchainId] = await walletAdapter.customGasFeeInfo(selectedAccount, param);
+      this.customGasInfo[selectedAccount.blockchainId] = await accountAdapter().customGasFeeInfo(param);
       this.selectedGasInfoIndex = -1;
       goBack();
     } finally {

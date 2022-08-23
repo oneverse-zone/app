@@ -73,9 +73,15 @@ export interface WalletProvider {
   support(blockchainId: string, coinId: number): boolean | Promise<boolean>;
 
   /**
+   * 是否是一个地址
+   * @param address 地址
+   */
+  isAddress(address: string): boolean;
+
+  /**
    * gas price 的单位
    */
-  gasPriceUnit(account: WalletAccount): string;
+  gasPriceUnit(): string;
 
   /**
    * 创建钱包token
@@ -108,7 +114,7 @@ export interface WalletProvider {
   /**
    * 获取gas price
    */
-  getGasPrice(account: WalletAccount): Promise<string>;
+  getGasPrice(): Promise<string>;
 
   // /**
   //  * 获取gas费率信息
@@ -118,12 +124,11 @@ export interface WalletProvider {
 
   /**
    * 获取gas费率档位信息
-   * @param account 交易账户
    * @param gasLimit gas 限制
    */
-  getGasFeeInfos(account: WalletAccount, gasLimit: string | bigint | number): Promise<Array<GasInfo>>;
+  getGasFeeInfos(gasLimit: string | bigint | number): Promise<Array<GasInfo>>;
 
-  customGasFeeInfo(account: WalletAccount, options: CustomGasFeeInfoOptions): Promise<GasInfo>;
+  customGasFeeInfo(options: CustomGasFeeInfoOptions): Promise<GasInfo>;
 
   // getTransactionCount(blockTag?: BlockTag): Promise<number>;
   //

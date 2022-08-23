@@ -200,7 +200,8 @@ export class GasSetting extends Component<any, any> {
               <Button
                 size="sm"
                 variant={this.state.index === idx ? undefined : 'unstyled'}
-                onPress={() => this.setState({ index: idx })}>
+                onPress={() => this.setState({ index: idx })}
+                key={idx}>
                 {route.title}
               </Button>
             ))}

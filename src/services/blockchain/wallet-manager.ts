@@ -327,7 +327,7 @@ export class WalletManagerService {
 
     const accounts = wallet.accounts;
 
-    const account = walletAdapter.createAccount({
+    const account = walletAdapter.getProvider(coin.blockchainId, coin.id).createAccount({
       name,
       coin,
       ...(options as any),
