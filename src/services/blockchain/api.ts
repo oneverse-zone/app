@@ -50,6 +50,35 @@ export type CustomGasFeeInfoOptions = {
   maxFeePerGas: string;
 };
 
+export type TransactionOptions = {
+  wallet: Wallet;
+  account: WalletAccount;
+
+  token: AccountToken;
+  to: string;
+  value: string;
+  gasInfo: GasInfo;
+  data?: string;
+} & (
+  | {
+      secretKey?: never;
+      /**
+       * 助记词
+       */
+      mnemonic: string;
+      /**
+       * 助记词密码
+       */
+      password?: string;
+    }
+  | {
+      mnemonic?: never;
+      password?: never;
+
+      secretKey: string;
+    }
+);
+
 /**
  * 基础服务接口
  */
@@ -136,8 +165,7 @@ export interface WalletProvider {
   //
   /**
    * 发送交易
-   * @param account 账户信息
-   * @param transaction 交易信息
+   * @param options 交易选项
    */
-  sendTransaction(wallet: Wallet, account: WalletAccount, transaction: any): Promise<any>;
+  sendTransaction(options: TransactionOptions): Promise<any>;
 }

@@ -62,6 +62,7 @@ export class TokenService {
   async updateAccountToken(account: WalletAccount) {
     const tasks = this.getTokens(account).map(async item => {
       item.balance = await this.handleQueryBalance(account, item);
+      console.log(`查询余额: ${account.address} Token=${item.address} balance=${item.balance}`);
       return item;
     });
     this.tokens[account.id] = await Promise.all(tasks);

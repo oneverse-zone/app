@@ -2,16 +2,16 @@ import { NetworkNode } from '../../../entity/blockchain/network-node';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from '../chainlist/ethereum';
 
 export const ethereumMainNets = [
-  {
-    blockchainId: ethereum.id,
-    builtIn: true,
-    chainId: 1,
-    name: 'Ethereum Alchemy Mainnet',
-    network: 'mainnet',
-    networkOptions: {
-      alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
-    },
-  },
+  // {
+  //   blockchainId: ethereum.id,
+  //   builtIn: true,
+  //   chainId: 1,
+  //   name: 'Ethereum Alchemy Mainnet',
+  //   network: 'mainnet',
+  //   networkOptions: {
+  //     alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
+  //   },
+  // },
   {
     blockchainId: ethereum.id,
     builtIn: true,
@@ -46,7 +46,17 @@ export const ethereumRinkebyNets: Array<NetworkNode> = [
     blockchainId: ethereumRinkeby.id,
     builtIn: true,
     chainId: 1,
-    name: 'Ethereum Infura Rinkeby',
-    network: 'https://rinkeby.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
+    name: 'Ethereum Alchemy Rinkeby',
+    network: 'rinkeby',
+    networkOptions: {
+      alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
+    },
   },
+  // {
+  //   blockchainId: ethereumRinkeby.id,
+  //   builtIn: true,
+  //   chainId: 1,
+  //   name: 'Ethereum Infura Rinkeby',
+  //   network: 'https://rinkeby.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
+  // },
 ];

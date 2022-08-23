@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
 import { GasGear, GasInfo } from '../../entity/blockchain/gas';
-import { walletAdapter } from './adapter';
 import { walletManagerService } from './wallet-manager';
 import { CustomGasFeeInfoOptions } from './api';
 import { goBack } from '../../core/navigation';

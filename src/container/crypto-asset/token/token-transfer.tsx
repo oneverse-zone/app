@@ -80,9 +80,9 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   async handleSend() {
-    const { selectedAccount } = walletManagerService;
+    const { selected, selectedAccount } = walletManagerService;
     const token = this.getToken();
-    if (!token || !selectedAccount) {
+    if (!token || !selectedAccount || !selected) {
       return;
     }
     const gasInfo = gasService.selected;
@@ -91,8 +91,15 @@ export class TokenTransfer extends Component<any, any> {
       return;
     }
 
-    const { toAddress, value, gasLimit } = this.state;
-    // await walletService.sendTransaction(token, toAddress, value, gasPrice, gasLimit);
+    const { toAddress, value } = this.state;
+    await txService.send({
+      wallet: selected,
+      account: selectedAccount,
+      token,
+      to: toAddress,
+      value,
+      gasInfo,
+    });
   }
 
   handleAddressChange(toAddress: string) {
@@ -107,36 +114,47 @@ export class TokenTransfer extends Component<any, any> {
     console.log(value);
   }
 
+  isValidAddress() {
+    const { toAddress } = this.state;
+    return accountAdapter().isAddress(toAddress);
+  }
+
   isValid() {
-    const { toAddress, value, gasLimit } = this.state;
-    if (!toAddress || !value || !gasLimit) {
+    const { value, gasLimit } = this.state;
+    if (!this.isValidAddress() || Number.parseFloat(value).toString() === 'NaN' || !gasLimit) {
+      return false;
+    }
+    const { balance = 0 } = this.getToken() ?? {};
+    if (value > balance) {
       return false;
     }
 
-    return accountAdapter().isAddress(toAddress);
+    return true;
   }
 
   render() {
     const { tokenIndex = -1 } = this.props.route?.params || {};
     const { toAddress, value } = this.state;
-    const { balance } = this.getToken() ?? {};
+    const { balance, symbol } = this.getToken() ?? {};
     const { loading } = txService;
     const { selected: gasInfo } = gasService;
     return (
-      <Page>
+      <Page loading={loading} loadingText={lang('token.send.pending')}>
         <Column space={5} padding={3}>
-          <FormControl isRequired isInvalid={!toAddress}>
+          <FormControl isRequired isInvalid={!this.isValidAddress()}>
             <FormControl.Label>{lang('token.receive.address')}</FormControl.Label>
             <Input value={toAddress} onChangeText={this.handleAddressChange} />
+            <FormControl.HelperText>{lang(`token.receive.tip`)(symbol)}</FormControl.HelperText>
+            <FormControl.ErrorMessage>{lang(`token.receive.address.error`)}</FormControl.ErrorMessage>
           </FormControl>
           <FormControl isRequired>
-            <FormControl.Label>{lang('token.send.amount')}</FormControl.Label>
+            <FormControl.Label>{`${lang('token.send.amount')} (${symbol})`}</FormControl.Label>
             <Input value={value} keyboardType="numeric" onChangeText={v => this.handleNumberValueChange('value', v)} />
             <FormControl.HelperText>{`${lang('balance')} ${balance}`}</FormControl.HelperText>
           </FormControl>
           <GasCard gasInfo={gasInfo} tokenIndex={tokenIndex} />
 
-          <Button isDisabled={!this.isValid() || loading} isLoading={loading} onPress={this.handleSend}>
+          <Button isDisabled={!this.isValid()} isLoading={loading} onPress={this.handleSend}>
             {lang('token.send')}
           </Button>
         </Column>
