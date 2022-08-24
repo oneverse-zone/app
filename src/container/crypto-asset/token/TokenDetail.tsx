@@ -80,17 +80,17 @@ export class TokenDetail extends Component<any, any> {
   }
 
   handleSend() {
-    const token: FullToken = this.props.route?.params;
-    navigate(route.TokenTransfer, token);
+    const { index } = this.props.route?.params || {};
+    navigate(route.TokenTransfer, { tokenIndex: index });
   }
 
   handleReceive() {
-    const token: FullToken = this.props.route?.params;
+    const { token } = this.props.route?.params || {};
     navigate(route.TokenReceive, token);
   }
 
   render() {
-    const token: FullToken = this.props.route?.params;
+    const { token } = this.props.route?.params || {};
     const { name, balance, symbol } = token;
     const { selectedAccount } = walletManagerService;
 
@@ -100,7 +100,12 @@ export class TokenDetail extends Component<any, any> {
           <Row space="3" alignItems="center">
             <TokenAvatar token={token} />
             <Column>
-              <Text fontWeight="400">{name}</Text>
+              <Text fontSize="lg" fontWeight="400">
+                {selectedAccount?.name}
+                <Text style={{ marginLeft: 3 }} fontSize="xs" color="coolGray.700">
+                  {`(${name})`}
+                </Text>
+              </Text>
               <AddressText address={selectedAccount?.address ?? ''} width={150} lineHeight={24} />
             </Column>
           </Row>

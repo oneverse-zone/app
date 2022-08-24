@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Column, FormControl, Input, TextArea, Text } from 'native-base';
+import { Column, FormControl, Input } from 'native-base';
 import { lang } from '../../../locales';
 import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
 import { goBack } from '../../../core/navigation';
 import { txService } from '../../../services/blockchain/tx';
-import { AccountToken, FullToken } from '../../../entity/blockchain/wallet-account';
+import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
-import { walletAdapter } from '../../../services/blockchain/adapter';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
-import { mul } from '../../../utils/calculator';
-import { BigNumber } from '@ethersproject/bignumber';
-import Decimal from 'decimal.js';
-import { formatEther, formatUnits } from '@ethersproject/units';
-import { DEFAULT_GAS_INFO, gasService } from '../../../services/blockchain/gas';
+import { gasService } from '../../../services/blockchain/gas';
 import { GasCard } from '../components/gas-card';
 import { accountAdapter } from '../../../services/blockchain/account-adapter';
 

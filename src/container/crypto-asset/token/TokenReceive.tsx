@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
-import { Alert, Avatar, Button, Column, Icon, Row, Spacer, Text, Toast } from 'native-base';
+import { Alert, Button, Column, Icon, Row, Spacer, Text, Toast } from 'native-base';
 import QRCode from 'react-native-qrcode-svg';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { Page } from '../../../components/Page';
-import { WalletToken } from '../../../entity/blockchain/wallet';
 import { lang } from '../../../locales';
 import { goBack } from '../../../core/navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { tokenService } from '../../../services/blockchain/token';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
+import { TokenAvatar } from '../components/token-avatar';
 
 /**
  * token 接收
@@ -24,7 +24,7 @@ export class TokenReceive extends Component<any, any> {
 
   constructor(props: any, context: any) {
     super(props, context);
-    const token: WalletToken = props.route?.params;
+    const token = props.route?.params;
     if (!token) {
       goBack();
       return;
@@ -33,12 +33,15 @@ export class TokenReceive extends Component<any, any> {
     props.navigation.setOptions({
       title: `${token.symbol} ${lang('token.receive')}`,
       headerTransparent: true,
+      headerTitleStyle: {
+        color: 'white',
+      },
     });
   }
 
   handleCopy() {
-    const token: WalletToken = this.props.route?.params;
-    Clipboard.setString(token?.contractAddress);
+    const { selectedAccount } = walletManagerService;
+    Clipboard.setString(selectedAccount?.address ?? '');
     Toast.show({
       placement: 'top',
       description: lang('copy.success'),
@@ -46,13 +49,8 @@ export class TokenReceive extends Component<any, any> {
   }
 
   render() {
-    const token: WalletToken = this.props.route?.params;
-    const Logo = tokenService.findToken(token.coinId, token.contractAddress)?.logo;
-    const logo = Logo && (
-      <Avatar size="md" bg="white" top={-35}>
-        <Logo />
-      </Avatar>
-    );
+    const { selectedAccount } = walletManagerService;
+    const token = this.props.route?.params || {};
 
     const tipLang = lang('token.receive.tip');
 
@@ -65,17 +63,17 @@ export class TokenReceive extends Component<any, any> {
           </Row>
         </Alert>
         <Column borderRadius="lg" space={8} marginTop={50} padding={3} backgroundColor="white" alignItems="center">
-          {logo}
-          <QRCode value={token?.address} size={200} />
+          <TokenAvatar token={token} size="lg" marginTop="-43" />
+          <QRCode value={selectedAccount?.address ?? ''} size={200} />
           <Text width={180 + 100} textAlign="center">
-            {token?.address}
+            {selectedAccount?.address}
           </Text>
           <Button variant="link" leftIcon={<Icon as={MaterialIcons} name="content-copy" />} onPress={this.handleCopy}>
-            {lang('token.address.copy')}
+            {lang('copy')}
           </Button>
         </Column>
         <Spacer />
-        <Text>{'OneVerse'}</Text>
+        <Text textAlign="center">{'OneVerse'}</Text>
       </Page>
     );
   }

@@ -6,7 +6,7 @@ import { FullToken, WalletAccount } from '../../../entity/blockchain/wallet-acco
 
 export type TokenListProps = {
   walletAccount: WalletAccount;
-  onSelect?: (token: FullToken) => void;
+  onSelect?: (token: FullToken, index: number) => void;
 } & Omit<IFlatListProps<FullToken>, 'renderItem'>;
 
 /**
@@ -15,12 +15,12 @@ export type TokenListProps = {
  * @constructor
  */
 export function TokenList({ walletAccount, onSelect, ...props }: TokenListProps) {
-  function handlePress(item: FullToken) {
-    onSelect?.(item);
+  function handlePress(item: FullToken, index: number) {
+    onSelect?.(item, index);
   }
 
-  function renderItem({ item }: { item: FullToken }) {
-    return <TokenListItem walletAccount={walletAccount} {...item} onPress={() => handlePress(item)} />;
+  function renderItem({ item, index }: { item: FullToken; index: number }) {
+    return <TokenListItem walletAccount={walletAccount} {...item} onPress={() => handlePress(item, index)} />;
   }
 
   return <FlatList {...props} renderItem={renderItem} />;

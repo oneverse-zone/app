@@ -94,12 +94,12 @@ export class CryptoAsset extends Component<any, any> {
 
   handleSend() {
     const { selectedMainTokenIndex } = tokenService;
-    console.log(`transfer ${selectedMainTokenIndex}`);
     navigate(route.TokenTransfer, { tokenIndex: selectedMainTokenIndex });
   }
 
   handleReceive() {
-    navigate(route.TokenReceive);
+    const { selectedMainTokenIndex } = tokenService;
+    navigate(route.TokenReceive, tokenService.selectTokens[selectedMainTokenIndex]);
   }
 
   renderDefault() {

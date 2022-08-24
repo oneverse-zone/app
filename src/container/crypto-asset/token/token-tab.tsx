@@ -16,8 +16,8 @@ export class TokenTabScreen extends Component<any, any> {
     tokenService.updateSelectAccountToken();
   }
 
-  handleItemPress(item: FullToken) {
-    navigate(route.TokenDetail, item);
+  handleItemPress(item: FullToken, index: number) {
+    navigate(route.TokenDetail, { token: item, index });
   }
 
   render() {
