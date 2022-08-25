@@ -1,4 +1,4 @@
-import { Coin } from '../../entity/blockchain/coin';
+import { BaseToken, Coin } from '../../entity/blockchain/coin';
 import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
 import { Wallet } from '../../entity/blockchain/wallet';
 import { GasInfo } from '../../entity/blockchain/gas';
@@ -145,12 +145,6 @@ export interface WalletProvider {
    */
   getGasPrice(): Promise<string>;
 
-  // /**
-  //  * 获取gas费率信息
-  //  * @param account 交易账户
-  //  */
-  // getFeeData(account: WalletAccount): Promise<any>;
-
   /**
    * 获取gas费率档位信息
    * @param gasLimit gas 限制
@@ -159,10 +153,12 @@ export interface WalletProvider {
 
   customGasFeeInfo(options: CustomGasFeeInfoOptions): Promise<GasInfo>;
 
-  // getTransactionCount(blockTag?: BlockTag): Promise<number>;
-  //
-  // estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
-  //
+  /**
+   * 获取Token信息
+   * @param address 合约地址
+   */
+  getTokenInfo(address: string): Promise<BaseToken | undefined>;
+
   /**
    * 发送交易
    * @param options 交易选项

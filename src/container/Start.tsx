@@ -27,14 +27,14 @@ export class Start extends Component<any, any> {
    * 处理账号注册
    */
   async handleCreate() {
-    navigate(route.RegisterOne);
+    navigate(route.PasswordSetting);
   }
 
   /**
    * 导入账号
    */
   async handleImport() {
-    navigate(route.RegisterOne, {
+    navigate(route.PasswordSetting, {
       nextRoute: route.ImportIdentify,
     });
   }

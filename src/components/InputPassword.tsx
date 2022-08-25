@@ -10,6 +10,7 @@ export function InputPassword(props: IInputProps) {
   return (
     <Input
       size="2xl"
+      secureTextEntry
       {...props}
       type={isOpen ? 'text' : 'password'}
       InputRightElement={

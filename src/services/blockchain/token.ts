@@ -12,6 +12,8 @@ import { accountAdapter } from './account-adapter';
  * token 服务
  */
 export class TokenService {
+  loading = false;
+
   /**
    * 账户对应的token信息
    */

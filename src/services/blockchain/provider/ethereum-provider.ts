@@ -10,7 +10,7 @@ import { isAddress } from '@ethersproject/address';
 import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
-import { getDefaultProvider, UrlJsonRpcProvider } from '@ethersproject/providers';
+import { getDefaultProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
@@ -20,20 +20,11 @@ import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-a
 import { blockchainNodeService } from '../blockchain-node';
 import { TokenType } from '../../../entity/blockchain/token';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from '../chainlist/ethereum';
-import { Wallet } from '../../../entity/blockchain/wallet';
 import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
 
 // The minimum ABI to get ERC20 Token balance
-const ERC20_BASE_ABI = [
-  // balanceOf
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: 'balance', type: 'uint256' }],
-    type: 'function',
-  },
-];
+import ERC20_BASE_ABI from './erc20-base-abi.json';
+import { BaseToken } from '../../../entity/blockchain/coin';
 
 const UI_MAIN_UNIT_DECIMALS = 8;
 const GAS_PRICE_UNIT = 'gwei';
@@ -284,6 +275,23 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       // 30s
       time: 30,
     });
+  }
+
+  async getTokenInfo(address: string): Promise<BaseToken | undefined> {
+    console.log(`获取合约信息[${address}]`);
+    const provider = this.getProvider();
+    const contract = new Contract(address, ERC20_BASE_ABI, provider);
+    try {
+      const values = await Promise.all([contract.name(), contract.symbol(), contract.decimals()]);
+      return {
+        name: values[0],
+        symbol: values[1],
+        decimals: values[2] ?? 0,
+      };
+    } catch (e) {
+      console.error(`获取合约信息失败: ${address}`, e);
+      return undefined;
+    }
   }
 
   async sendTransaction({

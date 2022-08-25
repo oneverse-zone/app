@@ -1,7 +1,7 @@
 import React from 'react';
 import { Splash } from './Splash';
 import { Home } from './Home';
-import { RegisterOne } from './user/identify/register/One';
+import { PasswordSetting } from './PasswordSetting';
 import { ImportIdentify } from './user/identify/Import';
 import { ProfilePersist } from './user/profile/Persist';
 import { Auth } from './Auth';
@@ -22,6 +22,8 @@ import { TokenDetail } from './crypto-asset/token/TokenDetail';
 import { TokenTransfer } from './crypto-asset/token/token-transfer';
 import { TokenReceive } from './crypto-asset/token/TokenReceive';
 import { GasSetting } from './crypto-asset/gas/gas-setting';
+import { TokenManager } from './crypto-asset/token/token-manager';
+import { TokenPersist } from './crypto-asset/token/token-persist';
 
 export const route = {
   Splash: 'Splash',
@@ -30,6 +32,7 @@ export const route = {
    * 锁屏
    */
   Lock: 'Lock',
+  PasswordSetting: 'PasswordSetting',
   PinCode: 'PinCode',
   /**
    * 启动引导屏
@@ -38,7 +41,6 @@ export const route = {
   Start: 'Start',
 
   ImportIdentify: 'ImportIdentify',
-  RegisterOne: 'RegisterOne',
   RegisterTwo: 'RegisterTwo',
   BackupOne: 'BackupOne',
   BackupTwo: 'BackupTwo',
@@ -58,6 +60,8 @@ export const route = {
   TokenTransfer: 'TokenTransfer',
   TokenReceive: 'TokenReceive',
   TokenSelect: 'TokenSelect',
+  TokenManager: 'TokenManager',
+  TokenPersist: 'TokenPersist',
   GasSetting: 'GasSetting',
 
   Setting: 'Setting',
@@ -88,8 +92,8 @@ export const routers: Array<{
   //   component: PinCode,
   // },
   {
-    name: route.RegisterOne,
-    component: RegisterOne,
+    name: route.PasswordSetting,
+    component: PasswordSetting,
   },
   {
     name: route.RegisterTwo,
@@ -146,6 +150,14 @@ export const routers: Array<{
   {
     name: route.TokenReceive,
     component: TokenReceive,
+  },
+  {
+    name: route.TokenManager,
+    component: TokenManager,
+  },
+  {
+    name: route.TokenPersist,
+    component: TokenPersist,
   },
   // {
   //   name: route.TokenSelect,

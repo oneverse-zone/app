@@ -1,9 +1,27 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
-import { AddIcon, Box, Button, ChevronDownIcon, Column, Icon, IconButton, Row, Text } from 'native-base';
+import {
+  AddIcon,
+  Box,
+  Button,
+  ChevronDownIcon,
+  Column,
+  Icon,
+  IconButton,
+  Pressable,
+  Row,
+  Text,
+  Spacer,
+  ITextProps,
+} from 'native-base';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MaterialTopTabNavigationOptions } from '@react-navigation/material-top-tabs/lib/typescript/src/types';
+import {
+  MaterialTopTabBarProps,
+  MaterialTopTabNavigationConfig,
+  MaterialTopTabNavigationOptions,
+} from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
 import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 import { TokenTabScreen } from './token/token-tab';
@@ -25,8 +43,7 @@ const commonOptions: MaterialTopTabNavigationOptions = {
     alignContent: 'center',
   },
   tabBarItemStyle: {
-    // width: 'auto',
-    height: 50,
+    width: 'auto',
   },
   tabBarLabelStyle: {
     fontWeight: '500',
@@ -42,14 +59,72 @@ const tabs: Record<
   }
 > = {
   Token: {
-    title: lang('token'),
+    tabBarLabel: lang('token'),
     component: TokenTabScreen,
   },
   NFT: {
-    title: lang('nft'),
+    tabBarLabel: lang('nft'),
     component: NftTabScreen,
   },
 };
+
+function handleGoTokenManager() {
+  navigate(route.TokenManager);
+}
+
+function TabBar({ state, descriptors, navigation, position }: MaterialTopTabBarProps) {
+  return (
+    <Row
+      alignItems="center"
+      height={48.1}
+      backgroundColor="white"
+      borderBottomColor="coolGray.300"
+      borderBottomWidth={StyleSheet.hairlineWidth}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            // The `merge: true` option makes sure that the params inside the tab screen are preserved
+            (navigation.navigate as any)({ name: route.name, merge: true }, route.params);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        let textProps: ITextProps = {
+          color: 'coolGray.500',
+        };
+        if (isFocused) {
+          textProps = {
+            color: 'black',
+            fontWeight: '500',
+          };
+        }
+
+        return (
+          <Pressable key={route.key} onPress={onPress} onLongPress={onLongPress} paddingX={3}>
+            <Text {...textProps}>{options.tabBarLabel}</Text>
+          </Pressable>
+        );
+      })}
+      <Spacer />
+      {state.index === 0 && <IconButton icon={<AddIcon />} borderRadius="full" onPress={handleGoTokenManager} />}
+    </Row>
+  );
+}
 
 function CryptoAssetRight({ navigation }: any) {
   function handlePress() {}
@@ -140,7 +215,7 @@ export class CryptoAsset extends Component<any, any> {
           </Row>
         </Box>
         <Box flex={1}>
-          <Tab.Navigator initialRouteName="Token" screenOptions={commonOptions}>
+          <Tab.Navigator initialRouteName="Token" screenOptions={commonOptions} tabBar={TabBar}>
             {Object.keys(tabs).map(key => {
               const { component, ...options } = tabs[key];
               return <Tab.Screen name={key} key={key} component={component} options={options} />;

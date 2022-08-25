@@ -1,12 +1,4 @@
-/**
- * 币信息
- */
-export type Coin = {
-  /**
-   * 币种id
-   */
-  id: number;
-
+export type BaseToken = {
   /**
    * 名称
    */
@@ -21,9 +13,19 @@ export type Coin = {
    * 小数点
    */
   decimals: number;
+};
+
+/**
+ * 币信息
+ */
+export type Coin = {
+  /**
+   * 币种id
+   */
+  id: number;
 
   /**
    * 链ID
    */
   blockchainId: string;
-};
+} & BaseToken;
