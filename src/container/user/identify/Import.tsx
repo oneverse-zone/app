@@ -31,7 +31,7 @@ export const ImportIdentify = observer(function ImportIdentify(props: any) {
 
   async function handleImport() {
     const { password } = props.route?.params || {};
-    await sessionService.importAndLogin(password, mnemonic, pwd);
+    await sessionService.importAndLogin(password, mnemonic.trim(), pwd);
     resetTo(route.Home);
   }
 
