@@ -4,9 +4,10 @@ import { observer } from 'mobx-react';
 import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
 import { lang } from '../../../locales';
-import { Column, FormControl, Input, KeyboardAvoidingView, Toast } from 'native-base';
+import { Alert, Column, FormControl, Input, KeyboardAvoidingView, Row, Text, Toast } from 'native-base';
 import { accountAdapter } from '../../../services/blockchain/account-adapter';
 import { tokenService } from '../../../services/blockchain/token';
+import { TokenType } from '../../../entity/blockchain/token';
 
 /**
  * 新增、编辑
@@ -16,67 +17,43 @@ import { tokenService } from '../../../services/blockchain/token';
 export class TokenPersist extends Component<any, any> {
   state = {
     address: '',
-    baseToken: null,
   };
 
   handleAddressChange(address: string) {
     this.setState({ address });
   }
 
-  async getTokenInfo() {
+  async handleAdd() {
     const { address } = this.state;
     if (!address) {
       return;
     }
-    this.setState({ baseToken: null });
-    const baseToken = await accountAdapter().getTokenInfo(address);
+    const baseToken = await tokenService.getTokenInfo(address);
     if (baseToken) {
-      console.log(baseToken);
-      this.setState({ baseToken });
-    } else {
-      Toast.show({
-        title: lang('contract.address.invalid'),
-      });
-    }
-  }
-
-  async handleAdd() {
-    await this.getTokenInfo();
-    const { baseToken } = this.state;
-    if (!baseToken) {
-      return;
+      await tokenService.add(TokenType.ERC20, address, baseToken);
     }
   }
 
   render() {
-    const { address, baseToken }: any = this.state;
+    const { address }: any = this.state;
     const { loading } = tokenService;
     return (
       <Page Root={KeyboardAvoidingView} loading={loading}>
+        <Alert borderColor="warning" colorScheme="warning" margin={3}>
+          <Row flexShrink={1} space={2} alignItems="center">
+            <Alert.Icon mt="1" />
+            <Text fontSize="sm">{lang('token.add.tip')}</Text>
+          </Row>
+        </Alert>
         <Column space={5} padding={3}>
           <FormControl isRequired>
             <FormControl.Label>{lang('contract.address')}</FormControl.Label>
-            <Input
-              value={address}
-              returnKeyType="search"
-              onEndEditing={this.getTokenInfo}
-              onChangeText={this.handleAddressChange}
-            />
-          </FormControl>
-          <FormControl isReadOnly>
-            <FormControl.Label>{lang('token.name')}</FormControl.Label>
-            <Input value={baseToken?.name} />
-          </FormControl>
-          <FormControl isReadOnly>
-            <FormControl.Label>{lang('token.symbol')}</FormControl.Label>
-            <Input value={baseToken?.symbol} />
-          </FormControl>
-          <FormControl isReadOnly>
-            <FormControl.Label>{lang('token.decimals')}</FormControl.Label>
-            <Input value={`${baseToken?.decimals ?? ''}`} />
+            <Input value={address} returnKeyType="search" onChangeText={this.handleAddressChange} />
           </FormControl>
 
-          <Button onPress={this.handleAdd}>{lang('ok')}</Button>
+          <Button onPress={this.handleAdd} isDisabled={loading} isLoading={loading}>
+            {lang('ok')}
+          </Button>
         </Column>
       </Page>
     );

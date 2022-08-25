@@ -5,9 +5,9 @@ import { Box } from 'native-base';
 import { navigate } from '../../../core/navigation';
 import { route } from '../../router';
 import { TokenList } from '../components/TokenList';
-import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
+import { AccountToken } from '../../../entity/blockchain/wallet-account';
 
 @observer
 @autoBind
@@ -16,7 +16,7 @@ export class TokenTabScreen extends Component<any, any> {
     tokenService.updateSelectAccountToken();
   }
 
-  handleItemPress(item: FullToken, index: number) {
+  handleItemPress(item: AccountToken, index: number) {
     navigate(route.TokenDetail, { token: item, index });
   }
 

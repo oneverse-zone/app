@@ -25,4 +25,4 @@ export type Token = {
    * 如果是公链币，使用0x0000000...
    */
   address: string;
-} & Coin;
+} & Omit<Coin, 'id'>;

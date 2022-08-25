@@ -72,7 +72,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
   blockchainId;
   coinId;
 
-  constructor(blockchainId: string, coinId: number) {
+  protected constructor(blockchainId: string, coinId: number) {
     super();
     this.blockchainId = blockchainId;
     this.coinId = coinId;
@@ -132,10 +132,10 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       const balanceWei = await provider.getBalance(account.address);
       balance = balanceWei.toString();
     } else {
-      const contract = new Contract(token.address, ERC20_BASE_ABI, provider);
+      const contract = new Contract(token.token.address, ERC20_BASE_ABI, provider);
       balance = await contract.balanceOf(account.address);
     }
-    console.log(`address=${account.address} type=${token.type} token=${token.address} balance=${balance}`);
+    console.log(`address=${account.address} type=${token.type} token=${token.token.address} balance=${balance}`);
     return balance;
   }
 

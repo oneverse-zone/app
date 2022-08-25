@@ -6,6 +6,7 @@
  * m / purpose' / coin_type' / account' / change / address_index
  */
 import { Token, TokenType } from './token';
+import { Coin } from './coin';
 
 export type HDWalletAccount = {
   // /**
@@ -104,18 +105,19 @@ export type AccountToken = {
    * token 类型
    */
   type: TokenType;
-  /**
-   * token 合约地址
-   */
-  address: string;
 
   /**
    * 余额
    */
   balance: number | string;
+
+  /**
+   * token 信息
+   */
+  token: Token;
 };
 
-/**
- * 完整的token信息包含余额信息
- */
-export type FullToken = AccountToken & Token;
+// /**
+//  * 完整的token信息包含余额信息
+//  */
+// export type FullToken = AccountToken & Token;

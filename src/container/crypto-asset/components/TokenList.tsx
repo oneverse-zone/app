@@ -2,12 +2,12 @@ import { FlatList } from 'native-base';
 import React from 'react';
 import { TokenListItem } from './TokenListItem';
 import { IFlatListProps } from 'native-base/lib/typescript/components/basic/FlatList';
-import { FullToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
+import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
 
 export type TokenListProps = {
   walletAccount: WalletAccount;
-  onSelect?: (token: FullToken, index: number) => void;
-} & Omit<IFlatListProps<FullToken>, 'renderItem'>;
+  onSelect?: (token: AccountToken, index: number) => void;
+} & Omit<IFlatListProps<AccountToken>, 'renderItem'>;
 
 /**
  * token 列表
@@ -15,11 +15,11 @@ export type TokenListProps = {
  * @constructor
  */
 export function TokenList({ walletAccount, onSelect, ...props }: TokenListProps) {
-  function handlePress(item: FullToken, index: number) {
+  function handlePress(item: AccountToken, index: number) {
     onSelect?.(item, index);
   }
 
-  function renderItem({ item, index }: { item: FullToken; index: number }) {
+  function renderItem({ item, index }: { item: AccountToken; index: number }) {
     return <TokenListItem walletAccount={walletAccount} {...item} onPress={() => handlePress(item, index)} />;
   }
 

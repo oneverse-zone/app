@@ -119,6 +119,8 @@ export const lang: Record<LangKey, LangValue> = {
   'token.name': 'Token Name',
   'token.symbol': 'Symbol',
   'token.decimals': 'Decimals',
+  'token.add.tip': '任何人都可以创建代币，包括创建现有代币的假版本。请确保您添加的代币安全性',
+  'token.exists': 'Token已经存在',
   contract: '合约',
   'contract.address': '合约地址',
   'contract.address.invalid': '无效的合约地址',

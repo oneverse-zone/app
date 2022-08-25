@@ -113,6 +113,8 @@ export type LangKey =
   | 'token.name'
   | 'token.symbol'
   | 'token.decimals'
+  | 'token.add.tip'
+  | 'token.exists'
   | 'contract'
   | 'contract.address'
   | 'contract.address.invalid'
