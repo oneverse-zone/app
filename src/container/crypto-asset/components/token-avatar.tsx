@@ -9,15 +9,19 @@ export type TokenAvatarProps = {
 
 export function TokenAvatar({ token, ...props }: TokenAvatarProps) {
   let icon;
+  let baseProps: IAvatarProps = {
+    bg: 'transparent',
+  };
   if (token.type === TokenType.COIN) {
     const Logo = logos[token.blockchainId];
     icon = Logo && <Logo />;
   }
   if (!icon) {
-    icon = token.name.charAt(0);
+    icon = token.symbol.charAt(0);
+    baseProps.bg = 'primary.500';
   }
   return (
-    <Avatar size="sm" bg="white" {...props}>
+    <Avatar size="sm" {...baseProps} {...props}>
       {icon}
     </Avatar>
   );

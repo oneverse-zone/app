@@ -107,6 +107,7 @@ export const lang: Record<LangKey, LangValue> = {
   'token.send.amount': '转账金额',
   'token.send.pending': '您的交易正在上链中...',
   'token.send.pended': '您的交易上链成功',
+  'token.send.failure': '交易上链失败',
   'token.receive': '收款',
   'token.receive.address': '接收地址',
   'token.receive.address.error': '请输入合法有效的接收地址',

@@ -51,6 +51,11 @@ class TxService {
         title: lang('token.send.pended'),
       });
       goBack();
+    } catch (e) {
+      console.error(`交易失败`, e);
+      Toast.show({
+        title: lang('token.send.failure'),
+      });
     } finally {
       this.loading = false;
     }

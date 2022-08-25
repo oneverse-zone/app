@@ -101,6 +101,7 @@ export type LangKey =
   | 'token.send.amount'
   | 'token.send.pending'
   | 'token.send.pended'
+  | 'token.send.failure'
   | 'token.receive'
   | 'token.receive.address'
   | 'token.receive.address.error'

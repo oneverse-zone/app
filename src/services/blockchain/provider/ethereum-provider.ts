@@ -7,7 +7,7 @@ import {
 } from '../api';
 import { formatEther, formatUnits, parseEther, parseUnits } from '@ethersproject/units';
 import { isAddress } from '@ethersproject/address';
-import { VoidSigner } from '@ethersproject/abstract-signer';
+import { Signer, VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -292,10 +292,11 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
   }
 
   async sendTransaction({
+    account,
+    token,
     secretKey,
     mnemonic,
     password,
-    account,
     to,
     data,
     value,
@@ -318,17 +319,29 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       throw new Error('');
     }
     const provider = this.getProvider();
-    const res = await wallet.connect(provider).sendTransaction({
-      to,
-      from: account.address,
-      gasLimit: gasInfo.gasLimit,
-      data,
-      value: parseEther(`${value}`),
+    wallet = wallet.connect(provider);
 
-      maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
-      maxFeePerGas: gasInfo.maxFeePerGas,
-    });
-    console.log('交易成功', res);
+    if (token.type === TokenType.COIN) {
+      const res = await wallet.sendTransaction({
+        to,
+        from: account.address,
+        gasLimit: gasInfo.gasLimit,
+        data,
+        value: parseEther(`${value}`),
+
+        maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+        maxFeePerGas: gasInfo.maxFeePerGas,
+      });
+      console.log('交易上链成功', res);
+    } else if (token.type === TokenType.ERC20) {
+      const contract = new Contract(token.token.address, ERC20_BASE_ABI, wallet as any);
+      const res = await contract.transfer(to, parseUnits(`${value}`, token.token.decimals), {
+        // maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+        // maxFeePerGas: gasInfo.maxFeePerGas,
+        // gasLimit: gasInfo.gasLimit,
+      });
+      console.log(`ERC20交易上链成功`, res);
+    }
   }
 
   protected getProvider() {

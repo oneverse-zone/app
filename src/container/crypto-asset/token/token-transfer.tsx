@@ -7,7 +7,7 @@ import { Page } from '../../../components/Page';
 import { Button } from '../../../components/Button';
 import { goBack } from '../../../core/navigation';
 import { txService } from '../../../services/blockchain/tx';
-import { FullToken } from '../../../entity/blockchain/wallet-account';
+import { AccountToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 import { gasService } from '../../../services/blockchain/gas';
@@ -22,9 +22,13 @@ const MAX_QUERY_GAS_COUNT = 50;
 @observer
 @autoBind
 export class TokenTransfer extends Component<any, any> {
-  static options = {
-    title: lang('token.send'),
-    headerBackTitleVisible: false,
+  static options = ({ route }: any) => {
+    const { tokenIndex = -1 } = route.params || {};
+    const token = tokenService.selectTokens[tokenIndex];
+    return {
+      title: token?.token?.symbol,
+      headerBackTitleVisible: false,
+    };
   };
 
   state = {
@@ -37,11 +41,7 @@ export class TokenTransfer extends Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    const token = this.getToken();
-    token &&
-      props.navigation.setOptions({
-        title: token.symbol,
-      });
+    this.getToken();
     this.updateGas();
     this.timer = setInterval(this.updateGas, 1000 * 30);
   }
@@ -51,7 +51,7 @@ export class TokenTransfer extends Component<any, any> {
     this.timer = undefined;
   }
 
-  getToken(): FullToken | undefined {
+  getToken(): AccountToken | undefined {
     const { tokenIndex = -1 } = this.props.route?.params || {};
     const token = tokenService.selectTokens[tokenIndex];
     if (token) {
@@ -105,10 +105,6 @@ export class TokenTransfer extends Component<any, any> {
     this.setState({ [key]: Number.parseFloat(value?.trim()) });
   }
 
-  handleSpeedChange(value: any) {
-    console.log(value);
-  }
-
   isValidAddress() {
     const { toAddress } = this.state;
     return accountAdapter().isAddress(toAddress);
@@ -128,26 +124,25 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   render() {
-    const { tokenIndex = -1 } = this.props.route?.params || {};
     const { toAddress, value } = this.state;
-    const { balance, symbol } = this.getToken() ?? {};
+    const { balance, token } = this.getToken() ?? {};
     const { loading } = txService;
-    const { selected: gasInfo } = gasService;
+    const { selected: gasInfo, gasPriceUnit } = gasService;
     return (
       <Page loading={loading} loadingText={lang('token.send.pending')}>
         <Column space={5} padding={3}>
           <FormControl isRequired isInvalid={!this.isValidAddress()}>
             <FormControl.Label>{lang('token.receive.address')}</FormControl.Label>
             <Input value={toAddress} onChangeText={this.handleAddressChange} />
-            <FormControl.HelperText>{lang(`token.receive.tip`)(symbol)}</FormControl.HelperText>
+            <FormControl.HelperText>{lang(`token.receive.tip`)(token?.symbol)}</FormControl.HelperText>
             <FormControl.ErrorMessage>{lang(`token.receive.address.error`)}</FormControl.ErrorMessage>
           </FormControl>
           <FormControl isRequired>
-            <FormControl.Label>{`${lang('token.send.amount')} (${symbol})`}</FormControl.Label>
+            <FormControl.Label>{`${lang('token.send.amount')} (${token?.symbol})`}</FormControl.Label>
             <Input value={value} keyboardType="numeric" onChangeText={v => this.handleNumberValueChange('value', v)} />
             <FormControl.HelperText>{`${lang('balance')} ${balance}`}</FormControl.HelperText>
           </FormControl>
-          <GasCard gasInfo={gasInfo} tokenIndex={tokenIndex} />
+          <GasCard gasInfo={gasInfo} gasPriceUnit={gasPriceUnit} />
 
           <Button isDisabled={!this.isValid()} isLoading={loading} onPress={this.handleSend}>
             {lang('token.send')}

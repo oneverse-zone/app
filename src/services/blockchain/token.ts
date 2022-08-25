@@ -48,10 +48,17 @@ export class TokenService {
   }
 
   /**
-   * 获取当前账户的主链币Token信息
+   * 获取当前账户的主链币Token信息所在的索引
    */
   get selectedMainTokenIndex(): number {
     return this.selectTokens.findIndex(item => item.type === TokenType.COIN);
+  }
+
+  /**
+   * 当前账户对应的主链币Token信息
+   */
+  get selectedMainToken(): AccountToken | undefined {
+    return this.selectTokens.find(item => item.type === TokenType.COIN);
   }
 
   /**
@@ -68,9 +75,9 @@ export class TokenService {
   /**
    * 更新当前选择账户中的token信息
    */
-  updateSelectAccountToken() {
+  async updateSelectAccountToken() {
     const account = walletManagerService.selectedAccount;
-    account && this.updateAccountToken(account);
+    account && (await this.updateAccountToken(account));
   }
 
   /**
@@ -118,6 +125,7 @@ export class TokenService {
       };
 
       walletManagerService.selectedAccount?.tokens.push(accountToken);
+      await this.updateSelectAccountToken();
       goBack();
     } finally {
       this.loading = false;

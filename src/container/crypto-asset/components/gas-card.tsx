@@ -8,18 +8,18 @@ import { route } from '../../router';
 
 export type GasCardProps = {
   gasInfo: GasInfo;
-  tokenIndex: number;
+  gasPriceUnit: string;
 } & IPressableProps;
 
 /**
  *
  * @constructor
  */
-export function GasCard({ gasInfo, tokenIndex, ...props }: GasCardProps) {
+export function GasCard({ gasInfo, gasPriceUnit, ...props }: GasCardProps) {
   const { minGasFeeUI, maxGasFeeUI, gear } = gasInfo;
 
   function goGasSetting() {
-    navigate(route.GasSetting, { tokenIndex });
+    navigate(route.GasSetting);
   }
 
   return (
@@ -36,7 +36,7 @@ export function GasCard({ gasInfo, tokenIndex, ...props }: GasCardProps) {
           <Text fontSize="xs" color="coolGray.400">
             {lang('gas.estimate.range')}
           </Text>
-          <Text>{`${minGasFeeUI} ~ ${maxGasFeeUI}`}</Text>
+          <Text>{`${minGasFeeUI} (${gasPriceUnit}) ~ ${maxGasFeeUI} (${gasPriceUnit})`}</Text>
         </Column>
         <Spacer />
         <Text fontSize="xs" color="coolGray.400">

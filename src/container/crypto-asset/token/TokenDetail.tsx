@@ -10,11 +10,12 @@ import { FixedBottomView } from '../../../components/FixedBottomView';
 import { lang } from '../../../locales';
 import { route } from '../../router';
 import { TokenTransactionScreen } from './TokenTransaction';
-import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 import { TokenAvatar } from '../components/token-avatar';
 import { formatBalance } from '../../../utils/coin-utils';
 import { AddressText } from '../../../components/AddressText';
+import { AccountToken } from '../../../entity/blockchain/wallet-account';
+import { Title } from '../../../components/Title';
 
 const commonTab: MaterialTopTabNavigationOptions = {
   tabBarStyle: {
@@ -61,22 +62,29 @@ const tabs: Record<
 @observer
 @autoBind
 export class TokenDetail extends Component<any, any> {
-  static options = {
-    headerBackTitleVisible: false,
+  static options = ({ route }: any) => {
+    console.log(route);
+    const { token } = route.params || {};
+    return {
+      headerBackTitleVisible: false,
+      headerTitle: () => (
+        <Title title={token?.token?.symbol} subtitle={token?.token?.name} subtitleProps={{ fontSize: 'sm' }} />
+      ),
+    };
   };
 
   constructor(props: any) {
     super(props);
-    const token: FullToken = props.route?.params;
+    const { token } = props.route?.params || {};
 
     if (!token) {
       console.log('没有传递token信息，返回上一页');
       goBack();
       return;
     }
-    props.navigation.setOptions({
-      title: token.symbol,
-    });
+    // props.navigation.setOptions({
+    //   title: () => <Title title={token.token.symbol} subtitle={token.token.name} />,
+    // });
   }
 
   handleSend() {
@@ -91,14 +99,15 @@ export class TokenDetail extends Component<any, any> {
 
   render() {
     const { token } = this.props.route?.params || {};
-    const { name, balance, symbol } = token;
+    const { balance } = token as AccountToken;
+    const { name, symbol } = token.token;
     const { selectedAccount } = walletManagerService;
 
     return (
       <Box flex={1}>
         <Box bgColor="white" padding={3}>
           <Row space="3" alignItems="center">
-            <TokenAvatar token={token} />
+            <TokenAvatar token={token.token} />
             <Column>
               <Text fontSize="lg" fontWeight="400">
                 {selectedAccount?.name}

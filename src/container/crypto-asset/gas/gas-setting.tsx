@@ -1,14 +1,13 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useState } from 'react';
 import { autoBind } from 'jsdk/autoBind';
 import { observer } from 'mobx-react';
 import { Platform } from 'react-native';
 
-import { Box, Card, Center, Column, FormControl, Icon, KeyboardAvoidingView, Row, Text, useTheme } from 'native-base';
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { Box, Card, Center, Column, FormControl, Icon, KeyboardAvoidingView, Row, Text } from 'native-base';
+import { SceneMap, TabView } from 'react-native-tab-view';
 
 import { Page } from '../../../components/Page';
 import { gasService } from '../../../services/blockchain/gas';
-import { FullToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
 import { goBack } from '../../../core/navigation';
 import { lang } from '../../../locales';
@@ -17,6 +16,7 @@ import { ListItem } from '../../../components/ListItem';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Input } from '../../../components/Input';
 import { Button } from '../../../components/Button';
+import { AccountToken } from '../../../entity/blockchain/wallet-account';
 
 /**
  * gas档位选择页面
@@ -151,9 +151,8 @@ export class GasSetting extends Component<any, any> {
     this.timer = undefined;
   }
 
-  getToken(): FullToken | undefined {
-    const { tokenIndex = -1 } = this.props.route?.params || {};
-    const token = tokenService.selectTokens[tokenIndex];
+  getToken(): AccountToken | undefined {
+    const token = tokenService.selectedMainToken;
     if (token) {
       return token;
     }
@@ -189,8 +188,8 @@ export class GasSetting extends Component<any, any> {
           <Text>{lang('gas.fee')}</Text>
           <Text fontSize="xs">
             {selected.minGasFeeUI === selected.maxGasFeeUI
-              ? `${selected.minGasFeeUI} ${token?.symbol}`
-              : `${selected.minGasFeeUI} ${token?.symbol} ~ ${selected.maxGasFeeUI} ${token?.symbol}`}
+              ? `${selected.minGasFeeUI} ${token?.token?.symbol}`
+              : `${selected.minGasFeeUI} ${token?.token?.symbol} ~ ${selected.maxGasFeeUI} ${token?.token?.symbol}`}
           </Text>
         </Card>
         <Box height={3} bgColor="#F2F2F2"></Box>
