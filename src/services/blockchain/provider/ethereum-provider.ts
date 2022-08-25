@@ -141,10 +141,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
 
   async getBalanceUI(account: WalletAccount, token: AccountToken): Promise<string> {
     const balance = await this.getBalance(account, token);
-    if (token.type === TokenType.COIN) {
-      return Number.parseFloat(formatUnits(balance)).toFixed(UI_MAIN_UNIT_DECIMALS);
-    }
-    return balance;
+    return Number.parseFloat(formatUnits(balance, token.token.decimals)).toFixed(UI_MAIN_UNIT_DECIMALS);
   }
 
   async estimateGas(account: WalletAccount, transaction: any): Promise<string> {
