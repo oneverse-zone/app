@@ -18,25 +18,22 @@ import { TokenAvatar } from '../components/token-avatar';
 @observer
 @autoBind
 export class TokenReceive extends Component<any, any> {
-  static options = {
+  static options = ({ route }: any) => ({
     headerBackTitleVisible: false,
-  };
+    headerTransparent: true,
+    headerTitleStyle: {
+      color: 'white',
+    },
+    title: `${route.params?.token?.symbol} ${lang('token.receive')}`,
+  });
 
   constructor(props: any, context: any) {
     super(props, context);
-    const token = props.route?.params;
+    const { token } = props.route?.params || {};
     if (!token) {
       goBack();
       return;
     }
-    console.log(context);
-    props.navigation.setOptions({
-      title: `${token.symbol} ${lang('token.receive')}`,
-      headerTransparent: true,
-      headerTitleStyle: {
-        color: 'white',
-      },
-    });
   }
 
   handleCopy() {
@@ -59,11 +56,11 @@ export class TokenReceive extends Component<any, any> {
         <Alert borderColor="warning" colorScheme="warning">
           <Row flexShrink={1} space={2} alignItems="center">
             <Alert.Icon mt="1" />
-            <Text fontSize="xs">{typeof tipLang === 'function' && tipLang(token?.symbol)}</Text>
+            <Text fontSize="xs">{typeof tipLang === 'function' && tipLang(token?.token?.symbol)}</Text>
           </Row>
         </Alert>
         <Column borderRadius="lg" space={8} marginTop={50} padding={3} backgroundColor="white" alignItems="center">
-          <TokenAvatar token={token} size="lg" marginTop="-43" />
+          <TokenAvatar token={token?.token} size="lg" marginTop="-43" />
           <QRCode value={selectedAccount?.address ?? ''} size={200} />
           <Text width={180 + 100} textAlign="center">
             {selectedAccount?.address}
