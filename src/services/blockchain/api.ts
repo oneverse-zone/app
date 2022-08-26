@@ -2,6 +2,7 @@ import { BaseToken, Coin } from '../../entity/blockchain/coin';
 import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
 import { Wallet } from '../../entity/blockchain/wallet';
 import { GasInfo } from '../../entity/blockchain/gas';
+import { Token } from '../../entity/blockchain/token';
 
 export type CreateHDWalletAccountOptions = {
   secretKey?: never;
@@ -79,6 +80,17 @@ export type TransactionOptions = {
     }
 );
 
+export type EstimateGasOptions = {
+  /**
+   * 预估gas参数
+   */
+  params: Array<any>;
+  /**
+   * 合约执行方法
+   */
+  method?: string;
+};
+
 /**
  * 基础服务接口
  */
@@ -123,7 +135,7 @@ export interface WalletProvider {
    * @param token token 信息
    * @return 余额
    */
-  getBalance(account: WalletAccount, token: AccountToken): Promise<string>;
+  getBalance(account: WalletAccount, token: Token): Promise<string>;
 
   /**
    * 获取Token余额
@@ -131,14 +143,15 @@ export interface WalletProvider {
    * @param token token 信息
    * @return 余额 以主要的单位显示并做好小数位数处理
    */
-  getBalanceUI(account: WalletAccount, token: AccountToken): Promise<string>;
+  getBalanceUI(account: WalletAccount, token: Token): Promise<string>;
 
   /**
    * 预估GAS
    * @param account 账户信息
-   * @param transaction 交易信息
+   * @param token token信息
+   * @param options 预估gas信息
    */
-  estimateGas(account: WalletAccount, transaction: any): Promise<string>;
+  estimateGas(account: WalletAccount, token: Token, options: EstimateGasOptions): Promise<string>;
 
   /**
    * 获取gas price

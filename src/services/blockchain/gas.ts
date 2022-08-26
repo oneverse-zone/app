@@ -4,6 +4,8 @@ import { walletManagerService } from './wallet-manager';
 import { CustomGasFeeInfoOptions } from './api';
 import { goBack } from '../../core/navigation';
 import { accountAdapter } from './account-adapter';
+import { AccountToken } from '../../entity/blockchain/wallet-account';
+import { TokenType } from '../../entity/blockchain/token';
 
 export const DEFAULT_GAS_INFO: GasInfo = {
   gasLimit: 0,
@@ -36,7 +38,7 @@ class GasService {
    */
   selectedGasInfoIndex = 1;
 
-  gasLimit: bigint | string | number = 21000;
+  // gasLimit: bigint | string | number = 21000;
 
   constructor() {
     makeAutoObservable(this, undefined, {
@@ -47,7 +49,7 @@ class GasService {
   /**
    * 更新档位信息
    */
-  async update() {
+  async update(token: AccountToken) {
     if (this.loading) {
       return;
     }
@@ -60,7 +62,14 @@ class GasService {
       if (!selectedAccount) {
         return;
       }
-      this._gasInfos[selectedAccount.blockchainId] = await accountAdapter().getGasFeeInfos(this.gasLimit);
+      let gasLimit: bigint | string | number = 21000;
+      if (token.type !== TokenType.COIN) {
+        gasLimit = await accountAdapter().estimateGas(selectedAccount, token.token, {
+          params: [],
+        });
+      }
+
+      this._gasInfos[selectedAccount.blockchainId] = await accountAdapter().getGasFeeInfos(gasLimit);
     } finally {
       this.loading = false;
     }

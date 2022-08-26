@@ -63,12 +63,16 @@ const tabs: Record<
 @autoBind
 export class TokenDetail extends Component<any, any> {
   static options = ({ route }: any) => {
-    console.log(route);
     const { token } = route.params || {};
     return {
       headerBackTitleVisible: false,
       headerTitle: () => (
-        <Title title={token?.token?.symbol} subtitle={token?.token?.name} subtitleProps={{ fontSize: 'sm' }} />
+        <Title
+          title={token?.token?.symbol}
+          titleProps={{ textAlign: 'center', fontSize: 'sm' }}
+          subtitle={token?.token?.name}
+          subtitleProps={{ fontSize: 'xs', textAlign: 'center' }}
+        />
       ),
     };
   };

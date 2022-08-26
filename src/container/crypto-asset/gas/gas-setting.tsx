@@ -165,8 +165,11 @@ export class GasSetting extends Component<any, any> {
     //   this.timer = undefined;
     //   return;
     // }
-
-    gasService.update();
+    const token = this.getToken();
+    if (!token) {
+      return;
+    }
+    gasService.update(token);
   }
 
   renderScene = SceneMap({

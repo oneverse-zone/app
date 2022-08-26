@@ -185,7 +185,7 @@ export class TokenService {
   }
 
   private handleQueryBalance(account: WalletAccount, token: AccountToken): Promise<string> {
-    return walletAdapter.getAccountProvider(account).getBalanceUI(account, token);
+    return walletAdapter.getAccountProvider(account).getBalanceUI(account, token.token);
   }
 }
 

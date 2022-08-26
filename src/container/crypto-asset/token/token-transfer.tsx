@@ -34,7 +34,6 @@ export class TokenTransfer extends Component<any, any> {
   state = {
     toAddress: '',
     value: '',
-    gasLimit: '21000',
   };
   timer?: NodeJS.Timer;
   queryGasCount = 1;
@@ -71,7 +70,7 @@ export class TokenTransfer extends Component<any, any> {
     if (!token || !selectedAccount) {
       return;
     }
-    gasService.update();
+    gasService.update(token);
   }
 
   async handleSend() {
@@ -111,8 +110,8 @@ export class TokenTransfer extends Component<any, any> {
   }
 
   isValid() {
-    const { value, gasLimit } = this.state;
-    if (!this.isValidAddress() || Number.parseFloat(value).toString() === 'NaN' || !gasLimit) {
+    const { value } = this.state;
+    if (!this.isValidAddress() || Number.parseFloat(value).toString() === 'NaN') {
       return false;
     }
     const { balance = 0 } = this.getToken() ?? {};
@@ -126,8 +125,9 @@ export class TokenTransfer extends Component<any, any> {
   render() {
     const { toAddress, value } = this.state;
     const { balance, token } = this.getToken() ?? {};
+    const { selectedMainToken } = tokenService;
     const { loading } = txService;
-    const { selected: gasInfo, gasPriceUnit } = gasService;
+    const { selected: gasInfo } = gasService;
     return (
       <Page loading={loading} loadingText={lang('token.send.pending')}>
         <Column space={5} padding={3}>
@@ -142,7 +142,7 @@ export class TokenTransfer extends Component<any, any> {
             <Input value={value} keyboardType="numeric" onChangeText={v => this.handleNumberValueChange('value', v)} />
             <FormControl.HelperText>{`${lang('balance')} ${balance}`}</FormControl.HelperText>
           </FormControl>
-          <GasCard gasInfo={gasInfo} gasPriceUnit={gasPriceUnit} />
+          <GasCard gasInfo={gasInfo} symbol={selectedMainToken?.token?.symbol ?? ''} />
 
           <Button isDisabled={!this.isValid()} isLoading={loading} onPress={this.handleSend}>
             {lang('token.send')}

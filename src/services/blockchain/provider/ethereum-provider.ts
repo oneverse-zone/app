@@ -2,12 +2,13 @@ import {
   BaseProvider,
   CreateWalletAccountOptions,
   CustomGasFeeInfoOptions,
+  EstimateGasOptions,
   TransactionOptions,
   WalletProvider,
 } from '../api';
 import { formatEther, formatUnits, parseEther, parseUnits } from '@ethersproject/units';
 import { isAddress } from '@ethersproject/address';
-import { Signer, VoidSigner } from '@ethersproject/abstract-signer';
+import { VoidSigner } from '@ethersproject/abstract-signer';
 import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -18,7 +19,7 @@ import { walletAdapter } from '../adapter';
 import { AbstractProvider } from './abstract-provider';
 import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { blockchainNodeService } from '../blockchain-node';
-import { TokenType } from '../../../entity/blockchain/token';
+import { Token, TokenType } from '../../../entity/blockchain/token';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from '../chainlist/ethereum';
 import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
 
@@ -125,30 +126,42 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     };
   }
 
-  async getBalance(account: WalletAccount, token: AccountToken): Promise<string> {
+  async getBalance(account: WalletAccount, token: Token): Promise<string> {
     const provider = this.getProvider();
     let balance;
     if (token.type === TokenType.COIN) {
       const balanceWei = await provider.getBalance(account.address);
       balance = balanceWei.toString();
     } else {
-      const contract = new Contract(token.token.address, ERC20_BASE_ABI, provider);
+      const contract = new Contract(token.address, ERC20_BASE_ABI, provider);
       balance = await contract.balanceOf(account.address);
     }
-    console.log(`address=${account.address} type=${token.type} token=${token.token.address} balance=${balance}`);
+    console.log(`address=${account.address} type=${token.type} token=${token.address} balance=${balance}`);
     return balance;
   }
 
-  async getBalanceUI(account: WalletAccount, token: AccountToken): Promise<string> {
+  async getBalanceUI(account: WalletAccount, token: Token): Promise<string> {
     const balance = await this.getBalance(account, token);
-    return Number.parseFloat(formatUnits(balance, token.token.decimals)).toFixed(UI_MAIN_UNIT_DECIMALS);
+    return Number.parseFloat(formatUnits(balance, token.decimals)).toFixed(UI_MAIN_UNIT_DECIMALS);
   }
 
-  async estimateGas(account: WalletAccount, transaction: any): Promise<string> {
+  async estimateGas(
+    account: WalletAccount,
+    token: Token,
+    { params = [], method = 'transfer' }: EstimateGasOptions,
+  ): Promise<string> {
     const provider = this.getProvider();
     const signer = new VoidSigner(account.address, provider);
-    const value = await signer.estimateGas(transaction);
-    return value.toString();
+
+    if (token.type === TokenType.COIN) {
+      const value = await signer.estimateGas(params[0] || {});
+      return value.toString();
+    } else if (token.type === TokenType.ERC20) {
+      const contract = new Contract(token.address, ERC20_BASE_ABI, signer as any);
+      const value = await contract.estimateGas[method](account.address, 1);
+      return value.toString();
+    }
+    return '0';
   }
 
   async getGasPrice(): Promise<string> {
@@ -336,9 +349,9 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     } else if (token.type === TokenType.ERC20) {
       const contract = new Contract(token.token.address, ERC20_BASE_ABI, wallet as any);
       const res = await contract.transfer(to, parseUnits(`${value}`, token.token.decimals), {
-        // maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
-        // maxFeePerGas: gasInfo.maxFeePerGas,
-        // gasLimit: gasInfo.gasLimit,
+        maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
+        maxFeePerGas: gasInfo.maxFeePerGas,
+        gasLimit: gasInfo.gasLimit,
       });
       console.log(`ERC20交易上链成功`, res);
     }

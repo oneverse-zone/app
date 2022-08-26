@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { RefreshControl, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import {
@@ -10,18 +10,13 @@ import {
   Column,
   Icon,
   IconButton,
+  IScrollViewProps,
+  ITextProps,
   Pressable,
   Row,
-  Text,
   Spacer,
-  ITextProps,
+  Text,
 } from 'native-base';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {
-  MaterialTopTabBarProps,
-  MaterialTopTabNavigationConfig,
-  MaterialTopTabNavigationOptions,
-} from '@react-navigation/material-top-tabs/lib/typescript/src/types';
 import { lang } from '../../locales';
 import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 import { TokenTabScreen } from './token/token-tab';
@@ -37,94 +32,7 @@ import { blockchainService } from '../../services/blockchain';
 import { logos } from '../../components/BlockchainAvatar';
 import { AddressText } from '../../components/AddressText';
 import { tokenService } from '../../services/blockchain/token';
-
-const commonOptions: MaterialTopTabNavigationOptions = {
-  tabBarStyle: {
-    alignContent: 'center',
-  },
-  tabBarItemStyle: {
-    width: 'auto',
-  },
-  tabBarLabelStyle: {
-    fontWeight: '500',
-  },
-};
-
-const Tab = createMaterialTopTabNavigator();
-
-const tabs: Record<
-  string,
-  MaterialTopTabNavigationOptions & {
-    component: React.ComponentType<any>;
-  }
-> = {
-  Token: {
-    tabBarLabel: lang('token'),
-    component: TokenTabScreen,
-  },
-  NFT: {
-    tabBarLabel: lang('nft'),
-    component: NftTabScreen,
-  },
-};
-
-function handleGoTokenManager() {
-  navigate(route.TokenManager);
-}
-
-function TabBar({ state, descriptors, navigation, position }: MaterialTopTabBarProps) {
-  return (
-    <Row
-      alignItems="center"
-      height={48.1}
-      backgroundColor="white"
-      borderBottomColor="coolGray.300"
-      borderBottomWidth={StyleSheet.hairlineWidth}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const isFocused = state.index === index;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            (navigation.navigate as any)({ name: route.name, merge: true }, route.params);
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-
-        let textProps: ITextProps = {
-          color: 'coolGray.500',
-        };
-        if (isFocused) {
-          textProps = {
-            color: 'black',
-            fontWeight: '500',
-          };
-        }
-
-        return (
-          <Pressable key={route.key} onPress={onPress} onLongPress={onLongPress} paddingX={3}>
-            <Text {...textProps}>{options.tabBarLabel}</Text>
-          </Pressable>
-        );
-      })}
-      <Spacer />
-      {state.index === 0 && <IconButton icon={<AddIcon />} borderRadius="full" onPress={handleGoTokenManager} />}
-    </Row>
-  );
-}
+import { NavigationState, SceneMap, SceneRendererProps, TabView } from 'react-native-tab-view';
 
 function CryptoAssetRight({ navigation }: any) {
   function handlePress() {}
@@ -147,6 +55,17 @@ const CryptoAssetTitle = observer(function CryptoAssetTitle() {
   );
 });
 
+const routes = [
+  {
+    key: 'token',
+    title: lang('token'),
+  },
+  {
+    key: 'nft',
+    title: lang('nft'),
+  },
+];
+
 /**
  * 加密资产
  */
@@ -161,7 +80,27 @@ export class CryptoAsset extends Component<any, any> {
 
   state = {
     open: false,
+    refreshing: false,
+    tabIndex: 0,
   };
+
+  componentDidMount() {
+    this.handleRefresh();
+  }
+
+  /**
+   * 刷新页面数据
+   */
+  async handleRefresh() {
+    this.setState({ refreshing: true });
+    try {
+      if (this.state.tabIndex === 0) {
+        await tokenService.updateSelectAccountToken();
+      }
+    } finally {
+      this.setState({ refreshing: false });
+    }
+  }
 
   openSwitch() {
     this.setState({ open: !this.state.open });
@@ -175,6 +114,54 @@ export class CryptoAsset extends Component<any, any> {
   handleReceive() {
     const { selectedMainTokenIndex } = tokenService;
     navigate(route.TokenReceive, tokenService.selectTokens[selectedMainTokenIndex]);
+  }
+
+  handleGoTokenManager() {
+    navigate(route.TokenManager);
+  }
+
+  renderScene = SceneMap({
+    token: TokenTabScreen,
+    nft: NftTabScreen,
+  });
+
+  renderTabBar({ navigationState }: SceneRendererProps & { navigationState: NavigationState<any> }) {
+    return (
+      <Row
+        alignItems="center"
+        height={48.1}
+        backgroundColor="white"
+        borderBottomColor="coolGray.300"
+        borderBottomWidth={StyleSheet.hairlineWidth}>
+        {navigationState.routes.map((route, index) => {
+          const isFocused = navigationState.index === index;
+
+          const onPress = () => {
+            this.setState({ tabIndex: index });
+          };
+
+          let textProps: ITextProps = {
+            color: 'coolGray.500',
+          };
+          if (isFocused) {
+            textProps = {
+              color: 'black',
+              fontWeight: '500',
+            };
+          }
+
+          return (
+            <Pressable key={route.key} onPress={onPress} paddingX={3}>
+              <Text {...textProps}>{route.title}</Text>
+            </Pressable>
+          );
+        })}
+        <Spacer />
+        {navigationState.index === 0 && (
+          <IconButton icon={<AddIcon />} borderRadius="full" onPress={this.handleGoTokenManager} />
+        )}
+      </Row>
+    );
   }
 
   renderDefault() {
@@ -214,23 +201,25 @@ export class CryptoAsset extends Component<any, any> {
             </Button>
           </Row>
         </Box>
-        <Box flex={1}>
-          <Tab.Navigator initialRouteName="Token" screenOptions={commonOptions} tabBar={TabBar}>
-            {Object.keys(tabs).map(key => {
-              const { component, ...options } = tabs[key];
-              return <Tab.Screen name={key} key={key} component={component} options={options} />;
-            })}
-          </Tab.Navigator>
-        </Box>
+        <TabView
+          navigationState={{ index: this.state.tabIndex, routes }}
+          renderScene={this.renderScene}
+          sceneContainerStyle={{ backgroundColor: '#F2F2F2' }}
+          onIndexChange={index => this.setState({ tabIndex: index })}
+          renderTabBar={this.renderTabBar}
+        />
       </>
     );
   }
 
   render() {
     const { wallet, wallets, loading } = walletManagerService;
-    const { open } = this.state;
+    const { open, refreshing } = this.state;
+    const scroll: IScrollViewProps = {
+      refreshControl: <RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />,
+    };
     return (
-      <Page loading={loading} scroll={false}>
+      <Page loading={loading} scroll={scroll}>
         {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
         <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
       </Page>
