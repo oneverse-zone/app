@@ -11,6 +11,8 @@ import { FixedBottomView } from '../../components/FixedBottomView';
 import { Button } from '../../components/Button';
 import { resetTo } from '../../core/navigation';
 import { route } from '../router';
+import { securityService } from '../../services/security';
+import { Mnemonic } from '../../entity/blockchain/wallet';
 
 type State = {
   mnemonic: string;
@@ -48,10 +50,17 @@ export class BackupThree extends Component<any, State> {
 
   async getMnemonic() {
     const data: any = await repository.findMnemonic();
-    if (data?.mnemonic) {
+
+    if (data) {
+      const mnemonic = await securityService.decrypt<Mnemonic>(data);
+      if (null == mnemonic) {
+        console.log(`身份助记词解密失败`);
+        return;
+      }
+
       this.setState({
-        mnemonic: data?.mnemonic,
-        mnemonicWords: ArrayUtil.shuffle(data?.mnemonic.split(' ')),
+        mnemonic: mnemonic?.mnemonic,
+        mnemonicWords: ArrayUtil.shuffle(mnemonic?.mnemonic.split(' ')),
       });
     }
   }
