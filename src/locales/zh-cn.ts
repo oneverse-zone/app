@@ -41,6 +41,7 @@ export const lang: Record<LangKey, LangValue> = {
   'mnemonic.password': '助记词密码',
   'mnemonic.password.tip':
     '根据BIP39规范,创建助记词时可以设置密码来保护助记词,不同的助记词会产生不同的DID身份或钱包。\n一旦设置助记词密码,无法更改,请务必牢记。',
+  privateKey: '私钥',
   'identify.setting': '去中心化身份设置',
   'identify.setting.tip': '导入现有身份或创建新身份',
   'identify.create.tip': '正在创建您的身份,这不需要多长时间',

@@ -36,6 +36,7 @@ export type LangKey =
   | 'mnemonic.length'
   | 'mnemonic.password'
   | 'mnemonic.password.tip'
+  | 'privateKey'
   | 'identify.setting'
   | 'identify.setting.tip'
   | 'identify.create.tip'
