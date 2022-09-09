@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { GasGear, GasInfo } from '../../entity/blockchain/gas';
 import { walletManagerService } from './wallet-manager';
-import { CustomGasFeeInfoOptions } from './api';
+import { CustomGasFeeInfoOptions, EstimateGasOptions } from './api';
 import { goBack } from '../../core/navigation';
 import { accountAdapter } from './account-adapter';
 import { AccountToken } from '../../entity/blockchain/wallet-account';
@@ -49,7 +49,7 @@ class GasService {
   /**
    * 更新档位信息
    */
-  async update(token: AccountToken) {
+  async update(token: AccountToken, options?: EstimateGasOptions) {
     if (this.loading) {
       return;
     }
@@ -64,9 +64,7 @@ class GasService {
       }
       let gasLimit: bigint | string | number = 21000;
       if (token.type !== TokenType.COIN) {
-        gasLimit = await accountAdapter().estimateGas(selectedAccount, token.token, {
-          params: [],
-        });
+        gasLimit = await accountAdapter().estimateGas(selectedAccount, token.token, options || { params: [] });
       }
 
       this._gasInfos[selectedAccount.blockchainId] = await accountAdapter().getGasFeeInfos(gasLimit);

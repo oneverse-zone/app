@@ -14,10 +14,9 @@ import { HDNode } from '@ethersproject/hdnode';
 import { getDefaultProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-
 import { walletAdapter } from '../adapter';
 import { AbstractProvider } from './abstract-provider';
-import { AccountToken, WalletAccount } from '../../../entity/blockchain/wallet-account';
+import { WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { blockchainNodeService } from '../blockchain-node';
 import { Token, TokenType } from '../../../entity/blockchain/token';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from '../chainlist/ethereum';
@@ -26,9 +25,43 @@ import { GasGear, GasInfo } from '../../../entity/blockchain/gas';
 // The minimum ABI to get ERC20 Token balance
 import ERC20_BASE_ABI from './erc20-base-abi.json';
 import { BaseToken } from '../../../entity/blockchain/coin';
+import { add, mul, toDecimal } from '../../../utils/calculator';
 
 const UI_MAIN_UNIT_DECIMALS = 8;
 const GAS_PRICE_UNIT = 'gwei';
+
+function createFormatGasInfo({
+  lastBaseFeePerGas,
+  maxPriorityFeePerGas,
+  gasLimit,
+  gear,
+  time,
+}: {
+  lastBaseFeePerGas: any;
+  maxPriorityFeePerGas: any;
+  gasLimit: GasInfo['gasLimit'];
+  gear: GasInfo['gear'];
+  time: GasInfo['time'];
+}): GasInfo {
+  const baseFeePerGasDouble = mul(lastBaseFeePerGas, 2);
+
+  const minFeePerGas = add(lastBaseFeePerGas, maxPriorityFeePerGas);
+  const maxFeePerGas = add(baseFeePerGasDouble, maxPriorityFeePerGas);
+
+  const minGasFee = mul(minFeePerGas, gasLimit);
+  const maxGasFee = mul(maxFeePerGas, gasLimit);
+
+  return formatGasInfo({
+    lastBaseFeePerGas,
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+    gasLimit,
+    minGasFee,
+    maxGasFee,
+    gear,
+    time,
+  });
+}
 
 function formatGasInfo({
   lastBaseFeePerGas,
@@ -43,23 +76,23 @@ function formatGasInfo({
   gasLimit: GasInfo['gasLimit'];
   gear: GasInfo['gear'];
   time: GasInfo['time'];
-  [key: string]: BigNumberish;
+  [key: string]: any;
 }): GasInfo {
   return {
     lastBaseFeePerGas: lastBaseFeePerGas.toString(),
     maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
-    maxPriorityFeePerGasUI: formatUnits(maxPriorityFeePerGas, GAS_PRICE_UNIT),
+    maxPriorityFeePerGasUI: formatUnits(maxPriorityFeePerGas.toString(), GAS_PRICE_UNIT),
 
     maxFeePerGas: maxFeePerGas.toString(),
-    maxFeePerGasUI: formatUnits(maxFeePerGas, GAS_PRICE_UNIT),
+    maxFeePerGasUI: formatUnits(maxFeePerGas.toString(), GAS_PRICE_UNIT),
 
-    gasLimit: gasLimit,
+    gasLimit: gasLimit.toString(),
 
     minGasFee: minGasFee.toString(),
-    minGasFeeUI: Number.parseFloat(formatEther(minGasFee)).toFixed(UI_MAIN_UNIT_DECIMALS),
+    minGasFeeUI: Number.parseFloat(formatEther(minGasFee.toString())).toFixed(UI_MAIN_UNIT_DECIMALS),
 
     maxGasFee: maxGasFee.toString(),
-    maxGasFeeUI: Number.parseFloat(formatEther(maxGasFee)).toFixed(UI_MAIN_UNIT_DECIMALS),
+    maxGasFeeUI: Number.parseFloat(formatEther(maxGasFee.toString())).toFixed(UI_MAIN_UNIT_DECIMALS),
 
     gear,
     time,
@@ -158,7 +191,8 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       return value.toString();
     } else if (token.type === TokenType.ERC20) {
       const contract = new Contract(token.address, ERC20_BASE_ABI, signer as any);
-      const value = await contract.estimateGas[method](account.address, 1);
+      const value = await contract.estimateGas[method](...params);
+      console.log(`合约预估gas: [${token.address}] [${method}] [${value}]`, params);
       return value.toString();
     }
     return '0';
@@ -179,74 +213,65 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
    * maxFeePerGas = baseFeePerGas * 2 + maxPriorityFeePerGas
    *
    * 区间规则: min = (BaseFee + PriorityFee)* Gas, max = MaxFee * Gas
+   *
+   * @param estimateGas 预估的gas
+   * @param multiplier
    */
-  async getGasFeeInfos(gasLimit: string | bigint | number): Promise<Array<GasInfo>> {
+  async getGasFeeInfos(estimateGas: string | bigint | number, multiplier = 1.5): Promise<Array<GasInfo>> {
     const provider = this.getProvider();
-    const feeData = await provider.getFeeData();
-
-    const { lastBaseFeePerGas } = feeData;
+    const block = await provider.getBlock('latest');
+    if (!block) {
+      return [];
+    }
+    const lastBaseFeePerGas = block.baseFeePerGas;
     if (!lastBaseFeePerGas) {
       return [];
     }
+    const initialGasLimit = toDecimal(estimateGas);
+    const lastGasLimit = block.gasLimit;
+    const upperGasLimit = mul(lastGasLimit, 0.9);
+    const bufferedGasLimit = mul(initialGasLimit, multiplier);
 
-    const baseFeePerGasDouble = lastBaseFeePerGas.mul(2);
+    let gasLimit;
+    if (initialGasLimit.gt(upperGasLimit)) {
+      gasLimit = initialGasLimit;
+    } else if (bufferedGasLimit.lt(upperGasLimit)) {
+      gasLimit = bufferedGasLimit.toFixed(0);
+    } else {
+      gasLimit = upperGasLimit;
+    }
+    console.log(
+      `estimateGas=[${estimateGas}] blockGasLimit=${lastGasLimit} upperGasLimit=${upperGasLimit} bufferedGasLimit=${bufferedGasLimit} gasLimit=${gasLimit}`,
+    );
+    let gasLimitStr = gasLimit.toString();
 
-    const lowMaxPriorityFeePerGas = BigNumber.from(1470000000);
-    const lowMaxFeePerGas = baseFeePerGasDouble.add(lowMaxPriorityFeePerGas);
-    const lowMinGasFee = lastBaseFeePerGas.add(lowMaxPriorityFeePerGas).mul(gasLimit);
-    const lowMaxGasFee = lowMaxFeePerGas.mul(gasLimit);
-
-    const low: GasInfo = formatGasInfo({
+    const low: GasInfo = createFormatGasInfo({
       lastBaseFeePerGas: lastBaseFeePerGas,
-      maxPriorityFeePerGas: lowMaxPriorityFeePerGas,
+      maxPriorityFeePerGas: 1470000000,
 
-      maxFeePerGas: lowMaxFeePerGas,
-
-      gasLimit: gasLimit,
-
-      minGasFee: lowMinGasFee,
-
-      maxGasFee: lowMaxGasFee,
+      gasLimit: gasLimitStr,
 
       gear: GasGear.LOW,
       // 10 分钟
       time: 10 * 60,
     });
 
-    const fastMaxPriorityFeePerGas = BigNumber.from(2000000000);
-    const fastMaxFeePerGas = baseFeePerGasDouble.add(fastMaxPriorityFeePerGas);
-    const fastMinGasFee = lastBaseFeePerGas.add(fastMaxPriorityFeePerGas).mul(gasLimit);
-    const fastMaxGasFee = fastMaxFeePerGas.mul(gasLimit);
-
-    const fast: GasInfo = formatGasInfo({
+    const fast: GasInfo = createFormatGasInfo({
       lastBaseFeePerGas: lastBaseFeePerGas,
-      maxPriorityFeePerGas: fastMaxPriorityFeePerGas,
+      maxPriorityFeePerGas: 2000000000,
 
-      maxFeePerGas: fastMaxFeePerGas,
-
-      gasLimit: gasLimit,
-
-      minGasFee: fastMinGasFee,
-
-      maxGasFee: fastMaxGasFee,
+      gasLimit: gasLimitStr,
 
       gear: GasGear.FAST,
       // 30s
       time: 30,
     });
 
-    const standardMaxPriorityFeePerGas = BigNumber.from(1500000000);
-    const standardMaxFeePerGas = baseFeePerGasDouble.add(standardMaxPriorityFeePerGas);
-    const standardMinGasFee = lastBaseFeePerGas.add(standardMaxPriorityFeePerGas).mul(gasLimit);
-    const standardMaxGasFee = standardMaxFeePerGas.mul(gasLimit);
-    const standard: GasInfo = formatGasInfo({
+    const standard: GasInfo = createFormatGasInfo({
       lastBaseFeePerGas: lastBaseFeePerGas,
-      maxPriorityFeePerGas: standardMaxPriorityFeePerGas,
-      maxFeePerGas: standardMaxFeePerGas,
-      gasLimit: gasLimit,
+      maxPriorityFeePerGas: 1500000000,
 
-      minGasFee: standardMinGasFee,
-      maxGasFee: standardMaxGasFee,
+      gasLimit: gasLimitStr,
 
       gear: GasGear.STANDARD,
       // 3 分钟
@@ -268,8 +293,8 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     const maxPriorityFeePerGas = parseUnits(options.maxPriorityFeePerGas, GAS_PRICE_UNIT);
     const maxFeePerGas = parseUnits(options.maxFeePerGas, GAS_PRICE_UNIT);
 
-    const minGasFee = lastBaseFeePerGas.add(maxPriorityFeePerGas).mul(options.gasLimit);
-    const maxGasFee = maxFeePerGas.mul(options.gasLimit);
+    const minGasFee = mul(add(lastBaseFeePerGas, maxPriorityFeePerGas), options.gasLimit);
+    const maxGasFee = mul(maxFeePerGas, options.gasLimit);
 
     return formatGasInfo({
       lastBaseFeePerGas: lastBaseFeePerGas,

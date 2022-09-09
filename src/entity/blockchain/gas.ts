@@ -40,6 +40,7 @@ export type GasInfo = {
   maxFeePerGasUI: bigint | string | number;
   /**
    * 用户愿意使用的最大gas量
+   * 自动计算为安全的gas limit
    */
   gasLimit: bigint | string | number;
 

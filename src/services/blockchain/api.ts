@@ -160,9 +160,9 @@ export interface WalletProvider {
 
   /**
    * 获取gas费率档位信息
-   * @param gasLimit gas 限制
+   * @param estimateGas 预估的gas
    */
-  getGasFeeInfos(gasLimit: string | bigint | number): Promise<Array<GasInfo>>;
+  getGasFeeInfos(estimateGas: string | bigint | number): Promise<Array<GasInfo>>;
 
   customGasFeeInfo(options: CustomGasFeeInfoOptions): Promise<GasInfo>;
 

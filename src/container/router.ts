@@ -24,6 +24,7 @@ import { TokenReceive } from './crypto-asset/token/TokenReceive';
 import { GasSetting } from './crypto-asset/gas/gas-setting';
 import { TokenManager } from './crypto-asset/token/token-manager';
 import { TokenPersist } from './crypto-asset/token/token-persist';
+import { TokenTransferConfirm } from './crypto-asset/token/token-transfer-confirm';
 
 export const route = {
   Splash: 'Splash',
@@ -58,6 +59,7 @@ export const route = {
   WalletManager: 'WalletManager',
   TokenDetail: 'TokenDetail',
   TokenTransfer: 'TokenTransfer',
+  TokenTransferConfirm: 'TokenTransferConfirm',
   TokenReceive: 'TokenReceive',
   TokenSelect: 'TokenSelect',
   TokenManager: 'TokenManager',
@@ -146,6 +148,10 @@ export const routers: Array<{
   {
     name: route.TokenTransfer,
     component: TokenTransfer,
+  },
+  {
+    name: route.TokenTransferConfirm,
+    component: TokenTransferConfirm,
   },
   {
     name: route.TokenReceive,
