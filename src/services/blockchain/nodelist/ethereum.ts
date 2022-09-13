@@ -1,5 +1,6 @@
 import { NetworkNode } from '../../../entity/blockchain/network-node';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from '../chainlist/ethereum';
+import { config } from '../../../core/config';
 
 export const ethereumMainNets = [
   // {
@@ -9,7 +10,7 @@ export const ethereumMainNets = [
   //   name: 'Ethereum Alchemy Mainnet',
   //   network: 'mainnet',
   //   networkOptions: {
-  //     alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
+  //     alchemy: config.alchemyApiKey,
   //   },
   // },
   {
@@ -17,7 +18,10 @@ export const ethereumMainNets = [
     builtIn: true,
     chainId: 1,
     name: 'Ethereum Infura Mainnet',
-    network: 'https://mainnet.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
+    network: 'mainnet',
+    networkOptions: {
+      infura: config.infuraApiKey,
+    },
   },
 ];
 
@@ -29,7 +33,7 @@ export const ethereumGoerliNets: Array<NetworkNode> = [
     name: 'Ethereum Alchemy Goerli',
     network: 'goerli',
     networkOptions: {
-      alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
+      alchemy: config.alchemyApiKey,
     },
   },
   {
@@ -37,26 +41,32 @@ export const ethereumGoerliNets: Array<NetworkNode> = [
     builtIn: true,
     chainId: 1,
     name: 'Ethereum Infura Goerli',
-    network: 'https://goerli.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
+    network: 'goerli',
+    networkOptions: {
+      infura: config.infuraApiKey,
+    },
   },
 ];
 
 export const ethereumRinkebyNets: Array<NetworkNode> = [
-  {
-    blockchainId: ethereumRinkeby.id,
-    builtIn: true,
-    chainId: 1,
-    name: 'Ethereum Alchemy Rinkeby',
-    network: 'rinkeby',
-    networkOptions: {
-      alchemy: 'wGtZ4rt6aMACfm7hOcPfhYr0dD3Rwi8r',
-    },
-  },
   // {
   //   blockchainId: ethereumRinkeby.id,
   //   builtIn: true,
   //   chainId: 1,
-  //   name: 'Ethereum Infura Rinkeby',
-  //   network: 'https://rinkeby.infura.io/v3/4d50c70ad0464d0282743490b3fe18f1',
+  //   name: 'Ethereum Alchemy Rinkeby',
+  //   network: 'rinkeby',
+  //   networkOptions: {
+  //     alchemy: config.alchemyApiKey,
+  //   },
   // },
+  {
+    blockchainId: ethereumRinkeby.id,
+    builtIn: true,
+    chainId: 1,
+    name: 'Ethereum Infura Rinkeby',
+    network: 'rinkeby',
+    networkOptions: {
+      infura: config.infuraApiKey,
+    },
+  },
 ];
