@@ -50,6 +50,9 @@ class TxService {
       Toast.show({
         title: lang('token.send.pended'),
       });
+      // go back transfer
+      goBack();
+      // go back token
       goBack();
     } catch (e) {
       console.error(`交易失败`, e);
