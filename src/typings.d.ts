@@ -7,6 +7,7 @@ declare module '*.tiff';
 declare module '*.xlsx';
 declare module '*.txt';
 declare module '*.less';
+declare module '*.webp';
 
 declare module '*.svg' {
   import React from 'react';

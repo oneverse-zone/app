@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import {
@@ -10,7 +10,6 @@ import {
   Column,
   Icon,
   IconButton,
-  IScrollViewProps,
   ITextProps,
   Pressable,
   Row,
@@ -80,7 +79,7 @@ export class CryptoAsset extends Component<any, any> {
 
   state = {
     open: false,
-    refreshing: false,
+    refreshing: true,
     tabIndex: 0,
   };
 
@@ -215,11 +214,8 @@ export class CryptoAsset extends Component<any, any> {
   render() {
     const { wallet, wallets, loading } = walletManagerService;
     const { open, refreshing } = this.state;
-    const scroll: IScrollViewProps = {
-      refreshControl: <RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />,
-    };
     return (
-      <Page loading={loading} scroll={scroll}>
+      <Page loading={loading} refreshing={refreshing} onRefresh={this.handleRefresh}>
         {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
         <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
       </Page>

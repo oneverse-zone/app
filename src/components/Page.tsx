@@ -3,10 +3,13 @@ import { Box, Center, IBoxProps, IScrollViewProps, Modal, ScrollView, Spinner, T
 import { IVStackProps } from 'native-base/lib/typescript/components/primitives/Stack/VStack';
 import { IHStackProps } from 'native-base/lib/typescript/components/primitives/Stack/HStack';
 import { IKeyboardAvoidingViewProps } from 'native-base/lib/typescript/components/basic/KeyboardAvoidingView/types';
+import { RefreshControl } from 'react-native';
 
 export type PageProps = {
   loading?: boolean;
   loadingText?: string;
+  refreshing?: boolean;
+  onRefresh?: () => void;
   Root?: any;
   header?: ReactNode;
   footer?: ReactNode;
@@ -21,6 +24,8 @@ export function Page({
   children,
   footer,
   scroll = true,
+  refreshing = false,
+  onRefresh,
   ...props
 }: PropsWithChildren<PageProps>) {
   const root = (
@@ -28,6 +33,7 @@ export function Page({
       {children}
     </Root>
   );
+
   return (
     <>
       {header}
@@ -36,6 +42,7 @@ export function Page({
           flex={1}
           contentContainerStyle={{ height: '100%' }}
           backgroundColor="white"
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           {...(typeof scroll === 'boolean' ? {} : scroll)}>
           {root}
         </ScrollView>

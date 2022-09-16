@@ -46,3 +46,7 @@ export function goBack() {
 export function setParams(params: any) {
   navigationRef.isReady() && navigationRef.setParams(params);
 }
+
+export function getCurrentOptions() {
+  return navigationRef.isReady() && navigationRef.getCurrentOptions();
+}

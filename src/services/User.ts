@@ -4,6 +4,8 @@ import type { BasicProfile } from '@datamodels/identity-profile-basic';
 import { BasicProfileService } from '@oneverse/identify/lib/services/BasicProfileService';
 import { goBack } from '../core/navigation';
 import { makeResettable } from '../mobx/mobx-reset';
+import { PhotoAlbum } from '@aomi/react-native-media-manager';
+import { ipfsService } from './ipfs';
 
 export class User {
   service: BasicProfileService | undefined;
@@ -40,17 +42,49 @@ export class User {
     }
   }
 
+  /**
+   * 更新用户信息
+   * @param profile 用户信息
+   */
   async updateProfile(profile: BasicProfile) {
     if (this.loading) {
       return;
     }
     this.loading = true;
     try {
-      await this.service?.updateProfile(profile);
+      const newProfile = {
+        ...this.basicProfile,
+        ...profile,
+      };
+      await this.service?.updateProfile(newProfile);
+      this.basicProfile = newProfile;
+      goBack();
       console.log('身份更新成功');
     } finally {
       this.loading = false;
-      this.queryProfile();
+    }
+  }
+
+  /**
+   * 更新头像
+   */
+  async updateAvatar(media: PhotoAlbum) {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
+    try {
+      const path = media.edited?.path;
+      const file = {
+        uri: path,
+        name: path?.substring(path?.lastIndexOf('/') + 1),
+      } as any;
+      const formData = new FormData();
+      formData.append('file', file);
+      const reuslt = await ipfsService.add(formData as any);
+      console.log(reuslt);
+    } finally {
+      this.loading = false;
     }
   }
 }

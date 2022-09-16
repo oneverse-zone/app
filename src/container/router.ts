@@ -25,6 +25,8 @@ import { GasSetting } from './crypto-asset/gas/gas-setting';
 import { TokenManager } from './crypto-asset/token/token-manager';
 import { TokenPersist } from './crypto-asset/token/token-persist';
 import { TokenTransferConfirm } from './crypto-asset/token/token-transfer-confirm';
+import { UserProfile } from './user/profile/Profile';
+import { SingleInputScreen } from './SingleInputScreen';
 
 export const route = {
   Splash: 'Splash',
@@ -50,7 +52,7 @@ export const route = {
 
   Home: 'Home',
 
-  ProfilePersist: 'ProfilePersist',
+  UserProfile: 'UserProfile',
   Auth: 'Auth',
 
   BlockchainSelect: 'BlockchainSelect',
@@ -67,6 +69,8 @@ export const route = {
   GasSetting: 'GasSetting',
 
   Setting: 'Setting',
+
+  SingleInputScreen: 'SingleInputScreen',
 };
 
 export const routers: Array<{
@@ -174,8 +178,8 @@ export const routers: Array<{
     component: GasSetting,
   },
   {
-    name: route.ProfilePersist,
-    component: ProfilePersist,
+    name: route.UserProfile,
+    component: UserProfile,
   },
   {
     name: route.Auth,
@@ -184,5 +188,9 @@ export const routers: Array<{
   {
     name: route.Setting,
     component: Setting,
+  },
+  {
+    name: route.SingleInputScreen,
+    component: SingleInputScreen,
   },
 ];

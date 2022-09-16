@@ -38,7 +38,8 @@ const tabs: Record<
     icon: <MaterialIcons name="chat" />,
   },
   User: {
-    title: lang('tab.user'),
+    title: '',
+    tabBarLabel: lang('tab.user'),
     component: User,
     icon: <MaterialIcons name="person" />,
   },

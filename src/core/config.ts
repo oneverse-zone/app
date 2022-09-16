@@ -1,14 +1,12 @@
+import dev from './dev.config';
+import prod from './prod.config';
+
 export type Config = {
   infuraApiKey: string;
   alchemyApiKey: string;
+
+  ceramicApi: string;
+  ipfsOptions: any;
 };
 
-let config: Config;
-
-if (__DEV__) {
-  config = require('./dev.config');
-} else {
-  config = require('./prod.config');
-}
-
-export { config };
+export const config: Config = __DEV__ ? dev : prod;

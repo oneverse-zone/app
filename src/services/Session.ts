@@ -1,12 +1,9 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { toUtf8Bytes, UnicodeNormalizationForm } from '@ethersproject/strings';
-import { scrypt } from 'scrypt-js';
 import * as Keychain from 'react-native-keychain';
 
 import { DIDService } from '@oneverse/identify';
 import { randomMnemonic } from '@oneverse/utils';
 
-import { ceramicApi } from '../constants/Url';
 import { repository } from './Repository';
 import { resetTo } from '../core/navigation';
 import { route } from '../container/router';
@@ -16,6 +13,7 @@ import { makeResettable, resetState } from '../mobx/mobx-reset';
 import { passwordService } from './password';
 import { securityService } from './security';
 import { ServiceError } from '@aomi/common-service/exception/ServiceError';
+import { config } from '../core/config';
 
 export class Session {
   didService: DIDService | undefined;
@@ -69,12 +67,11 @@ export class Session {
       if (!ok) {
         throw new Error('密码不正确');
       }
-      await securityService.initCipher(pwd);
-      let mnemonic: any = await repository.findMnemonic();
-      mnemonic = await securityService.decrypt(mnemonic);
+      let [_, mnemonic] = await Promise.all([securityService.initCipher(pwd), repository.findMnemonic()]);
+      mnemonic = await securityService.decrypt(mnemonic as string);
       if (mnemonic) {
         console.log('设备解锁成功,初始化身份信息');
-        await this.initDID(mnemonic);
+        await this.initDID(mnemonic as any);
         this.locked = false;
       }
     } finally {
@@ -173,14 +170,15 @@ export class Session {
   private async initDID({ mnemonic, password }: { mnemonic: string; password?: string }) {
     try {
       this.didService = await DIDService.newInstance({
-        ceramicApi,
+        ceramicApi: config.ceramicApi,
         mnemonic,
         password,
       });
       this.id = this.didService.did.id.toString();
       console.log(`DID身份初始化成功: ${this.id}`);
     } catch (e: any) {
-      console.warn('DID身份初始化失败', e.message, e);
+      console.log(config);
+      console.warn(`DID身份初始化失败: ${config.ceramicApi}`, e.message, e);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
       }
       throw new ServiceError({ status: '300', describe: '', payload: '' });
