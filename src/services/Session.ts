@@ -6,7 +6,7 @@ import { randomMnemonic } from '@oneverse/utils';
 
 import { repository } from './Repository';
 import { resetTo } from '../core/navigation';
-import { route } from '../container/router';
+import { route } from '../core/route.config';
 import { Toast } from 'native-base';
 import { lang } from '../locales';
 import { makeResettable, resetState } from '../mobx/mobx-reset';

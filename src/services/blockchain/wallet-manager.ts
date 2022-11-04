@@ -11,7 +11,6 @@ import { walletAdapter } from './adapter';
 import { coinService } from './coin';
 import { randomMnemonic } from '@oneverse/utils';
 import { securityService } from '../security';
-import { tokenService } from './token';
 import { WalletAccount } from '../../entity/blockchain/wallet-account';
 import { blockchainService } from './index';
 
@@ -127,9 +126,9 @@ export class WalletManagerService {
    */
   selectAccount(id: string) {
     const idx = this.selectedAccounts.findIndex(item => item.id === id);
-    this.selectedAccountId = id;
     if (idx > -1) {
-      tokenService.updateSelectAccountToken();
+      // tokenService.updateSelectAccountToken();
+      this.selectedAccountId = id;
     }
   }
 

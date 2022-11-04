@@ -10,7 +10,7 @@ import { Input } from '../../../components/Input';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 import { InputPassword } from '../../../components/InputPassword';
 import { PageTitle } from '../../../components/PageTitle';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 
 @observer
 @autoBind

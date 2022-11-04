@@ -4,7 +4,7 @@ import { Column, FormControl, TextArea } from 'native-base';
 import { sessionService } from '../../../services/Session';
 import { Page } from '../../../components/Page';
 import { goBack, resetTo } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 import { PageTitle } from '../../../components/PageTitle';
 import { lang } from '../../../locales';
 import { Button } from '../../../components/Button';

@@ -21,7 +21,7 @@ import SendIcon from '../../assets/svg/arrow-up-from-bracket-solid.svg';
 import { TokenTabScreen } from './token/token-tab';
 import { NftTabScreen } from './nft/nft-tab';
 import { navigate } from '../../core/navigation';
-import { route } from '../router';
+import { route } from '../../core/route.config';
 import { WalletNewActionSheet } from './components/WalletNewActionSheet';
 import { Page } from '../../components/Page';
 import { WalletSelectButton } from './components/WalletSelectButton';

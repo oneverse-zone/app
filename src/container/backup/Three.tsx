@@ -10,7 +10,7 @@ import { Word } from './Word';
 import { FixedBottomView } from '../../components/FixedBottomView';
 import { Button } from '../../components/Button';
 import { resetTo } from '../../core/navigation';
-import { route } from '../router';
+import { route } from '../../core/route.config';
 import { securityService } from '../../services/security';
 import { Mnemonic } from '../../entity/blockchain/wallet';
 

@@ -5,7 +5,7 @@ import { PageTitle } from '../../components/PageTitle';
 import { lang } from '../../locales';
 import { Button } from '../../components/Button';
 import { resetTo } from '../../core/navigation';
-import { route } from '../router';
+import { route } from '../../core/route.config';
 
 export function BackupFour() {
   function handleFinish() {

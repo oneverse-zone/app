@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
-import {Box, Button, Text} from 'native-base';
-import {sessionService} from '../services/Session';
-import {Linking} from 'react-native';
-import {autoBind} from 'jsdk/autoBind';
+import React, { Component } from 'react';
+import { Box, Button, Text } from 'native-base';
+import { sessionService } from '../services/Session';
+import { Linking } from 'react-native';
+import { autoBind } from 'jsdk/autoBind';
 
 @autoBind
 export class Auth extends Component<any, any> {
   async handleAuth() {
-    const {didService} = sessionService;
+    const { didService } = sessionService;
 
-    const {redirectUrl} = this.props.route.params;
+    const { redirectUrl } = this.props.route.params;
     const result: any = await didService.authorize(this.props.route.params);
     console.log(result);
     const u = new URL(redirectUrl);

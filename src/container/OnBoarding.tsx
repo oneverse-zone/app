@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { route } from './router';
+import { route } from '../core/route.config';
 import { View } from 'react-native';
 import { resetTo } from '../core/navigation';
 

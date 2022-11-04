@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 import { TokenList } from '../components/TokenList';
 import { tokenService } from '../../../services/blockchain/token';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';

@@ -22,8 +22,8 @@ import { InputPassword } from '../components/InputPassword';
 import { Button } from '../components/Button';
 import { sessionService } from '../services/Session';
 import { resetTo } from '../core/navigation';
-import { route } from './router';
 import { ServiceError } from '@aomi/common-service/exception/ServiceError';
+import { route } from '../core/route.config';
 
 /**
  * 锁频页面

@@ -24,7 +24,7 @@ import { WalletAccount } from '../../../entity/blockchain/wallet-account';
 import { WalletAccountEmpty } from '../components/WalletAccountEmpty';
 import { blockchainService } from '../../../services/blockchain';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 import { WalletNewActionSheet } from '../components/WalletNewActionSheet';
 import { Page } from '../../../components/Page';
 import { Title } from '../../../components/Title';

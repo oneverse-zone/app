@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
-import { route } from '../container/router';
 import { navigate } from '../core/navigation';
+import { route } from '../core/route.config';
 
 export class SingleInputService {
   loading = false;

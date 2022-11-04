@@ -6,7 +6,7 @@ import { Column } from 'native-base';
 import { sessionService } from '../services/Session';
 import { Page } from '../components/Page';
 import { navigate, resetTo } from '../core/navigation';
-import { route } from './router';
+import { route } from '../core/route.config';
 import { lang } from '../locales';
 import { PageTitle } from '../components/PageTitle';
 import { Button } from '../components/Button';

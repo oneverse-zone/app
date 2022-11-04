@@ -3,8 +3,9 @@ import { NativeBaseProvider } from 'native-base';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { route, routers } from './router';
+import { routers } from '../core/router';
 import { navigationRef } from '../core/navigation';
+import { route } from '../core/route.config';
 
 const Stack = createNativeStackNavigator();
 

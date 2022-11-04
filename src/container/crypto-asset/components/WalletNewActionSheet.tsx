@@ -3,7 +3,7 @@ import { Actionsheet, Box, IActionsheetProps, Text } from 'native-base';
 import { lang } from '../../../locales';
 import { Wallet } from '../../../entity/blockchain/wallet';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 
 export type CreateWalletActionSheetProps = {

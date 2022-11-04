@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { Center, Text } from 'native-base';
 import SS from 'react-native-splash-screen';
-import * as Keychain from 'react-native-keychain';
 
 import { resetTo } from '../core/navigation';
-import { route } from './router';
 import { observer } from 'mobx-react';
 import { sessionService } from '../services/Session';
-import { BackupFour } from './backup/Four';
 import { passwordService } from '../services/password';
+import { route } from '../core/route.config';
 
 export const Splash: React.FC<any> = observer(function Splash() {
   useEffect(() => {

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { autoBind } from 'jsdk/autoBind';
 import { Avatar, Box, Column, IconButton, Image, Row, Text, Toast } from 'native-base';
 import { lang } from '../../locales';
-import { route } from '../router';
+import { route } from '../../core/route.config';
 import { ListItem } from '../../components/ListItem';
 import { navigate } from '../../core/navigation';
 import { AddIcon } from 'native-base/src/components/primitives/Icon/Icons/Add';

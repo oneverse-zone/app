@@ -10,8 +10,8 @@ import { Button } from '../../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { FixedBottomView } from '../../components/FixedBottomView';
 import { goBack, navigate } from '../../core/navigation';
-import { route } from '../router';
 import { Word } from './Word';
+import { route } from '../../core/route.config';
 
 /**
  * 备份第二步骤

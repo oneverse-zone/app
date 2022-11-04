@@ -81,8 +81,8 @@ export class User {
       } as any;
       const formData = new FormData();
       formData.append('file', file);
-      const reuslt = await ipfsService.add(formData as any);
-      console.log(reuslt);
+      // const reuslt = await ipfsService.add(formData as any);
+      // console.log(reuslt);
     } finally {
       this.loading = false;
     }

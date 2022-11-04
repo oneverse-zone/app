@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconButton, useTheme } from 'native-base';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 import WalletIcon from '../../../assets/svg/wallet.svg';
 
 function handlePress() {

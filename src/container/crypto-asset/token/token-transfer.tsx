@@ -10,7 +10,7 @@ import { txService } from '../../../services/blockchain/tx';
 import { AccountToken } from '../../../entity/blockchain/wallet-account';
 import { tokenService } from '../../../services/blockchain/token';
 import { accountAdapter } from '../../../services/blockchain/account-adapter';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 
 /**
  * 账户转账

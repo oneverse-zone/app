@@ -9,6 +9,7 @@ import { goBack } from '../../../core/navigation';
 import { blockchainService } from '../../../services/blockchain';
 import { FixedBottomView } from '../../../components/FixedBottomView';
 import { Button } from '../../../components/Button';
+import { walletManagerService } from '../../../services/blockchain/wallet-manager';
 
 /**
  * 区块链选择页面
@@ -34,6 +35,7 @@ export class BlockchainSelect extends Component<any, any> {
     const { blockchains } = blockchainService;
     const index = blockchains.findIndex(item => item.id === blockchain.id);
     blockchainService.selectBlockchain(index);
+    walletManagerService.selectChainFirstAccount();
     goBack();
   }
 

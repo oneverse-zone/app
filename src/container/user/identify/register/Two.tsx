@@ -9,8 +9,8 @@ import { sessionService } from '../../../../services/Session';
 import { goBack, resetTo } from '../../../../core/navigation';
 import { Page } from '../../../../components/Page';
 import { PageTitle } from '../../../../components/PageTitle';
-import { route } from '../../../router';
 import { Button } from '../../../../components/Button';
+import { route } from '../../../../core/route.config';
 
 @observer
 @autoBind

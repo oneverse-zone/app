@@ -3,7 +3,7 @@ import { Box } from 'native-base';
 import { HeaderAddIconButton } from '../../../components/HeaderAddIconButton';
 import { lang } from '../../../locales';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 
 function handleAddPress() {
   navigate(route.TokenPersist);

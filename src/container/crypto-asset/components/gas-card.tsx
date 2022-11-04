@@ -4,7 +4,7 @@ import { Center, ChevronRightIcon, Column, IPressableProps, Pressable, Row, Spac
 import { GasInfo } from '../../../entity/blockchain/gas';
 import { lang } from '../../../locales';
 import { navigate } from '../../../core/navigation';
-import { route } from '../../router';
+import { route } from '../../../core/route.config';
 
 export type GasCardProps = {
   gasInfo: GasInfo;

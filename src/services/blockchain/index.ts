@@ -3,7 +3,6 @@ import { makePersistable } from 'mobx-persist-store';
 import { Blockchain } from '../../entity/blockchain/blockchain';
 import { makeResettable } from '../../mobx/mobx-reset';
 import { mainChains, testChains } from './chainlist';
-import { walletManagerService } from './wallet-manager';
 
 /**
  * 区块链服务
@@ -49,7 +48,6 @@ export class BlockchainService {
   selectBlockchain(index: number) {
     if (this.blockchains[index]) {
       this.selectIndex = index;
-      walletManagerService.selectChainFirstAccount();
     }
   }
 

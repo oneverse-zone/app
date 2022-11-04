@@ -7,7 +7,7 @@ import { lang } from '../locales';
 import { InputPassword } from '../components/InputPassword';
 import { sessionService } from '../services/Session';
 import { PageTitle } from '../components/PageTitle';
-import { route } from './router';
+import { route } from '../core/route.config';
 import { navigate } from '../core/navigation';
 import { Button } from '../components/Button';
 
