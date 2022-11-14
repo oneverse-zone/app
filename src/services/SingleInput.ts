@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { navigate } from '../core/navigation';
 import { route } from '../core/route.config';
+import {makeMobxState} from "../mobx/mobx-manager";
 
 export class SingleInputService {
   loading = false;
@@ -13,9 +14,7 @@ export class SingleInputService {
   inputProps: any = {};
 
   constructor() {
-    makeAutoObservable(this, undefined, {
-      autoBind: true,
-    });
+    makeMobxState(this);
   }
 
   go({

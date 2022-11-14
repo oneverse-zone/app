@@ -3,6 +3,7 @@ import { makePersistable } from 'mobx-persist-store';
 import { Blockchain } from '../../entity/blockchain/blockchain';
 import { makeResettable } from '../../mobx/mobx-reset';
 import { mainChains, testChains } from './chainlist';
+import {makeMobxState} from "../../mobx/mobx-manager";
 
 /**
  * 区块链服务
@@ -29,12 +30,12 @@ export class BlockchainService {
   selectIndex = 0;
 
   constructor() {
-    makeResettable(this);
-    makeAutoObservable(this, undefined, { autoBind: true });
-    makePersistable(this, {
-      name: 'BlockchainStore',
-      properties: ['customs', 'selectIndex'],
-    }).then();
+    makeMobxState(this,{
+      storageOptions: {
+        name: 'BlockchainStore',
+        properties: ['customs', 'selectIndex'],
+      }
+    });
   }
 
   get blockchains() {

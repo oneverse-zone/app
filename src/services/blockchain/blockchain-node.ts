@@ -5,6 +5,7 @@ import { Blockchain } from '../../entity/blockchain/blockchain';
 import { NetworkNode } from '../../entity/blockchain/network-node';
 import { ethereum, ethereumGoerli, ethereumRinkeby } from './chainlist/ethereum';
 import { ethereumGoerliNets, ethereumMainNets, ethereumRinkebyNets } from './nodelist/ethereum';
+import {makeMobxState} from "../../mobx/mobx-manager";
 
 /**
  * 节点服务
@@ -33,13 +34,11 @@ export class BlockchainNodeService {
   defaultNode: Record<string, NetworkNode> = {};
 
   constructor() {
-    makeResettable(this);
-    makeAutoObservable(this, undefined, {
-      autoBind: true,
-    });
-    makePersistable(this, {
-      name: 'BlockchainNodeStore',
-      properties: ['customNodes', 'defaultNode'],
+    makeMobxState(this,{
+      storageOptions: {
+        name: 'BlockchainNodeStore',
+        properties: ['customNodes', 'defaultNode'],
+      }
     });
     this.testAllNode();
     this.startTestTask();

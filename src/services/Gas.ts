@@ -1,11 +1,9 @@
-import { makeAutoObservable } from 'mobx';
 import { Token } from '../entity/blockchain/token';
+import { makeMobxState } from '../mobx/mobx-manager';
 
 export class GasService {
   constructor() {
-    makeAutoObservable(this, undefined, {
-      autoBind: true,
-    });
+    makeMobxState(this);
   }
 
   /**

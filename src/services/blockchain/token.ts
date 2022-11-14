@@ -1,6 +1,3 @@
-import { makeAutoObservable } from 'mobx';
-import { makePersistable } from 'mobx-persist-store';
-import { makeResettable } from '../../mobx/mobx-reset';
 import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
 import { COIN_TOKEN_CONTRACT_ADDRESS, Token, TokenType } from '../../entity/blockchain/token';
 import { walletAdapter } from './adapter';
@@ -11,6 +8,7 @@ import { accountAdapter } from './account-adapter';
 import { Toast } from 'native-base';
 import { lang } from '../../locales';
 import { goBack } from '../../core/navigation';
+import {makeMobxState} from "../../mobx/mobx-manager";
 
 /**
  * token 服务
@@ -24,15 +22,11 @@ export class TokenService {
   // tokens: Record<string, AccountToken[]> = {};
 
   constructor() {
-    makeResettable(this);
-    makeAutoObservable(this, undefined, {
-      autoBind: true,
-    });
-    makePersistable(this, {
-      name: 'TokenStore',
-      properties: [],
-    }).finally(() => {
-      console.log(`加载本地token完成`);
+    makeMobxState(this,{
+      storageOptions: {
+        name: 'TokenStore',
+        properties: [],
+      }
     });
   }
 

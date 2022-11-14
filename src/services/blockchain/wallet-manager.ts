@@ -13,6 +13,7 @@ import { randomMnemonic } from '@oneverse/utils';
 import { securityService } from '../security';
 import { WalletAccount } from '../../entity/blockchain/wallet-account';
 import { blockchainService } from './index';
+import {makeMobxState} from "../../mobx/mobx-manager";
 
 /**
  * 钱包管理
@@ -48,14 +49,12 @@ export class WalletManagerService {
   walletIndex = 1;
 
   constructor() {
-    makeResettable(this);
-    makeAutoObservable(this, undefined, {
-      autoBind: true,
+    makeMobxState(this,{
+      storageOptions: {
+        name: 'WalletStore',
+        properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountId', 'walletIndex'],
+      }
     });
-    makePersistable(this, {
-      name: 'WalletStore',
-      properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountId', 'walletIndex'],
-    }).finally(() => {});
   }
 
   /**
