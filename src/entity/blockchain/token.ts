@@ -26,4 +26,13 @@ export type Token = {
    * 如果是公链币，使用0x0000000...
    */
   address?: string;
+
+  /**
+   * 描述
+   */
+  describe?: string;
+  /**
+   * 官方网站
+   */
+  officialSite: string;
 } & Omit<Coin, 'id'>;

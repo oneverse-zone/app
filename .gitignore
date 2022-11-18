@@ -65,3 +65,4 @@ buck-out/
 
 # App
 *.config.*
+GoogleService-Info.plist
