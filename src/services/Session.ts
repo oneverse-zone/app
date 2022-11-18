@@ -166,6 +166,7 @@ export class Session {
    * @param password 密码
    */
   private async initDID({ mnemonic, password }: { mnemonic: string; password?: string }) {
+    const startAt = Date.now();
     try {
       this.didService = await DIDService.newInstance({
         ceramicApi: config.ceramicApi,
@@ -180,6 +181,7 @@ export class Session {
       }
       throw new ServiceError({ status: '300', describe: '', payload: '' });
     }
+    console.log(`DID 初始化结束: ${Date.now() - startAt}`);
   }
 }
 

@@ -13,7 +13,6 @@ import { Wallet as BlockchainWallet } from '@ethersproject/wallet';
 import { HDNode } from '@ethersproject/hdnode';
 import { getDefaultProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { walletAdapter } from '../adapter';
 import { AbstractProvider } from './abstract-provider';
 import { WalletAccount } from '../../../entity/blockchain/wallet-account';
@@ -166,7 +165,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       const balanceWei = await provider.getBalance(account.address);
       balance = balanceWei.toString();
     } else {
-      const contract = new Contract(token.address, ERC20_BASE_ABI, provider);
+      const contract = new Contract(token.address ?? '', ERC20_BASE_ABI, provider);
       balance = await contract.balanceOf(account.address);
     }
     console.log(`address=${account.address} type=${token.type} token=${token.address} balance=${balance}`);
@@ -190,7 +189,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
       const value = await signer.estimateGas(params[0] || {});
       return value.toString();
     } else if (token.type === TokenType.ERC20) {
-      const contract = new Contract(token.address, ERC20_BASE_ABI, signer as any);
+      const contract = new Contract(token.address ?? '', ERC20_BASE_ABI, signer as any);
       const value = await contract.estimateGas[method](...params);
       console.log(`合约预估gas: [${token.address}] [${method}] [${value}]`, params);
       return value.toString();
@@ -359,7 +358,7 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
     const provider = this.getProvider();
     wallet = wallet.connect(provider);
 
-    if (token.type === TokenType.COIN) {
+    if (token.token.type === TokenType.COIN) {
       const res = await wallet.sendTransaction({
         to,
         from: account.address,
@@ -371,8 +370,8 @@ export abstract class BaseEthereumWalletProvider extends AbstractProvider implem
         maxFeePerGas: gasInfo.maxFeePerGas,
       });
       console.log('交易上链成功', res);
-    } else if (token.type === TokenType.ERC20) {
-      const contract = new Contract(token.token.address, ERC20_BASE_ABI, wallet as any);
+    } else if (token.token.type === TokenType.ERC20) {
+      const contract = new Contract(token.token.address ?? '', ERC20_BASE_ABI, wallet as any);
       const res = await contract.transfer(to, parseUnits(`${value}`, token.token.decimals), {
         maxPriorityFeePerGas: gasInfo.maxPriorityFeePerGas,
         maxFeePerGas: gasInfo.maxFeePerGas,

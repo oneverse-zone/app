@@ -1,4 +1,4 @@
-import {action, observable} from 'mobx';
+import {action, observable, observe} from 'mobx';
 import {Toast} from 'native-base';
 import {nanoid} from 'nanoid';
 import {Mnemonic, Wallet, WalletType} from '../../entity/blockchain/wallet';
@@ -53,6 +53,12 @@ export class WalletManagerService {
         name: 'WalletStore',
         properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountId', 'walletIndex'],
       },
+    });
+    observe(blockchainService, change => {
+      if (change.name === 'selectIndex') {
+        console.log(`链变，选择当前链的第一个账户`);
+        this.selectChainFirstAccount();
+      }
     });
   }
 
@@ -125,7 +131,6 @@ export class WalletManagerService {
   selectAccount(id: string) {
     const idx = this.selectedAccounts.findIndex(item => item.id === id);
     if (idx > -1) {
-      // tokenService.updateSelectAccountToken();
       this.selectedAccountId = id;
     }
   }
