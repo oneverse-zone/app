@@ -175,7 +175,6 @@ export class Session {
       this.id = this.didService.did.id.toString();
       console.log(`DID身份初始化成功: ${this.id}`);
     } catch (e: any) {
-      console.log(config);
       console.warn(`DID身份初始化失败: ${config.ceramicApi}`, e.message, e);
       if (e.message === 'ChaCha20Poly1305 needs 32-byte key') {
       }

@@ -81,6 +81,7 @@ export class SecurityService {
     const preparedCleartext = await prepareCleartext(plaintext);
     return SecurityService.encrypt(new XChaCha20Poly1305(key), preparedCleartext);
   }
+
   static async decryptWithKey<T>(key: Uint8Array, ciphertext: string): Promise<T> {
     const plaintext = await SecurityService.decrypt(new XChaCha20Poly1305(key), ciphertext);
     return decodeCleartext(plaintext) as T;

@@ -22,16 +22,14 @@ import { TokenTabScreen } from './token/token-tab';
 import { NftTabScreen } from './nft/nft-tab';
 import { navigate } from '../../core/navigation';
 import { route } from '../../core/route.config';
-import { WalletNewActionSheet } from './components/WalletNewActionSheet';
 import { Page } from '../../components/Page';
-import { WalletSelectButton } from './components/WalletSelectButton';
-import { Empty } from './Empty';
 import { walletManagerService } from '../../services/blockchain/wallet-manager';
 import { blockchainService } from '../../services/blockchain';
 import { logos } from '../../components/BlockchainAvatar';
 import { AddressText } from '../../components/AddressText';
 import { tokenService } from '../../services/blockchain/token';
 import { NavigationState, SceneMap, SceneRendererProps, TabView } from 'react-native-tab-view';
+import { WalletSelectButton } from './components/WalletSelectButton';
 
 function CryptoAssetRight({ navigation }: any) {
   function handlePress() {}
@@ -42,6 +40,10 @@ function CryptoAssetRight({ navigation }: any) {
 const CryptoAssetTitle = observer(function CryptoAssetTitle() {
   function handlePress() {
     navigate(route.BlockchainSelect);
+  }
+
+  if (1) {
+    return <Button>{'hello'}</Button>;
   }
 
   const { selected } = blockchainService;
@@ -216,8 +218,8 @@ export class CryptoAsset extends Component<any, any> {
     const { open, refreshing } = this.state;
     return (
       <Page loading={loading} refreshing={refreshing} onRefresh={this.handleRefresh}>
-        {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
-        <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
+        {/*{wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}*/}
+        {/*<WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />*/}
       </Page>
     );
   }

@@ -13,6 +13,7 @@ function handlePress() {
  */
 export function WalletSelectButton() {
   const { colors } = useTheme();
+  console.log(WalletIcon);
   return (
     <IconButton
       borderRadius="full"
