@@ -5,8 +5,7 @@
  * ETH: m/44'/60'/0'/0/address_index
  * m / purpose' / coin_type' / account' / change / address_index
  */
-import { Token, TokenType } from './token';
-import { Coin } from './coin';
+import { Token } from './token';
 
 export type HDWalletAccount = {
   // /**
@@ -101,11 +100,6 @@ export type WalletAccount = {
  * 账户中的tokens
  */
 export type AccountToken = {
-  /**
-   * token 类型
-   */
-  type: TokenType;
-
   /**
    * 余额
    */

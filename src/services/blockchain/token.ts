@@ -1,14 +1,14 @@
-import { AccountToken, WalletAccount } from '../../entity/blockchain/wallet-account';
-import { COIN_TOKEN_CONTRACT_ADDRESS, Token, TokenType } from '../../entity/blockchain/token';
-import { walletAdapter } from './adapter';
-import { coinService } from './coin';
-import { walletManagerService } from './wallet-manager';
-import { BaseToken, Coin } from '../../entity/blockchain/coin';
-import { accountAdapter } from './account-adapter';
-import { Toast } from 'native-base';
-import { lang } from '../../locales';
-import { goBack } from '../../core/navigation';
-import {makeMobxState} from "../../mobx/mobx-manager";
+import {AccountToken, WalletAccount} from '../../entity/blockchain/wallet-account';
+import {Token, TokenType} from '../../entity/blockchain/token';
+import {walletAdapter} from './adapter';
+import {coinService} from './coin';
+import {walletManagerService} from './wallet-manager';
+import {BaseToken, Coin} from '../../entity/blockchain/coin';
+import {accountAdapter} from './account-adapter';
+import {Toast} from 'native-base';
+import {lang} from '../../locales';
+import {goBack} from '../../core/navigation';
+import {makeMobxState} from '../../mobx/mobx-manager';
 
 /**
  * token 服务
@@ -16,17 +16,12 @@ import {makeMobxState} from "../../mobx/mobx-manager";
 export class TokenService {
   loading = false;
 
-  // /**
-  //  * 账户对应的token信息
-  //  */
-  // tokens: Record<string, AccountToken[]> = {};
-
   constructor() {
-    makeMobxState(this,{
+    makeMobxState(this, {
       storageOptions: {
         name: 'TokenStore',
         properties: [],
-      }
+      },
     });
   }
 
@@ -45,14 +40,14 @@ export class TokenService {
    * 获取当前账户的主链币Token信息所在的索引
    */
   get selectedMainTokenIndex(): number {
-    return this.selectTokens.findIndex(item => item.type === TokenType.COIN);
+    return this.selectTokens.findIndex(item => item.token.type === TokenType.COIN);
   }
 
   /**
    * 当前账户对应的主链币Token信息
    */
   get selectedMainToken(): AccountToken | undefined {
-    return this.selectTokens.find(item => item.type === TokenType.COIN);
+    return this.selectTokens.find(item => item.token.type === TokenType.COIN);
   }
 
   /**
@@ -78,7 +73,7 @@ export class TokenService {
    * 更新账户中的token信息
    */
   async updateAccountToken(account: WalletAccount) {
-    const tasks = this.getTokens(account).map(async item => {
+    const tasks = account.tokens.map(async item => {
       item.balance = await this.handleQueryBalance(account, item);
       console.log(`查询余额: ${account.address} Token=${(item.token as Token).address} balance=${item.balance}`);
       return item;
@@ -113,7 +108,6 @@ export class TokenService {
       };
 
       const accountToken: AccountToken = {
-        type,
         balance: 0,
         token,
       };
@@ -144,38 +138,6 @@ export class TokenService {
     } finally {
       this.loading = false;
     }
-  }
-
-  /**
-   * 获取账户的所有token 信息
-   * @param account
-   */
-  private getTokens(account: WalletAccount) {
-    const tokens: Array<AccountToken> = [];
-    const coin = coinService.findByBlockchainId(account.blockchainId);
-    if (null == coin) {
-      return tokens;
-    }
-    tokens.push({
-      token: {
-        ...coin,
-        type: TokenType.COIN,
-        address: COIN_TOKEN_CONTRACT_ADDRESS,
-      },
-      balance: 0,
-      type: TokenType.COIN,
-    });
-    account.tokens.forEach(item => {
-      if (item.type === TokenType.COIN) {
-        return;
-      }
-      tokens.push({
-        token: item.token,
-        balance: 0,
-        type: item.type,
-      });
-    });
-    return tokens;
   }
 
   private handleQueryBalance(account: WalletAccount, token: AccountToken): Promise<string> {

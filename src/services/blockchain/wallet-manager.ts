@@ -1,19 +1,18 @@
-import { action, makeAutoObservable, observable } from 'mobx';
-import { Toast } from 'native-base';
-import { nanoid } from 'nanoid';
-import { Mnemonic, Wallet, WalletType } from '../../entity/blockchain/wallet';
-import { Coin } from '../../entity/blockchain/coin';
-import { makePersistable } from 'mobx-persist-store';
-import { makeResettable } from '../../mobx/mobx-reset';
-import { lang } from '../../locales';
-import { repository } from '../Repository';
-import { walletAdapter } from './adapter';
-import { coinService } from './coin';
-import { randomMnemonic } from '@oneverse/utils';
-import { securityService } from '../security';
-import { WalletAccount } from '../../entity/blockchain/wallet-account';
-import { blockchainService } from './index';
-import {makeMobxState} from "../../mobx/mobx-manager";
+import {action, observable} from 'mobx';
+import {Toast} from 'native-base';
+import {nanoid} from 'nanoid';
+import {Mnemonic, Wallet, WalletType} from '../../entity/blockchain/wallet';
+import {Coin} from '../../entity/blockchain/coin';
+import {lang} from '../../locales';
+import {repository} from '../Repository';
+import {walletAdapter} from './adapter';
+import {coinService} from './coin';
+import {randomMnemonic} from '@oneverse/utils';
+import {securityService} from '../security';
+import {WalletAccount} from '../../entity/blockchain/wallet-account';
+import {blockchainService} from './index';
+import {makeMobxState} from '../../mobx/mobx-manager';
+import {TokenType} from '../../entity/blockchain/token';
 
 /**
  * 钱包管理
@@ -49,11 +48,11 @@ export class WalletManagerService {
   walletIndex = 1;
 
   constructor() {
-    makeMobxState(this,{
+    makeMobxState(this, {
       storageOptions: {
         name: 'WalletStore',
         properties: ['wallet', 'list', 'selectedIndex', 'selectedAccountId', 'walletIndex'],
-      }
+      },
     });
   }
 
@@ -338,6 +337,16 @@ export class WalletManagerService {
     }
     account.walletId = wallet.id;
     account.id = nanoid();
+    // 初始化token列表 主链币
+    account.tokens = [
+      {
+        balance: 0,
+        token: {
+          ...coin,
+          type: TokenType.COIN,
+        },
+      },
+    ];
     return account;
   }
 }

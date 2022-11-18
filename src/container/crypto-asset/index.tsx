@@ -30,6 +30,8 @@ import { AddressText } from '../../components/AddressText';
 import { tokenService } from '../../services/blockchain/token';
 import { NavigationState, SceneMap, SceneRendererProps, TabView } from 'react-native-tab-view';
 import { WalletSelectButton } from './components/WalletSelectButton';
+import { WalletNewActionSheet } from './components/WalletNewActionSheet';
+import { Empty } from './Empty';
 
 function CryptoAssetRight({ navigation }: any) {
   function handlePress() {}
@@ -40,10 +42,6 @@ function CryptoAssetRight({ navigation }: any) {
 const CryptoAssetTitle = observer(function CryptoAssetTitle() {
   function handlePress() {
     navigate(route.BlockchainSelect);
-  }
-
-  if (1) {
-    return <Button>{'hello'}</Button>;
   }
 
   const { selected } = blockchainService;
@@ -218,8 +216,8 @@ export class CryptoAsset extends Component<any, any> {
     const { open, refreshing } = this.state;
     return (
       <Page loading={loading} refreshing={refreshing} onRefresh={this.handleRefresh}>
-        {/*{wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}*/}
-        {/*<WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />*/}
+        {wallets.length === 0 ? <Empty onOpen={this.openSwitch} {...(this.props as any)} /> : this.renderDefault()}
+        <WalletNewActionSheet didWallet={wallet} isOpen={open} onClose={this.openSwitch} />
       </Page>
     );
   }

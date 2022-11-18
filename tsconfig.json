@@ -120,7 +120,7 @@
   },
   "exclude": [
     "node_modules",
-    "babel.config.cjs",
+    "babel.config.js",
     "metro.config.js",
     "jest.config.js"
   ]

@@ -10,7 +10,6 @@
     "lint": "eslint src --fix --ext .js,.jsx,.ts,.tsx",
     "postinstall": "node_modules/.bin/rn-nodeify --install crypto,stream,events,http,https,url,assert,os,process --yarn"
   },
-  "type": "module",
   "dependencies": {
     "@aomi/common-service": "^1.0.5-Alpha.26",
     "@aomi/react-native-media-manager": "^0.1.0",

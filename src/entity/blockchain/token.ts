@@ -4,6 +4,7 @@ export enum TokenType {
   COIN = 'COIN',
   ERC20 = 'ERC20',
   ERC721 = 'ERC721',
+  ERC1155 = 'ERC1155',
 }
 
 /**
@@ -24,5 +25,5 @@ export type Token = {
    * 合约地址
    * 如果是公链币，使用0x0000000...
    */
-  address: string;
+  address?: string;
 } & Omit<Coin, 'id'>;
